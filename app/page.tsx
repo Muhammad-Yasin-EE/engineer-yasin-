@@ -12,6 +12,42 @@ import {
 
 export const dynamic = 'force-dynamic'
 
+// Helper to clean up raw database quiz names and categorize by branch
+function formatQuizDisplay(title: string = '', cat: string = '') {
+  let displayTitle = title
+    .replace(/^pma-long-course/i, 'PMA Long Course')
+    .replace(/^gd-pilot/i, 'PAF GD Pilot')
+    .replace(/^pn-cadet/i, 'PN Cadet (Pakistan Navy)')
+    .replace(/^aeronautical-engineering/i, 'PAF Aeronautical Engineering')
+    .replace(/^tcc/i, 'TCC (Technical Cadet Course)')
+    .replace(/^admin/i, 'PAF Admin & Special Duties')
+    .replace(/^lcc/i, 'LCC (Lady Cadet Course)')
+    .replace(/^afns/i, 'AFNS (Nursing Service)')
+    .replace(/^dssc/i, 'DSSC (Direct Short Service)')
+    .replace(/^ssc/i, 'Navy SSC')
+    .replace(/^marines/i, 'Pak Marines')
+    .replace(/^sailor/i, 'Navy Sailor')
+    .replace(/^soldier/i, 'Pak Army Soldier')
+
+  let badge = '🛡️ ARMED FORCES'
+  let colorClass = 'bg-slate-100 text-slate-700 border-slate-200'
+  const tLower = title.toLowerCase()
+  const cLower = cat.toLowerCase()
+
+  if (tLower.includes('pma') || tLower.includes('army') || tLower.includes('tcc') || tLower.includes('lcc') || tLower.includes('afns') || tLower.includes('soldier') || tLower.includes('amc') || cLower.includes('pma')) {
+    badge = '🛡️ PAK ARMY'
+    colorClass = 'bg-emerald-50 text-emerald-800 border-emerald-200'
+  } else if (tLower.includes('paf') || tLower.includes('pilot') || tLower.includes('aeronautical') || tLower.includes('airmen') || tLower.includes('air defence') || tLower.includes('admin') || tLower.includes('air')) {
+    badge = '✈️ PAK AIR FORCE'
+    colorClass = 'bg-blue-50 text-blue-800 border-blue-200'
+  } else if (tLower.includes('pn') || tLower.includes('navy') || tLower.includes('sailor') || tLower.includes('marines') || tLower.includes('ssc')) {
+    badge = '⚓ PAK NAVY'
+    colorClass = 'bg-indigo-50 text-indigo-800 border-indigo-200'
+  }
+
+  return { displayTitle, badge, colorClass }
+}
+
 export default async function HomePage() {
   let quizzes: any[] = []
   let software: any[] = []
@@ -20,16 +56,68 @@ export default async function HomePage() {
   try {
     const supabase = await createClient()
 
+    // Fetch a large pool of quizzes to filter out non-Armed-Forces and pick a rich PMA/PAF/PN mix
     const [
       quizRes,
       softRes
     ] = await Promise.all([
-      supabase.from('quizzes').select('*').order('created_at', { ascending: false }).limit(6),
+      supabase.from('quizzes').select('*').limit(300),
       supabase.from('items').select('*').eq('resource_type', 'software').order('created_at', { ascending: false }).limit(3)
     ])
 
-    quizzes = quizRes.data || []
+    const rawQuizzes = quizRes.data || []
     software = softRes.data || []
+
+    // 1. Filter out FIA, Public Service, and Entry Tests
+    const forcesOnly = rawQuizzes.filter((q: any) => {
+      const t = (q.title || '').toLowerCase()
+      const c = (q.category || '').toLowerCase()
+      if (c === 'public-service' || c === 'entry-tests') return false
+      if (t.includes('fia') || t.includes('css') || t.includes('fpsc') || t.includes('ppsc') || t.includes('bpsc') || t.includes('spsc') || t.includes('kppsc') || t.includes('ajkpsc') || t.includes('gbpsc')) return false
+      if (t.includes('nums') || t.includes('mdcat') || t.includes('ecat') || t.includes('nust') || t.includes('uet') || t.includes('giki') || t.includes('pieas') || t.includes('nts')) return false
+      return true
+    })
+
+    // 2. Separate into branches to guarantee a balanced mix on HomePage
+    const armyList = forcesOnly.filter(q => {
+      const t = (q.title || '').toLowerCase()
+      const c = (q.category || '').toLowerCase()
+      return t.includes('pma') || t.includes('army') || t.includes('tcc') || t.includes('lcc') || t.includes('afns') || t.includes('soldier') || c.includes('pma')
+    })
+    const pafList = forcesOnly.filter(q => {
+      const t = (q.title || '').toLowerCase()
+      return t.includes('pilot') || t.includes('paf') || t.includes('aeronautical') || t.includes('airmen') || t.includes('air defence') || t.includes('admin') || t.includes('air')
+    })
+    const navyList = forcesOnly.filter(q => {
+      const t = (q.title || '').toLowerCase()
+      return t.includes('pn-cadet') || t.includes('navy') || t.includes('sailor') || t.includes('marines') || t.includes('ssc')
+    })
+
+    // Pick 2 Army, 2 PAF, 2 Navy (or fill from rest if needed)
+    const curated: any[] = []
+    const usedIds = new Set<string>()
+
+    const addToCurated = (list: any[], count: number) => {
+      let added = 0
+      for (const q of list) {
+        if (!usedIds.has(q.id) && added < count) {
+          curated.push(q)
+          usedIds.add(q.id)
+          added++
+        }
+      }
+    }
+
+    addToCurated(armyList, 2)
+    addToCurated(pafList, 2)
+    addToCurated(navyList, 2)
+    
+    // If still less than 6, fill with any remaining forces quizzes
+    if (curated.length < 6) {
+      addToCurated(forcesOnly, 6 - curated.length)
+    }
+
+    quizzes = curated
 
   } catch (err: any) {
     console.error('Home Page Data Fetching Error:', err)
@@ -41,7 +129,6 @@ export default async function HomePage() {
       
       {/* ── HERO SECTION (Ultra Premium Dark Suite) ───────────────────────── */}
       <section className="relative overflow-hidden bg-[#0A192F] py-20 sm:py-28 text-white border-b border-[#112240] shadow-2xl">
-        {/* Background Ambient Glows */}
         <div className="absolute top-0 -left-40 w-96 h-96 bg-[#B8212E]/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
         <div className="absolute bottom-0 right-0 w-[32rem] h-[32rem] bg-[#D4AF37]/15 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -124,8 +211,7 @@ export default async function HomePage() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F] via-transparent to-transparent opacity-90"></div>
 
-                  {/* Floating Live Badge Overlay 1 */}
-                  <div className="absolute top-6 right-6 bg-[#0A192F]/90 border border-white/20 p-3.5 rounded-2xl shadow-xl backdrop-blur-md flex items-center gap-3 animate-float">
+                  <div className="absolute top-6 right-6 bg-[#0A192F]/90 border border-white/20 p-3.5 rounded-2xl shadow-xl backdrop-blur-md flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-extrabold text-xs">
                       ✔
                     </div>
@@ -135,7 +221,6 @@ export default async function HomePage() {
                     </div>
                   </div>
 
-                  {/* Floating Live Badge Overlay 2 */}
                   <div className="absolute bottom-6 left-6 right-6 bg-[#112240]/95 border border-white/20 p-4 rounded-2xl shadow-2xl backdrop-blur-md flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-2xl bg-[#B8212E] flex items-center justify-center text-white shrink-0 shadow-md">
@@ -191,7 +276,7 @@ export default async function HomePage() {
         </div>
       )}
 
-      {/* ── LATEST MOCK TESTS SECTION ─────────────────────────────────────── */}
+      {/* ── LATEST ARMED FORCES MOCK TESTS SECTION ────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 pb-4 border-b border-gray-200 gap-4">
           <div>
@@ -201,57 +286,63 @@ export default async function HomePage() {
             <h2 className="text-2xl sm:text-4xl font-black text-gray-900 tracking-tight">
               Featured Preliminary Quizzes
             </h2>
+            <p className="text-gray-500 text-xs sm:text-sm font-medium mt-1">
+              Curated initial intelligence &amp; academic practice tests for Pak Army, Navy &amp; PAF candidates.
+            </p>
           </div>
           <Link 
             href="/prep/armed-forces" 
-            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-black text-[#0A192F] hover:text-[#B8212E] px-4 py-2.5 rounded-xl bg-white border border-gray-300 shadow-sm hover:shadow transition-all uppercase tracking-wider shrink-0"
+            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-black text-[#0A192F] hover:text-[#B8212E] px-5 py-3 rounded-xl bg-white border-2 border-gray-300 shadow-sm hover:shadow transition-all uppercase tracking-wider shrink-0"
           >
-            Explore All Exam Categories <ArrowRight className="w-4 h-4" />
+            Explore All Forces Tests <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
         {quizzes.length === 0 ? (
           <div className="py-16 bg-white border-2 border-dashed border-gray-200 rounded-3xl flex flex-col items-center justify-center text-gray-400 text-sm font-semibold">
             <BookOpen className="w-12 h-12 text-gray-300 mb-2" />
-            No mock tests published yet. Check back shortly!
+            No forces mock tests published yet. Check back shortly!
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {quizzes.map(quiz => (
-              <div 
-                key={quiz.id} 
-                className="bg-white border border-gray-200/90 p-6 rounded-3xl shadow-sm hover:shadow-xl hover:border-[#B8212E]/40 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
-              >
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <div className="w-10 h-10 rounded-2xl bg-rose-50 text-[#B8212E] flex items-center justify-center shrink-0 group-hover:bg-[#B8212E] group-hover:text-white transition-colors">
-                      <FileText className="w-5 h-5" />
+            {quizzes.map(quiz => {
+              const { displayTitle, badge, colorClass } = formatQuizDisplay(quiz.title, quiz.category);
+              return (
+                <div 
+                  key={quiz.id} 
+                  className="bg-white border border-gray-200/90 p-6 rounded-3xl shadow-sm hover:shadow-xl hover:border-[#B8212E]/40 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
+                >
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <div className="w-10 h-10 rounded-2xl bg-rose-50 text-[#B8212E] flex items-center justify-center shrink-0 group-hover:bg-[#B8212E] group-hover:text-white transition-colors shadow-sm">
+                        <FileText className="w-5 h-5" />
+                      </div>
+                      <span className={`text-[10px] font-black uppercase tracking-wider border px-3 py-1 rounded-full ${colorClass}`}>
+                        {badge}
+                      </span>
                     </div>
-                    <span className="text-[10px] font-black uppercase tracking-wider bg-slate-100 border border-slate-200 text-slate-700 px-3 py-1 rounded-full">
-                      {quiz.category || 'General Prep'}
-                    </span>
+                    <h3 className="font-extrabold text-gray-900 text-lg sm:text-xl leading-snug group-hover:text-[#B8212E] transition-colors">
+                      {displayTitle}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-gray-500 leading-relaxed font-medium line-clamp-2">
+                      {quiz.description || 'Attempt this timed mock examination to evaluate your speed, accuracy, and concepts for preliminary selection.'}
+                    </p>
                   </div>
-                  <h3 className="font-extrabold text-gray-900 text-lg sm:text-xl leading-snug group-hover:text-[#B8212E] transition-colors">
-                    {quiz.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-gray-500 leading-relaxed font-medium line-clamp-2">
-                    {quiz.description || 'Attempt this timed mock examination to test your knowledge and preparation levels.'}
-                  </p>
-                </div>
 
-                <div className="pt-6 border-t border-gray-100 mt-4 flex items-center justify-between">
-                  <span className="text-xs font-extrabold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md">
-                    ⚡ Instant Result
-                  </span>
-                  <Link
-                    href={`/prep/quiz/${quiz.id}`}
-                    className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 bg-[#0A192F] hover:bg-[#B8212E] text-white font-black rounded-xl text-xs shadow-md transition-all uppercase tracking-wider"
-                  >
-                    Attempt Test <ArrowRight className="w-4 h-4" />
-                  </Link>
+                  <div className="pt-6 border-t border-gray-100 mt-4 flex items-center justify-between">
+                    <span className="text-xs font-extrabold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md">
+                      ⚡ Instant Result
+                    </span>
+                    <Link
+                      href={`/prep/quiz/${quiz.id}`}
+                      className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 bg-[#0A192F] hover:bg-[#B8212E] text-white font-black rounded-xl text-xs shadow-md transition-all uppercase tracking-wider active:scale-95"
+                    >
+                      Attempt Test <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>
@@ -313,7 +404,7 @@ export default async function HomePage() {
           </div>
           <Link 
             href="/software" 
-            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-black text-white bg-violet-600 hover:bg-violet-700 px-4 py-2.5 rounded-xl shadow-md transition-all uppercase tracking-wider shrink-0"
+            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-black text-white bg-violet-600 hover:bg-violet-700 px-5 py-3 rounded-xl shadow-md transition-all uppercase tracking-wider shrink-0"
           >
             Browse Full Software Library <ArrowRight className="w-4 h-4" />
           </Link>

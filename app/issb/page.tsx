@@ -647,54 +647,70 @@ export default function ISSBPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {[
-              { title: "Engineer Yasin ISSB Prep - WAT Real-Time Battery", category: "15 Complete Online Tests", desc: "Official projector room practice! Attempt all 15 sets (1,500 words) with automatic 10s word projections and loud 9th-second audio buzzer.", icon: Brain, type: "Online Battery", href: "/issb/wat" },
-              { title: "Solved WAT (Word Association Test) Notes", category: "Psychology Practice", desc: "500+ Solved positive sentences and practice stimulus words to train your mental reflexes before taking online battery.", icon: Brain, type: "PDF Notes", link: "https://wa.me/923116826552?text=Hello%20Engineer%20Yasin,%20please%20send%20me%20Free%20Solved%20WAT%20Notes!" },
-              { title: "SCT (Sentence Completion) Urdu & Eng", category: "Psychology Practice", desc: "Complete guidelines on how to structure unfinished sentences with optimism and officer qualities.", icon: Brain, type: "PDF Notes", link: "https://wa.me/923116826552?text=Hello%20Engineer%20Yasin,%20please%20send%20me%20Free%20SCT%20Practice%20Sheet!" },
-              { title: "GTO Group Discussion Topics 2026", category: "GTO Tasks Prep", desc: "Most expected national and international analytical topics for leaderless GD batches.", icon: Users, type: "Topic Bank", link: "https://wa.me/923116826552?text=Hello%20Engineer%20Yasin,%20please%20send%20me%20Free%20GD%20Topics%20list!" },
-              { title: "Bio-Data Form Sample & Guide", category: "Interview & Bio-Data", desc: "Learn how to fill your PBOR/Officer Bio-data form without self-contradiction or red flags.", icon: UserCheck, type: "Sample Form", link: "https://wa.me/923116826552?text=Hello%20Engineer%20Yasin,%20please%20send%20me%20Free%20Bio-Data%20Sample%20Form!" },
-              { title: "Verbal & Non-Verbal Intelligence Mocks", category: "Day 1 Initial Prep", desc: "Online timed test batteries to maximize your score in screening intelligence exams.", icon: Target, type: "Online Test", href: "/prep/armed-forces" },
-              { title: "Picture Story Writing (TAT) Album", category: "Psychology Practice", desc: "High-resolution picture prompts with hero-oriented problem resolution story writing formats.", icon: BookOpen, type: "Photo Album", link: "https://wa.me/923116826552?text=Hello%20Engineer%20Yasin,%20please%20send%20me%20Free%20TAT%20Pictures%20Album!" },
+              // ── Psychology Assessment Battery ──
+              { title: "Word Association Test (WAT)", category: "Psychology Test", desc: "Attempt all 15 real-time practice sets (1,500 words) with 10s automatic projection & 9th-second audio alarm.", icon: Brain, isReady: true, href: "/issb/wat" },
+              { title: "Sentence Completion Test (Urdu)", category: "Psychology Test", desc: "Official incomplete Urdu stimulus sentences to train positive subconscious thought patterns and courage.", icon: Brain, isReady: false },
+              { title: "Sentence Completion Test (Eng)", category: "Psychology Test", desc: "Structured incomplete English phrases for testing optimism and emotional resilience under pressure.", icon: Brain, isReady: false },
+              { title: "Picture Story Writing (TAT)", category: "Psychology Test", desc: "Thematic Apperception Test picture prompts for developing constructive hero-oriented action narratives.", icon: BookOpen, isReady: false },
+              { title: "Pointer Story Writing", category: "Psychology Test", desc: "Merit-Demerit assessment and open-ended scenario writing to evaluate candidates' moral resolution.", icon: BookOpen, isReady: false },
+              { title: "Self-Description (SD) & Peer Rating", category: "Psychology Test", desc: "Comprehensive templates for parent, teacher, friend, enemy, and personal self-evaluation profiles.", icon: UserCheck, isReady: false },
+              
+              // ── GTO Outdoor & Indoor Tasks ──
+              { title: "Group Discussion (GD) Topics", category: "GTO Indoor Task", desc: "Current national, social, and global analytical discussion topics for leaderless group assessments.", icon: Users, isReady: false },
+              { title: "Group Planning Exercise (GPE)", category: "GTO Indoor Task", desc: "Tactical military ground maps with practical problem prioritization and resource management solutions.", icon: Target, isReady: false },
+              { title: "Progressive Group Task (PGT)", category: "GTO Outdoor Task", desc: "Complete ground rule guide (Colour, Rigidity, Distance rules) with helping material bridging tactics.", icon: Users, isReady: false },
+              { title: "Half Group Task (HGT)", category: "GTO Outdoor Task", desc: "Sub-group execution strategies where fewer candidates allow GTO to observe individual initiative closely.", icon: Users, isReady: false },
+              { title: "Command Task (CT)", category: "GTO Outdoor Task", desc: "Commander leadership execution, subordinate management, and briefing techniques under strict time limits.", icon: Award, isReady: false },
+              { title: "Individual Obstacles (IO) Course", category: "GTO Outdoor Task", desc: "Techniques and stamina pacing for ditch jump, zigzag, tarzan swing, high tea, balance, and tiger leap.", icon: Target, isReady: false },
+              { title: "Group Obstacle Race (Snake Race)", category: "GTO Outdoor Task", desc: "High-energy teamwork race strategies, war cries, and penalization rule adherence with the python tent.", icon: Users, isReady: false },
+              { title: "Final Group Task (FGT)", category: "GTO Outdoor Task", desc: "Last collaborative test combining all squad members to assess sustained stamina and mutual cooperation.", icon: Users, isReady: false },
+              
+              // ── Deputy President & Bio-Data ──
+              { title: "Personal Information Form (PIF)", category: "DP Assessment", desc: "Flawless bio-data sheet preparation to ensure zero contradictions with psychologist and GTO testing records.", icon: UserCheck, isReady: false },
+              { title: "Deputy President (DP) Interview", category: "DP Assessment", desc: "Real interview questions on military knowledge, current affairs, family background, and stress handling.", icon: Award, isReady: false }
             ].map((item, idx) => {
               const Icon = item.icon;
               return (
-                <div key={idx} className="bg-white border-2 border-gray-200 hover:border-emerald-500 rounded-3xl p-6 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between group">
+                <div key={idx} className="bg-white border border-gray-200 hover:border-emerald-500 rounded-2xl sm:rounded-3xl p-4 sm:p-5 lg:p-6 shadow-sm hover:shadow-lg transition-all duration-200 flex flex-col justify-between group h-full">
                   <div>
-                    <div className="flex items-center justify-between gap-2 mb-4">
-                      <span className="px-2.5 py-1 rounded-md bg-gray-100 text-gray-700 font-extrabold text-[10px] uppercase tracking-wider">
+                    <div className="flex items-center justify-between gap-1.5 mb-3 sm:mb-4">
+                      <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-black text-[9px] sm:text-[10px] uppercase tracking-wider truncate max-w-[130px] sm:max-w-none">
                         {item.category}
                       </span>
-                      <span className="text-[11px] font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                        ✔ FREE
-                      </span>
+                      {item.isReady ? (
+                        <span className="text-[10px] font-black text-emerald-700 bg-emerald-50 border border-emerald-300 px-2 py-0.5 rounded-full flex items-center gap-1 shrink-0">
+                          ⚡ ACTIVE
+                        </span>
+                      ) : (
+                        <span className="text-[9px] font-bold text-gray-400 bg-gray-50 border border-gray-200 px-2 py-0.5 rounded-full shrink-0">
+                          SOON
+                        </span>
+                      )}
                     </div>
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4 border border-emerald-100 group-hover:scale-110 transition-transform">
-                      <Icon className="w-6 h-6" />
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-50/80 text-emerald-700 flex items-center justify-center mb-3 sm:mb-4 border border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-200">
+                      <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
-                    <h3 className="text-lg font-extrabold text-gray-900 group-hover:text-emerald-700 transition-colors mb-2">
+                    <h3 className="text-sm sm:text-base lg:text-lg font-black text-gray-900 group-hover:text-emerald-700 transition-colors mb-1.5 sm:mb-2 leading-snug">
                       {item.title}
                     </h3>
-                    <p className="text-xs sm:text-sm text-gray-500 leading-relaxed mb-6 font-medium">
+                    <p className="text-[11px] sm:text-xs text-gray-500 leading-relaxed mb-4 sm:mb-6 font-medium line-clamp-3">
                       {item.desc}
                     </p>
                   </div>
-                  {item.href ? (
+                  
+                  {item.isReady ? (
                     <Link
-                      href={item.href}
-                      className="w-full py-3 px-4 rounded-xl bg-gray-900 hover:bg-emerald-600 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all uppercase tracking-wider shadow-sm active:scale-95"
+                      href={item.href || '#'}
+                      className="w-full py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl sm:rounded-2xl bg-[#B8212E] hover:bg-[#961a25] active:scale-95 text-white font-black text-[11px] sm:text-xs flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-150 uppercase tracking-wider shadow-md hover:shadow-rose-900/30 shrink-0"
                     >
-                      🚀 Start Practice Now
+                      🚀 Start Practice Now ➔
                     </Link>
                   ) : (
-                    <a
-                      href={item.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs flex items-center justify-center gap-2 transition-all shadow-md uppercase tracking-wider active:scale-95"
-                    >
-                      📥 Get Free on WhatsApp ➔
-                    </a>
+                    <div className="w-full py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl sm:rounded-2xl bg-slate-100 border border-slate-200 text-slate-400 font-extrabold text-[10px] sm:text-[11px] flex items-center justify-center gap-1.5 uppercase tracking-wider cursor-not-allowed select-none shrink-0">
+                      ⏳ Prep Module Coming Soon
+                    </div>
                   )}
                 </div>
               );

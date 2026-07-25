@@ -10,8 +10,9 @@ export default function WhatsappPopup() {
   const whatsappUrl = 'https://chat.whatsapp.com/IzPd4vwXbrjGhAkanhYvTp?s=cl&p=a&ilr=0'
 
   useEffect(() => {
-    // If user is attempting a quiz, never set up or trigger the popup
-    if (pathname?.startsWith('/prep/quiz')) {
+    // If user is attempting a quiz or WAT practice battery, never set up or trigger the popup
+    const isTestOrWat = pathname?.startsWith('/prep/quiz') || pathname?.includes('/wat');
+    if (isTestOrWat) {
       setIsOpen(false)
       return
     }
@@ -31,8 +32,8 @@ export default function WhatsappPopup() {
     }
   }, [pathname])
 
-  // Immediately hide if user navigated to a quiz page while modal was open
-  if (pathname?.startsWith('/prep/quiz')) {
+  // Immediately hide if user navigated to a quiz or WAT page while modal was open
+  if (pathname?.startsWith('/prep/quiz') || pathname?.includes('/wat')) {
     return null
   }
 

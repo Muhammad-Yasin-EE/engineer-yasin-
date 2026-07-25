@@ -20,25 +20,39 @@ export default function WatTestExecutionPage() {
 
   const currentWord: WatWord = testSet.words[currentWordIndex] || testSet.words[0]
 
-  // Web Audio API sharp military buzzer at the 9th second (1 second remaining)
+  // Web Audio API Loud Tactical Alert Siren (Hoshiyar Karne Wali Sound) at the 9th second
   const triggerAlarmBeep = () => {
     if (isMuted) return
     try {
       const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
-      const osc = audioCtx.createOscillator()
-      const gain = audioCtx.createGain()
-      
-      osc.type = 'sawtooth'
-      osc.frequency.setValueAtTime(850, audioCtx.currentTime)
-      osc.frequency.exponentialRampToValueAtTime(1250, audioCtx.currentTime + 0.12)
-      
-      gain.gain.setValueAtTime(0.35, audioCtx.currentTime)
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35)
-      
-      osc.connect(gain)
-      gain.connect(audioCtx.destination)
-      osc.start()
-      osc.stop(audioCtx.currentTime + 0.4)
+      const now = audioCtx.currentTime
+
+      // First loud piercing burst (1000Hz -> 1400Hz)
+      const osc1 = audioCtx.createOscillator()
+      const gain1 = audioCtx.createGain()
+      osc1.type = 'square' // Square wave is much louder, crisper, and commanding than sine/sawtooth
+      osc1.frequency.setValueAtTime(1000, now)
+      osc1.frequency.exponentialRampToValueAtTime(1500, now + 0.15)
+      gain1.gain.setValueAtTime(0.7, now)
+      gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.15)
+      osc1.connect(gain1)
+      gain1.connect(audioCtx.destination)
+      osc1.start(now)
+      osc1.stop(now + 0.16)
+
+      // Second commanding alarm chime (1500Hz -> 2200Hz) after short pause
+      const osc2 = audioCtx.createOscillator()
+      const gain2 = audioCtx.createGain()
+      osc2.type = 'square'
+      osc2.frequency.setValueAtTime(1500, now + 0.2)
+      osc2.frequency.exponentialRampToValueAtTime(2200, now + 0.45)
+      gain2.gain.setValueAtTime(0.8, now + 0.2)
+      gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.45)
+      osc2.connect(gain2)
+      gain2.connect(audioCtx.destination)
+      osc2.start(now + 0.2)
+      osc2.stop(now + 0.46)
+
     } catch (err) {
       console.error('Audio synthesizer error:', err)
     }

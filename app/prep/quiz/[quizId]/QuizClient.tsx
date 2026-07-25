@@ -4,11 +4,12 @@ import React, { useEffect, useState, useRef, use } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { ArrowLeft, Loader2, Award, CheckCircle2, XCircle, ChevronRight, ChevronLeft, RotateCcw, AlertTriangle, Clock, User, ShieldAlert, CheckSquare, Lock, UserPlus, LogIn, Shield, X } from 'lucide-react'
+import { ArrowLeft, Loader2, Award, CheckCircle2, XCircle, ChevronRight, ChevronLeft, RotateCcw, AlertTriangle, Clock, User, ShieldAlert, CheckSquare, Lock, UserPlus, LogIn, Shield, X, MessageCircle } from 'lucide-react'
 
 // Constants
 const QUIZ_TIME_LIMIT_MINUTES = 15
 const MAX_QUESTIONS = 30
+const WHATSAPP_GROUP_LINK = "https://chat.whatsapp.com/IzPd4vwXbrjGhAkanhYvTp?s=cl&p=a&ilr=0"
 
 export default function QuizClient({ params }: { params: Promise<{ quizId: string }> }) {
   const router = useRouter()
@@ -24,6 +25,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
   const [studentName, setStudentName] = useState('')
   const [examStarted, setExamStarted] = useState(false)
   const [showAuthModal, setShowAuthModal] = useState(false)
+  const [showWhatsAppModal, setShowWhatsAppModal] = useState(false)
   const [examState, setExamState] = useState<'intro' | 'active' | 'completed'>('intro')
   
   // Dynamic Limits
@@ -186,25 +188,13 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
       return
     }
 
-    // Check purchase if paid
-    if (quiz.is_paid) {
-      const { data: orders } = await supabase
-        .from('orders')
-        .select('*, order_items(*)')
-        .eq('user_id', user.id)
-        .in('status', ['verified', 'completed'])
+    // All quizzes are completely free now!
+    // Show WhatsApp Community group invitation popup before starting test timer
+    setShowWhatsAppModal(true)
+  }
 
-      let hasPurchased = false
-      if (orders) {
-        hasPurchased = orders.some(o => o.order_items.some((item: any) => item.item_id === quiz.id))
-      }
-
-      if (!hasPurchased) {
-        alert("This is a premium test. You have not purchased it yet. Please add it to your cart and complete the checkout first.")
-        return
-      }
-    }
-
+  const launchExam = () => {
+    setShowWhatsAppModal(false)
     setExamState('active')
     setExamStarted(true)
   }
@@ -605,6 +595,52 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
               to   { opacity: 1; transform: scale(1) translateY(0); }
             }
           `}</style>
+        </div>
+      )}
+
+      {/* WhatsApp Group Join Popup Before Exam */}
+      {showWhatsAppModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-emerald-100 overflow-hidden text-center flex flex-col items-center gap-5">
+            {/* Top WhatsApp Accent Header */}
+            <div className="w-16 h-16 rounded-full bg-emerald-100 border-2 border-emerald-500/20 flex items-center justify-center text-emerald-600 shadow-inner">
+              <MessageCircle className="w-9 h-9 fill-current" />
+            </div>
+
+            <div className="space-y-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 font-extrabold text-[11px] uppercase tracking-wider border border-emerald-200">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Official Study Group
+              </span>
+              <h3 className="text-xl sm:text-2xl font-black text-gray-900 leading-tight">
+                Join Engineer Yasin Official WhatsApp Group!
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-600 font-medium leading-relaxed pt-1">
+                Before starting your mock test, join our official community to get instant updates on <strong>Free Mock Tests, Study Material, Solved MCQs, and PDF Notes</strong> directly on WhatsApp!
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3 w-full pt-2">
+              <a
+                href={WHATSAPP_GROUP_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3.5 px-6 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-extrabold text-sm shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
+              >
+                <MessageCircle className="w-5 h-5 fill-current" /> Join WhatsApp Group Now
+              </a>
+
+              <button
+                onClick={launchExam}
+                className="w-full py-3 px-6 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-extrabold text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer uppercase tracking-wider mt-1 border border-gray-200"
+              >
+                Start Mock Test ➔
+              </button>
+            </div>
+            
+            <p className="text-[11px] font-semibold text-gray-400 italic">
+              *Your timed exam session will start immediately after clicking Start Mock Test.
+            </p>
+          </div>
         </div>
       )}
 

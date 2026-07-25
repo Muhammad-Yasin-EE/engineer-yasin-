@@ -243,38 +243,26 @@ export default function ExamTabs({ info, quizzes, clr }: ExamTabsProps) {
                 {sortedQuizzes.map((quiz, i) => (
                   <div
                     key={quiz.id}
-                    className={`group border rounded-xl p-5 hover:shadow-lg transition-all duration-200 bg-white flex flex-col gap-4 relative overflow-hidden ${
-                      quiz.is_paid ? 'border-gray-200 hover:border-gray-300' : 'border-gray-200 hover:border-[#B8212E]'
-                    }`}
+                    className="group border border-gray-200 hover:border-[#B8212E] rounded-xl p-5 hover:shadow-lg transition-all duration-200 bg-white flex flex-col gap-4 relative overflow-hidden"
                   >
                     {/* Left accent bar */}
-                    <div className={`absolute top-0 left-0 w-1 h-full transition-colors rounded-l-xl ${
-                      quiz.is_paid ? 'bg-gray-100 group-hover:bg-gray-300' : 'bg-gray-100 group-hover:bg-[#B8212E]'
-                    }`} />
+                    <div className="absolute top-0 left-0 w-1 h-full transition-colors rounded-l-xl bg-gray-100 group-hover:bg-[#B8212E]" />
 
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">
                           Test {i + 1}
                         </span>
-                        {quiz.is_paid ? (
-                          <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-md bg-red-50 text-red-600 uppercase">
-                            Paid • {quiz.price} PKR
-                          </span>
-                        ) : (
-                          <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-md bg-green-50 text-green-600 uppercase">
-                            Free
-                          </span>
-                        )}
+                        <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-600 uppercase border border-emerald-200">
+                          100% Free
+                        </span>
                       </div>
                       <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${clr.badge}`}>
                         {info.title}
                       </span>
                     </div>
 
-                    <h3 className={`font-bold text-sm transition-colors line-clamp-2 flex-grow ${
-                      quiz.is_paid ? 'text-gray-700 group-hover:text-gray-900' : 'text-gray-900 group-hover:text-[#B8212E]'
-                    }`}>
+                    <h3 className="font-bold text-sm transition-colors line-clamp-2 flex-grow text-gray-900 group-hover:text-[#B8212E]">
                       {quiz.title}
                     </h3>
 
@@ -284,49 +272,12 @@ export default function ExamTabs({ info, quizzes, clr }: ExamTabsProps) {
                       </p>
                     )}
 
-                    {quiz.is_paid ? (
-                      <div className="flex gap-2 w-full mt-auto">
-                        <button
-                          onClick={() => {
-                            addToCart({
-                              id: quiz.id,
-                              title: quiz.title,
-                              author: 'Engineer Yasin',
-                              price: quiz.price || 0,
-                              cover_url: 'placeholder',
-                              category: quiz.category || 'Premium Mock Test'
-                            })
-                          }}
-                          className="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs font-bold rounded-lg flex items-center justify-center transition-colors uppercase tracking-wider cursor-pointer"
-                          title="Add to Cart"
-                        >
-                          <ShoppingCart className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => {
-                            addToCart({
-                              id: quiz.id,
-                              title: quiz.title,
-                              author: 'Engineer Yasin',
-                              price: quiz.price || 0,
-                              cover_url: 'placeholder',
-                              category: quiz.category || 'Premium Mock Test'
-                            })
-                            router.push('/checkout')
-                          }}
-                          className="flex-[3] py-2.5 bg-[#B8212E] hover:bg-[#A31C28] text-white text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-colors uppercase tracking-wider shadow-sm cursor-pointer"
-                        >
-                          Unlock Now <Lock className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    ) : (
-                      <Link
-                        href={`/prep/quiz/${quiz.id}`}
-                        className="w-full py-2.5 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-colors uppercase tracking-wider mt-auto bg-[#B8212E] hover:bg-[#A31C28] text-white"
-                      >
-                        Start Test <ArrowRight className="w-3.5 h-3.5" />
-                      </Link>
-                    )}
+                    <Link
+                      href={`/prep/quiz/${quiz.id}`}
+                      className="w-full py-2.5 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-colors uppercase tracking-wider mt-auto bg-[#B8212E] hover:bg-[#A31C28] text-white cursor-pointer shadow-sm"
+                    >
+                      Start Test <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
                   </div>
                 ))}
               </div>

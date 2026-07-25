@@ -618,6 +618,35 @@ export default function ISSBPage() {
             </p>
           </div>
 
+          {/* ── ENGINEER YASIN ISSB PREP (REAL-TIME WAT MODULE BANNER) ───────── */}
+          <div className="mb-12 relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#0A192F] via-[#112240] to-[#0A192F] text-white p-8 sm:p-12 border border-[#1d335a] shadow-2xl">
+            <div className="absolute top-0 right-0 w-1/2 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-rose-500/20 via-transparent to-transparent pointer-events-none" />
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
+              <div className="space-y-4 max-w-2xl">
+                <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-black uppercase tracking-widest">
+                  🎖️ Engineer Yasin ISSB Prep • Real-Time Module
+                </span>
+                <h3 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
+                  Real-Time WAT Practice Battery
+                </h3>
+                <p className="text-sm text-gray-300 font-medium leading-relaxed">
+                  Experience authentic projector hall conditions! Attempt <strong className="text-amber-400">15 Complete Sets (1,500 Words)</strong> with automatic 10-second projections, Easy ➔ Hard difficulty sorting, and a sharp audio alarm at the 9th second.
+                </p>
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-1 text-[11px] font-extrabold text-slate-200">
+                  <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">⚡ 10s Timer Per Word</span>
+                  <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">📢 9th Sec Audio Alert</span>
+                  <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">🧠 1,500 Curated Words</span>
+                </div>
+              </div>
+              <Link
+                href="/issb/wat"
+                className="px-8 py-5 bg-[#B8212E] hover:bg-[#961a25] active:scale-95 text-white font-black text-sm uppercase tracking-wider rounded-2xl shadow-2xl transition-all shrink-0 flex items-center justify-center gap-2 border border-rose-400/20 hover:shadow-rose-900/40"
+              >
+                🚀 Start WAT Practice Now ➔
+              </Link>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {[
               { title: "Solved WAT (Word Association Test)", category: "Psychology Practice", desc: "500+ Solved positive sentences and practice stimulus words to train your mental reflexes.", icon: Brain, type: "PDF Notes", link: "https://wa.me/923116826552?text=Hello%20Engineer%20Yasin,%20please%20send%20me%20Free%20Solved%20WAT%20Notes!" },

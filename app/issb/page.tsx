@@ -8,7 +8,7 @@ import { createClient } from '@/lib/supabase/client';
 import {
   ArrowRight, Brain, Users, UserCheck, ChevronRight,
   CheckCircle2, AlertCircle, Lightbulb, Shield, Target, Clock, BookOpen,
-  GraduationCap, Sparkles, MessageCircle, Phone, Lock, ShieldAlert, X, Check
+  GraduationCap, Sparkles, MessageCircle, Phone, Lock, ShieldAlert, X, Check, Award, FileText, Zap
 } from 'lucide-react';
 
 // ─── Dimension Data ──────────────────────────────────────────────────────────

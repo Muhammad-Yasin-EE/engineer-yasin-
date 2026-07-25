@@ -240,7 +240,7 @@ export default function IssbCoachingPage() {
                   
                   {/* WhatsApp Option */}
                   <a 
-                    href={`https://wa.me/923342806970?text=${encodeURIComponent(selectedProgram.whatsappText)}`}
+                    href={`https://wa.me/923116826552?text=${encodeURIComponent(selectedProgram.whatsappText)}`}
                     target="_blank"
                     rel="noreferrer"
                     className="flex items-center justify-between p-4 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl transition-all group/contact"

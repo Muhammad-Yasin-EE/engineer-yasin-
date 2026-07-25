@@ -88,9 +88,9 @@ export default function Footer() {
                 <Mail className="w-4 h-4 text-rose-500 shrink-0" />
                 <span className="truncate">yasinofficial03098158572@gmail.com</span>
               </a>
-              <a href="https://wa.me/923342806970" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-emerald-600 transition-colors">
+              <a href="https://wa.me/923116826552" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-emerald-600 transition-colors">
                 <MessageCircle className="w-4 h-4 text-emerald-500 shrink-0" />
-                <span>WhatsApp: +923342806970</span>
+                <span>WhatsApp: +92 311 6826552</span>
               </a>
               <a href="tel:+923098158572" className="flex items-center gap-2 hover:text-blue-600 transition-colors">
                 <Phone className="w-4 h-4 text-blue-500 shrink-0" />

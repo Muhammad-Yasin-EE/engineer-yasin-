@@ -99,7 +99,7 @@ export default async function ServicesPage({ searchParams }: { searchParams: Pro
               Have a unique requirement? Tell us exactly what you need built or designed.
             </p>
             <a 
-              href="https://wa.me/923342806970?text=Hi,%20I%20want%20to%20request%20a%20Custom%20Order%20for%20a%20project." 
+              href="https://wa.me/923116826552?text=Hi,%20I%20want%20to%20request%20a%20Custom%20Order%20for%20a%20project." 
               target="_blank" 
               rel="noreferrer"
               className="inline-block w-full text-center px-4 py-2 bg-white text-[#B8212E] text-xs font-bold shadow-sm hover:shadow-md hover:bg-gray-50 transition-all"

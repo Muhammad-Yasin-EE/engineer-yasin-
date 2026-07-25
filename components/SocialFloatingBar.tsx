@@ -131,7 +131,7 @@ export default function SocialFloatingBar() {
       <div className="fixed bottom-6 right-3 sm:right-6 z-50 flex flex-col items-center">
         <span className="absolute inline-flex h-11 w-11 rounded-full bg-[#B8212E]/20 animate-ping z-0" />
         <a
-          href="https://wa.me/923342806970?text=Hello%2C%20I%20need%20help!"
+          href="https://wa.me/923116826552?text=Hello%2C%20I%20need%20help!"
           target="_blank"
           rel="noopener noreferrer"
           title="Need Help? Chat with us on WhatsApp!"

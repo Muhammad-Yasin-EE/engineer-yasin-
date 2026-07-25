@@ -1,7 +1,8 @@
 'use client'
 
+import React, { useState } from 'react'
 import AuthGateButton from '@/components/AuthGateButton'
-import { Book, GraduationCap, Briefcase, Download, Hammer, PlayCircle } from 'lucide-react'
+import { Book, GraduationCap, Briefcase, Download, Hammer, PlayCircle, MessageCircle, X } from 'lucide-react'
 
 interface BookCardProps {
   id: string
@@ -15,6 +16,9 @@ interface BookCardProps {
 }
 
 export default function BookCard({ id, title, author, category, type, price, cover_url, resource_type = 'book' }: BookCardProps) {
+  const [showSoftwareModal, setShowSoftwareModal] = useState(false)
+  const [hasClickedJoin, setHasClickedJoin] = useState(false)
+
   const hasCover = cover_url && !cover_url.includes('placeholder') && !cover_url.includes('covers/')
   
   const getGradientClass = (titleStr: string) => {
@@ -89,7 +93,6 @@ export default function BookCard({ id, title, author, category, type, price, cov
                   onError={(e) => {
                     const img = e.currentTarget;
                     if (!img.src.includes('ui-avatars.com')) {
-                      // Final reliable fallback: A colorful letter-based logo of the app's title
                       const cleanTitle = encodeURIComponent(title.substring(0, 15));
                       img.src = `https://ui-avatars.com/api/?name=${cleanTitle}&background=random&color=fff&size=256&font-size=0.4&bold=true`;
                     }
@@ -99,83 +102,200 @@ export default function BookCard({ id, title, author, category, type, price, cov
             </div>
           ) : (
             <img
-              src={cover_url || ''}
+              src={cover_url}
               alt={title}
               loading="lazy"
-              className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-300"
+              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+              onError={(e) => {
+                const img = e.currentTarget;
+                if (!img.src.includes('ui-avatars.com')) {
+                  const cleanTitle = encodeURIComponent(title.substring(0, 15));
+                  img.src = `https://ui-avatars.com/api/?name=${cleanTitle}&background=random&color=fff&size=256&font-size=0.4&bold=true`;
+                }
+              }}
             />
           )
         ) : (
-          <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br ${
-            resource_type === 'scholarship' ? 'from-emerald-500 to-teal-600' :
-            resource_type === 'job' ? 'from-blue-500 to-indigo-600' :
-            resource_type === 'software' ? 'from-violet-500 to-purple-655' :
-            resource_type === 'service' ? 'from-amber-500 to-orange-600' :
-            resource_type === 'course' ? 'from-teal-500 to-cyan-600' : 'from-[#B8212E] to-rose-700'
-          } relative overflow-hidden`}>
-            {/* Tech grid dot pattern */}
-            <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
-            
-            {/* Centered glassmorphism icon container */}
-            <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-md flex items-center justify-center transform group-hover:scale-108 group-hover:rotate-2 transition-all duration-300 z-10">
-              {resource_type === 'scholarship' ? <GraduationCap className="w-7 h-7 text-white" /> :
-               resource_type === 'job' ? <Briefcase className="w-7 h-7 text-white" /> :
-               resource_type === 'software' ? <Download className="w-7 h-7 text-white" /> :
-               resource_type === 'service' ? <Hammer className="w-7 h-7 text-white" /> :
-               resource_type === 'course' ? <PlayCircle className="w-7 h-7 text-white" /> : <Book className="w-7 h-7 text-white" />}
+          <div className={`w-full h-full p-6 flex flex-col justify-between bg-gradient-to-br ${getGradientClass(title)} select-none`}>
+            <div className="flex items-center justify-between opacity-80">
+              {getResourceIcon()}
+              <span className="text-[10px] uppercase tracking-widest font-mono font-bold">Portal Reference</span>
             </div>
-
-            {/* Subtle branding coordinates */}
-            <div className="absolute bottom-3 left-4 right-4 flex justify-between items-center text-[7px] font-mono tracking-wider text-white/40 uppercase z-10 select-none">
-              <span className="truncate max-w-[80px]">{category}</span>
-              <span>Yasin Portal</span>
+            
+            <div className="my-auto py-2">
+              <h3 className="font-serif text-lg font-bold tracking-tight leading-snug line-clamp-3 mb-1">
+                {title}
+              </h3>
+              <p className="text-xs font-sans opacity-80 line-clamp-1 italic">
+                {author}
+              </p>
+            </div>
+            
+            <div className="border-t border-white/20 pt-2 flex items-center justify-between text-[10px] font-mono opacity-80">
+              <span className="truncate max-w-[120px]">{category}</span>
+              <span>Yasin Edition</span>
             </div>
           </div>
         )}
       </div>
 
-      {/* Details Footer */}
-      <div className="p-4 flex flex-col flex-grow">
-        <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1 truncate">
-          {category}
-        </span>
-        <h4 className="font-semibold text-gray-800 group-hover:text-[#B8212E] transition-colors line-clamp-1 text-sm sm:text-base mb-1">
-          {title}
-        </h4>
-        <p className="text-xs text-gray-500 mb-3 truncate">
-          {resource_type === 'job' ? 'Company: ' : resource_type === 'scholarship' ? 'Host: ' : 'Author: '}
-          <span className="font-semibold">{author}</span>
-        </p>
+      {/* Content Meta Container */}
+      <div className="p-5 flex-grow flex flex-col justify-between bg-white">
+        <div>
+          <div className="flex items-center justify-between text-xs text-gray-500 mb-1.5 font-semibold">
+            <span className="text-[#B8212E] uppercase font-bold text-[10px] tracking-wider truncate max-w-[150px]">
+              {category}
+            </span>
+          </div>
+          <h4 className="font-bold text-gray-900 group-hover:text-[#B8212E] transition-colors line-clamp-2 text-sm sm:text-base mb-1.5">
+            {title}
+          </h4>
+          <p className="text-xs text-gray-500 mb-3 truncate">
+            {resource_type === 'job' ? 'Company: ' : resource_type === 'scholarship' ? 'Host: ' : 'Author: '}
+            <span className="font-bold text-gray-700">{author}</span>
+          </p>
+        </div>
 
         {/* Price layout */}
         {resource_type !== 'scholarship' && resource_type !== 'job' && (
           <div className="mb-4">
             {type === 'free' ? (
-              <span className="text-sm sm:text-base font-bold text-emerald-600">
+              <span className="text-sm sm:text-base font-extrabold text-emerald-600">
                 Rs. 0 (Free)
               </span>
             ) : (
-              <>
-                <span className="text-sm sm:text-base font-bold text-[#B8212E]">
-                  Rs. {price.toFixed(0)}
+              <div className="flex items-center gap-2">
+                <span className="text-sm sm:text-base font-extrabold text-[#B8212E]">
+                  Rs. {price > 0 ? price.toFixed(0) : 'Free'}
                 </span>
-                <span className="text-xs text-gray-450 line-through ml-2 font-medium">
-                  Rs. {(price * 1.4).toFixed(0)}
-                </span>
-              </>
+                {price > 0 && (
+                  <span className="text-xs text-gray-400 line-through font-medium">
+                    Rs. {(price * 1.4).toFixed(0)}
+                  </span>
+                )}
+              </div>
             )}
           </div>
         )}
 
-        {/* Action Button — gated behind auth */}
-        <AuthGateButton
-          href={`/items/${id}`}
-          label={getActionButtonText()}
-          className="mt-auto w-full inline-flex items-center justify-center px-4 py-2 rounded-full text-xs font-bold border border-[#B8212E] text-[#B8212E] group-hover:bg-[#B8212E] group-hover:text-white transition-all duration-200 disabled:opacity-60 disabled:cursor-wait"
-        >
-          {getActionButtonText()}
-        </AuthGateButton>
+        {/* Action Button */}
+        {resource_type === 'software' || resource_type === 'apk' ? (
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              setShowSoftwareModal(true);
+            }}
+            className="mt-auto w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-xs font-extrabold bg-[#B8212E] hover:bg-[#961a25] text-white transition-all duration-200 shadow-sm cursor-pointer active:scale-95"
+          >
+            <Download className="w-3.5 h-3.5" /> {getActionButtonText()}
+          </button>
+        ) : (
+          <AuthGateButton
+            href={`/items/${id}`}
+            label={getActionButtonText()}
+            className="mt-auto w-full inline-flex items-center justify-center px-4 py-2 rounded-full text-xs font-bold border border-[#B8212E] text-[#B8212E] group-hover:bg-[#B8212E] group-hover:text-white transition-all duration-200 disabled:opacity-60 disabled:cursor-wait"
+          >
+            {getActionButtonText()}
+          </AuthGateButton>
+        )}
       </div>
+
+      {/* 2-Step WhatsApp Download Verification Modal for Software */}
+      {showSoftwareModal && (
+        <div 
+          className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowSoftwareModal(false) }}
+        >
+          <div className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-emerald-100 overflow-hidden text-center flex flex-col items-center gap-5">
+            <button
+              onClick={() => setShowSoftwareModal(false)}
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 transition-colors cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            {/* Header Icon */}
+            <div className="w-16 h-16 rounded-full bg-emerald-100 border-2 border-emerald-500/20 flex items-center justify-center text-emerald-600 shadow-inner">
+              <MessageCircle className="w-9 h-9 fill-current" />
+            </div>
+
+            <div className="space-y-1.5">
+              <span className="inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-extrabold text-[10px] uppercase tracking-wider border border-emerald-200">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Direct WhatsApp Delivery
+              </span>
+              <h3 className="text-lg sm:text-xl font-black text-gray-900 leading-tight">
+                Download {title}
+              </h3>
+              <p className="text-xs text-gray-600 font-medium leading-relaxed">
+                To receive instant software files, license updates, and usage guides, please follow this simple 2-step process:
+              </p>
+            </div>
+
+            {/* Steps Container */}
+            <div className="w-full flex flex-col gap-3 pt-1 text-left">
+              
+              {/* Step 1 Box */}
+              <div className={`p-4 rounded-2xl border-2 transition-all duration-300 ${hasClickedJoin ? 'bg-emerald-50/60 border-emerald-300' : 'bg-white border-emerald-500 shadow-md'}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-black text-emerald-800 uppercase tracking-wider flex items-center gap-1.5">
+                    Step 1: Join Community Group
+                  </span>
+                  {hasClickedJoin ? (
+                    <span className="text-[11px] font-extrabold text-emerald-600">✔ Joined</span>
+                  ) : (
+                    <span className="text-[10px] font-bold text-rose-500 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">Required First</span>
+                  )}
+                </div>
+                <a
+                  href="https://chat.whatsapp.com/IzPd4vwXbrjGhAkanhYvTp?s=cl&p=a&ilr=0"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setHasClickedJoin(true)}
+                  className="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-black text-xs sm:text-sm shadow transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider text-center"
+                >
+                  <MessageCircle className="w-4 h-4 fill-current shrink-0" /> 1. Join WhatsApp Group
+                </a>
+              </div>
+
+              {/* Step 2 Box */}
+              <div className={`p-4 rounded-2xl border transition-all duration-300 ${!hasClickedJoin ? 'bg-gray-50 border-gray-200 opacity-65' : 'bg-white border-emerald-600 shadow-lg'}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-black text-gray-800 uppercase tracking-wider">
+                    Step 2: Request Software
+                  </span>
+                  {hasClickedJoin && (
+                    <span className="text-[11px] font-extrabold text-emerald-600 animate-pulse">🔓 Unlocked</span>
+                  )}
+                </div>
+                {hasClickedJoin ? (
+                  <a
+                    href={`https://wa.me/923116826552?text=${encodeURIComponent(`Assalam o Alikum Engineer Yasin! Mujhe "${title}" software chahiye.`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setShowSoftwareModal(false)}
+                    className="w-full py-3 px-4 rounded-xl bg-[#075E54] hover:bg-[#064e46] text-white font-black text-xs sm:text-sm shadow-md hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider text-center"
+                  >
+                    📥 2. Send Request on WhatsApp ➔
+                  </a>
+                ) : (
+                  <button
+                    disabled
+                    onClick={() => alert("Please click Step 1 button to join the WhatsApp group first!")}
+                    className="w-full py-3 px-4 rounded-xl bg-gray-200 text-gray-500 font-bold text-xs flex items-center justify-center gap-1.5 cursor-not-allowed uppercase tracking-wider"
+                  >
+                    🔒 Click Step 1 Above to Unlock
+                  </button>
+                )}
+              </div>
+
+            </div>
+
+            <p className="text-[10px] font-semibold text-gray-400 italic">
+              *Once you click Step 2, you will be redirected to Engineer Yasin directly with your requested software name!
+            </p>
+          </div>
+        </div>
+      )}
 
     </div>
   )

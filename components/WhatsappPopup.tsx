@@ -1,88 +1,113 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { X, MessageSquare } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
+import { MessageCircle, X, Sparkles, Users, Bell } from 'lucide-react'
 
 export default function WhatsappPopup() {
+  const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
-  const whatsappUrl = process.env.NEXT_PUBLIC_WHATSAPP_GROUP_URL || 'https://chat.whatsapp.com/GzB2X8wN2dD3B6Z8j9u9d9'
+  const whatsappUrl = 'https://chat.whatsapp.com/IzPd4vwXbrjGhAkanhYvTp?s=cl&p=a&ilr=0'
 
   useEffect(() => {
-    // Client-side only safety check
-    if (typeof window !== 'undefined' && localStorage.getItem('hasJoinedWhatsapp') === 'true') {
+    // If user is attempting a quiz, never set up or trigger the popup
+    if (pathname?.startsWith('/prep/quiz')) {
+      setIsOpen(false)
       return
     }
 
-    // Check and trigger every 20 seconds
-    const interval = setInterval(() => {
-      if (localStorage.getItem('hasJoinedWhatsapp') === 'true') {
-        clearInterval(interval)
-        return
-      }
+    // Trigger every 90 seconds (1.5 minutes) across the website
+    const initialTimeout = setTimeout(() => {
       setIsOpen(true)
-    }, 20000)
+    }, 45000)
 
-    return () => clearInterval(interval)
-  }, [])
+    const interval = setInterval(() => {
+      setIsOpen(true)
+    }, 90000) // 90 seconds = 1.5 minutes
 
-  const handleJoinClick = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('hasJoinedWhatsapp', 'true')
+    return () => {
+      clearTimeout(initialTimeout)
+      clearInterval(interval)
     }
-    setIsOpen(false)
+  }, [pathname])
+
+  // Immediately hide if user navigated to a quiz page while modal was open
+  if (pathname?.startsWith('/prep/quiz')) {
+    return null
   }
 
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 transform scale-100 transition-all duration-300 animate-slide-up">
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+      <div className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-emerald-200 overflow-hidden text-center flex flex-col items-center gap-5 transform scale-100 transition-all">
         
-        {/* WhatsApp Brand Banner */}
-        <div className="bg-[#25D366] px-6 py-8 text-white relative">
-          <button 
-            onClick={() => setIsOpen(false)}
-            className="absolute top-4 right-4 text-white/80 hover:text-white bg-black/10 hover:bg-black/20 p-1.5 rounded-full transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-          
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md">
-              <MessageSquare className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-white/70">Official Community</span>
-              <h3 className="text-xl font-bold">Join Engineer Yasin</h3>
-            </div>
-          </div>
+        {/* Close Button */}
+        <button
+          onClick={() => setIsOpen(false)}
+          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-rose-100 text-gray-500 hover:text-rose-600 flex items-center justify-center transition-colors cursor-pointer"
+          title="Close message"
+        >
+          <X className="w-4 h-4" />
+        </button>
+
+        {/* Animated Accent Background Circles */}
+        <div className="absolute -top-12 -left-12 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
+
+        {/* WhatsApp Icon Badge */}
+        <div className="relative z-10 w-16 h-16 rounded-full bg-gradient-to-tr from-[#25D366] to-emerald-700 flex items-center justify-center text-white shadow-lg animate-bounce-subtle">
+          <MessageCircle className="w-9 h-9 fill-current" />
         </div>
 
-        {/* Popup Contents */}
-        <div className="p-6 space-y-4">
-          <p className="text-sm text-gray-600 leading-relaxed font-medium">
-            Hamare official **WhatsApp Group** ko join karein taake aap ko latest Updates, Software Free keys, Ebooks, aur new Courses ki alerts foran milti rahein!
+        <div className="relative z-10 space-y-2">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 font-extrabold text-[11px] uppercase tracking-wider border border-emerald-200">
+            <span className="w-2 h-2 rounded-full bg-[#25D366] animate-ping" /> Live Community Alert
+          </span>
+          <h3 className="text-xl sm:text-2xl font-black text-gray-900 leading-tight">
+            Join Engineer Yasin Official Group!
+          </h3>
+          <p className="text-xs sm:text-sm text-gray-600 font-medium leading-relaxed pt-1">
+            Don&apos;t miss out! Get instant updates on <strong>FREE Mock Tests, Solved Past Papers, ISSB Guidance, and Premium Software</strong> directly on your WhatsApp!
           </p>
+        </div>
 
-          <div className="pt-2 flex flex-col gap-2">
-            <a 
-              href={whatsappUrl}
-              target="_blank"
-              rel="noreferrer"
-              onClick={handleJoinClick}
-              className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-full bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-sm shadow-md transition-all hover:scale-102 active:scale-98"
-            >
-              <MessageSquare className="w-4 h-4" />
-              Join WhatsApp Group
-            </a>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="w-full py-2.5 text-xs text-gray-400 hover:text-gray-600 font-bold transition-colors"
-            >
-              No thanks, close
-            </button>
+        {/* Feature Tags */}
+        <div className="relative z-10 grid grid-cols-2 gap-2 w-full text-left text-[11px] font-bold text-gray-700 bg-gray-50 p-3 rounded-2xl border border-gray-100">
+          <div className="flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" /> Free Test Series
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Users className="w-3.5 h-3.5 text-blue-500 shrink-0" /> ISSB Discussion
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Bell className="w-3.5 h-3.5 text-emerald-500 shrink-0" /> Daily MCQ Notes
+          </div>
+          <div className="flex items-center gap-1.5">
+            <MessageCircle className="w-3.5 h-3.5 text-[#25D366] shrink-0" /> Direct Support
           </div>
         </div>
+
+        {/* Buttons */}
+        <div className="relative z-10 flex flex-col gap-2.5 w-full pt-1">
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setIsOpen(false)}
+            className="w-full py-3.5 px-6 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-black text-sm shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider active:scale-[0.98]"
+          >
+            <MessageCircle className="w-5 h-5 fill-current shrink-0" /> Join WhatsApp Group Now
+          </a>
+
+          <button
+            onClick={() => setIsOpen(false)}
+            className="w-full py-2.5 px-4 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 font-extrabold text-xs transition-colors uppercase tracking-wider"
+          >
+            Maybe Later / Close ✕
+          </button>
+        </div>
+
       </div>
     </div>
   )

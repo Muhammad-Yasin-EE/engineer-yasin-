@@ -22,7 +22,7 @@ export default function PrepDashboard() {
       </div>
 
       {/* Main Categories Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 max-w-xl mx-auto gap-8">
         
         {/* Armed Forces */}
         <div className="bg-[#f8fafc] border border-gray-200 p-6 sm:p-8 rounded-md flex flex-col items-center text-center hover:border-emerald-600 hover:shadow-md transition-all duration-200 group relative overflow-hidden">
@@ -42,7 +42,7 @@ export default function PrepDashboard() {
           </Link>
         </div>
 
-        {/* Public Service */}
+        {/* TEMPORARILY HIDDEN BY USER REQUEST - DO NOT DELETE
         <div className="bg-[#f8fafc] border border-gray-200 p-6 sm:p-8 rounded-md flex flex-col items-center text-center hover:border-blue-600 hover:shadow-md transition-all duration-200 group relative overflow-hidden">
           <div className="absolute top-0 w-full h-1 bg-blue-600"></div>
           <div className="w-16 h-16 bg-white border border-gray-200 rounded-md flex items-center justify-center mb-6 group-hover:bg-blue-50 transition-colors">
@@ -60,7 +60,6 @@ export default function PrepDashboard() {
           </Link>
         </div>
 
-        {/* Entry Tests */}
         <div className="bg-[#f8fafc] border border-gray-200 p-6 sm:p-8 rounded-md flex flex-col items-center text-center hover:border-amber-500 hover:shadow-md transition-all duration-200 group relative overflow-hidden">
           <div className="absolute top-0 w-full h-1 bg-amber-500"></div>
           <div className="w-16 h-16 bg-white border border-gray-200 rounded-md flex items-center justify-center mb-6 group-hover:bg-amber-50 transition-colors">
@@ -77,6 +76,7 @@ export default function PrepDashboard() {
             Explore Entry Tests <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
+        */}
 
       </div>
 

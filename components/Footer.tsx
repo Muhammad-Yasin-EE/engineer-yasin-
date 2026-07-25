@@ -52,6 +52,7 @@ export default function Footer() {
                   Armed Forces
                 </Link>
               </li>
+              {/* TEMPORARILY HIDDEN BY USER REQUEST
               <li>
                 <Link href="/prep/public-service" className="hover:text-[#B8212E] transition-colors">
                   Public Service
@@ -62,6 +63,7 @@ export default function Footer() {
                   Entry Tests
                 </Link>
               </li>
+              */}
               <li>
                 <Link href="/software" className="hover:text-[#B8212E] transition-colors">
                   Apps & Software

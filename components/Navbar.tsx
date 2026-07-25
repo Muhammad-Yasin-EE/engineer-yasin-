@@ -260,6 +260,7 @@ export default function Navbar() {
               <ShieldAlert className="w-3.5 h-3.5" />
               ISSB
             </Link>
+            {/* TEMPORARILY HIDDEN BY USER REQUEST
             <Link href="/prep/public-service" prefetch={false} className="text-xs font-bold text-gray-600 hover:text-[#B8212E] transition-colors flex items-center gap-1">
               <BookOpen className="w-3.5 h-3.5" />
               Public Service
@@ -268,6 +269,7 @@ export default function Navbar() {
               <GraduationCap className="w-3.5 h-3.5" />
               Entry Tests
             </Link>
+            */}
 
             {/* Standalone Software Link */}
             <Link href="/software" prefetch={false} className="text-xs font-bold text-gray-600 hover:text-[#B8212E] transition-colors flex items-center gap-1">
@@ -527,6 +529,7 @@ export default function Navbar() {
               <ShieldAlert className="w-4 h-4 text-[#B8212E]" /> ISSB
             </Link>
             
+            {/* TEMPORARILY HIDDEN BY USER REQUEST
             <Link href="/prep/public-service" prefetch={false} onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2.5 border-b border-gray-100 flex items-center gap-2 text-gray-600 font-bold">
               <BookOpen className="w-4 h-4 text-[#B8212E]" /> Public Service
             </Link>
@@ -534,6 +537,7 @@ export default function Navbar() {
             <Link href="/prep/entry-tests" prefetch={false} onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2.5 border-b border-gray-100 flex items-center gap-2 text-gray-600 font-bold">
               <GraduationCap className="w-4 h-4 text-[#B8212E]" /> Entry Tests
             </Link>
+            */}
 
             {/* Standalone Software Link */}
             <Link href="/software" prefetch={false} onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2.5 border-b border-gray-100 flex items-center gap-2 text-gray-600 font-bold">

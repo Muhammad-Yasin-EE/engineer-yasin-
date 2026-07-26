@@ -637,12 +637,12 @@ export default function ISSBPage() {
                   Real-Time WAT Practice Battery
                 </h3>
                 <p className="text-sm text-gray-300 font-medium leading-relaxed">
-                  Experience authentic projector hall conditions! Attempt <strong className="text-amber-400">15 Complete Sets (1,500 Words)</strong> with automatic 10-second projections, Easy ➔ Hard difficulty sorting, and a sharp audio alarm at the 9th second.
+                  Experience authentic projector hall conditions! Attempt <strong className="text-amber-400">15 Complete Sets (1,500 Words)</strong> in distraction-free black screen projection with decorative white borders, top-right academy logo, and an authentic Air Horn hooter sound on every word transition.
                 </p>
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-1 text-[11px] font-extrabold text-slate-200">
-                  <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">⚡ 10s Timer Per Word</span>
-                  <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">📢 9th Sec Audio Alert</span>
-                  <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">🧠 1,500 Curated Words</span>
+                  <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">⚡ Official 10s Interval</span>
+                  <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">📢 Air Horn Hooter Audio</span>
+                  <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">🎬 Pure Black Projector Frame</span>
                 </div>
               </div>
               <Link

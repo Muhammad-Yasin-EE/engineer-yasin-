@@ -57,13 +57,13 @@ export default function WatIndexPage() {
           {/* Feature Highlight Pills */}
           <div className="flex flex-wrap items-center gap-3 pt-2 text-xs font-black uppercase tracking-wider text-gray-300">
             <span className="px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-emerald-400 flex items-center gap-1.5 shadow-sm">
-              <Clock className="w-4 h-4 text-emerald-400 shrink-0" /> Customizable Speed (8s • 10s • 15s)
+              <Clock className="w-4 h-4 text-emerald-400 shrink-0" /> Official 10s Timer Per Word
             </span>
             <span className="px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-rose-400 flex items-center gap-1.5 shadow-sm">
-              <Volume2 className="w-4 h-4 text-rose-400 shrink-0" /> Audible Alarm &amp; Chime Beeps
+              <Volume2 className="w-4 h-4 text-rose-400 shrink-0" /> Air Horn Hooter Audio Enabled
             </span>
             <span className="px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-[#D4AF37] flex items-center gap-1.5 shadow-sm">
-              <Award className="w-4 h-4 text-[#D4AF37] shrink-0" /> Officer Likelihood Calculator
+              <Award className="w-4 h-4 text-[#D4AF37] shrink-0" /> 100% Free Practice
             </span>
           </div>
 
@@ -129,16 +129,13 @@ export default function WatIndexPage() {
                     {set.description}
                   </p>
 
-                  {/* Difficulty Breakdown Badges */}
+                  {/* Feature Breakdown Badges */}
                   <div className="pt-2 flex items-center gap-2 flex-wrap text-[11px] font-extrabold">
                     <span className="px-2.5 py-1 bg-slate-950/80 rounded-lg text-emerald-300 border border-slate-800">
-                      🟢 50 Easy
+                      ⚡ 100 Words Battery
                     </span>
                     <span className="px-2.5 py-1 bg-slate-950/80 rounded-lg text-amber-300 border border-slate-800">
-                      🟡 30 Action
-                    </span>
-                    <span className="px-2.5 py-1 bg-slate-950/80 rounded-lg text-rose-300 border border-slate-800">
-                      🔴 20 Stress
+                      ⏱️ 10s Slide Transition
                     </span>
                   </div>
                 </div>

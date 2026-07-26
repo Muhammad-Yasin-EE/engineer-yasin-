@@ -30,60 +30,60 @@ export default function WatTestExecutionPage() {
     if (joined) setHasJoinedWhatsApp(true)
   }, [])
 
-  // ── Web Audio API Fallback Synthesizer (In case MPEG browser policy blocks audio) ──
-  const playFallbackSynth = useCallback(() => {
+  // ── Mechanical Clock "Tik Tik" Sound (Plays during 3 -> 2 -> 1 Countdown) ──
+  const playTickSound = useCallback(() => {
     try {
       const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
       const now = audioCtx.currentTime
-      const freqs = [370, 466, 554, 372]
+      const osc = audioCtx.createOscillator()
+      const gain = audioCtx.createGain()
       
-      freqs.forEach((freq, idx) => {
-        const osc = audioCtx.createOscillator()
-        const gain = audioCtx.createGain()
-        osc.type = idx % 2 === 0 ? 'sawtooth' : 'square'
-        osc.frequency.setValueAtTime(freq, now)
-        osc.frequency.linearRampToValueAtTime(freq - 3, now + 0.6)
-        gain.gain.setValueAtTime(0.25, now)
-        gain.gain.setValueAtTime(0.25, now + 0.45)
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6)
-        osc.connect(gain)
-        gain.connect(audioCtx.destination)
-        osc.start(now)
-        osc.stop(now + 0.62)
-      })
+      // Sharp mechanical stopwatch clock click ("Tik")
+      osc.type = 'sine'
+      osc.frequency.setValueAtTime(1600, now)
+      osc.frequency.exponentialRampToValueAtTime(350, now + 0.025)
+      
+      gain.gain.setValueAtTime(0.35, now)
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.028)
+      
+      osc.connect(gain)
+      gain.connect(audioCtx.destination)
+      
+      osc.start(now)
+      osc.stop(now + 0.03)
     } catch (err) {
-      console.error('Synth fallback failed:', err)
+      console.error('Tick sound error:', err)
     }
   }, [])
 
-  // ── Original Air Horn / Hooter Sound (Plays your exact AIR HORN FOR ISSB.mpeg file) ──
+  // ── Official Recorded Air Horn Sound ONLY (Plays your uploaded AIR HORN FOR ISSB.mpeg file) ──
   const playAirHorn = useCallback(() => {
     try {
       if (audioRef.current) {
         audioRef.current.currentTime = 0
         audioRef.current.play().catch(e => {
-          console.log('MPEG playback blocked or error, fallback to synth horn:', e)
-          playFallbackSynth()
+          console.log('MPEG audio playback notice:', e)
         })
-      } else {
-        playFallbackSynth()
       }
     } catch (err) {
       console.error('Air horn playing error:', err)
-      playFallbackSynth()
     }
-  }, [playFallbackSynth])
+  }, [])
 
-  // ── 3 -> 2 -> 1 Countdown Before First Word ──
+  // ── 3 -> 2 -> 1 Countdown Before First Word (With Sharp Tik Tik Clock Audio) ──
   useEffect(() => {
     if (testState === 'countdown') {
+      // Play tick instantly when "3" appears
+      playTickSound()
+
       countdownTimerRef.current = setInterval(() => {
         setCountdownNum((prev) => {
           if (prev > 1) {
+            playTickSound() // Play tick for "2" and "1"
             return prev - 1
           } else {
             if (countdownTimerRef.current) clearInterval(countdownTimerRef.current)
-            // As countdown ends (at 1 -> 0), switch to active and play sound for Word #1!
+            // As countdown ends (at 1 -> 0), transition to active and play your official recorded Air Horn for Word #1!
             setTestState('active')
             setCurrentWordIndex(0)
             return 0
@@ -97,7 +97,7 @@ export default function WatTestExecutionPage() {
     return () => {
       if (countdownTimerRef.current) clearInterval(countdownTimerRef.current)
     }
-  }, [testState])
+  }, [testState, playTickSound])
 
   // 10-Second Automatic Word Switching & Air Horn 2 seconds before slide change
   useEffect(() => {

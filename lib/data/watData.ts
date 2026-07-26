@@ -126,9 +126,9 @@ export const watSets: WatSet[] = Array.from({ length: 15 }, (_, setIdx) => {
 
   return {
     id: `set-${setNum}`,
-    title: `WAT Practice Battery ${setNum < 10 ? '0' + setNum : setNum}`,
-    subtitle: `Standard 100-Word Sequential Projection (10s timer + 9s alarm)`,
-    description: `Official Engineer Yasin ISSB Prep module with progressive psychological difficulty scaling (50 Basic ➔ 30 Action/Tech ➔ 20 Stress Words).`,
+    title: `WAT Test ${setNum < 10 ? '0' + setNum : setNum}`,
+    subtitle: `Official Armed Forces Psychological Test`,
+    description: `Standard ISSB Word Association Test containing 100 official stimulus words for regular candidate practice under simulated testing center conditions.`,
     words: setWords
   };
 });

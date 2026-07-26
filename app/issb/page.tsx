@@ -634,22 +634,22 @@ export default function ISSBPage() {
                   🎖️ Engineer Yasin ISSB Prep • Real-Time Module
                 </span>
                 <h3 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-                  Real-Time WAT Practice Battery
+                  Official WAT Test Hub
                 </h3>
                 <p className="text-sm text-gray-300 font-medium leading-relaxed">
-                  Experience authentic projector hall conditions! Attempt <strong className="text-amber-400">15 Complete Sets (1,500 Words)</strong> in distraction-free black screen projection with decorative white borders, top-right academy logo, and an authentic Air Horn hooter sound on every word transition.
+                  Experience authentic testing center conditions! Attempt <strong className="text-amber-400">15 Complete Tests (1,500 Words)</strong> in distraction-free black screen projection with decorative white border frame, top-right academy insignia, and an authentic Air Horn hooter sound on every word transition.
                 </p>
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-1 text-[11px] font-extrabold text-slate-200">
                   <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">⚡ Official 10s Interval</span>
                   <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">📢 Air Horn Hooter Audio</span>
-                  <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">🎬 Pure Black Projector Frame</span>
+                  <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">🎬 Official Projector Hall</span>
                 </div>
               </div>
               <Link
                 href="/issb/wat"
                 className="px-8 py-5 bg-[#B8212E] hover:bg-[#961a25] active:scale-95 text-white font-black text-sm uppercase tracking-wider rounded-2xl shadow-2xl transition-all shrink-0 flex items-center justify-center gap-2 border border-rose-400/20 hover:shadow-rose-900/40"
               >
-                🚀 Start WAT Practice Now ➔
+                ⚡ Open WAT Hub ➔
               </Link>
             </div>
           </div>
@@ -658,7 +658,7 @@ export default function ISSBPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {[
               // ── Psychology Assessment Battery ──
-              { title: "Word Association Test (WAT)", category: "Psychology Test", desc: "Attempt all 15 real-time practice sets (1,500 words) with 10s automatic projection & 9th-second audio alarm.", icon: Brain, isReady: true, href: "/issb/wat" },
+              { title: "Word Association Test (WAT)", category: "Psychology Test", desc: "Attempt all 15 official tests (1,500 words) in simulated testing center projector mode with standard 10s slide intervals and air horn sound.", icon: Brain, isReady: true, href: "/issb/wat" },
               { title: "Sentence Completion Test (Urdu)", category: "Psychology Test", desc: "Official incomplete Urdu stimulus sentences to train positive subconscious thought patterns and courage.", icon: Brain, isReady: false },
               { title: "Sentence Completion Test (Eng)", category: "Psychology Test", desc: "Structured incomplete English phrases for testing optimism and emotional resilience under pressure.", icon: Brain, isReady: false },
               { title: "Picture Story Writing (TAT)", category: "Psychology Test", desc: "Thematic Apperception Test picture prompts for developing constructive hero-oriented action narratives.", icon: BookOpen, isReady: false },

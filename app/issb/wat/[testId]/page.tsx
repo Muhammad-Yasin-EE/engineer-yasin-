@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { watSets, getWatSetById, WatWord } from '@/lib/data/watData'
-import { ArrowLeft, MessageCircle, RotateCcw, ShieldCheck, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft, MessageCircle, RotateCcw, CheckCircle2, ShieldCheck } from 'lucide-react'
 
 export default function WatTestExecutionPage() {
   const router = useRouter()
@@ -25,13 +25,13 @@ export default function WatTestExecutionPage() {
     if (joined) setHasJoinedWhatsApp(true)
   }, [])
 
-  // ── Authentic Air Horn / Hooter Sound (Plays on every word change) ──
+  // ── Authentic Air Horn / Hooter Sound (Plays on every word switch) ──
   const playAirHorn = useCallback(() => {
     try {
       const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
       const now = audioCtx.currentTime
 
-      // Air horn / Hooter triad frequencies (F#4, Bb4, C#5) with sawtooth/square blend
+      // Air horn / Hooter triad frequencies with sawtooth/square blend
       const freqs = [370, 466, 554, 372]
       
       freqs.forEach((freq, idx) => {
@@ -40,11 +40,9 @@ export default function WatTestExecutionPage() {
 
         osc.type = idx % 2 === 0 ? 'sawtooth' : 'square'
         
-        // Slight frequency drop at tail to emulate acoustic horn release
         osc.frequency.setValueAtTime(freq, now)
         osc.frequency.linearRampToValueAtTime(freq - 3, now + 0.6)
 
-        // Envelope: immediate brassy punch, sustain, then sharp fade
         gain.gain.setValueAtTime(0.25, now)
         gain.gain.setValueAtTime(0.25, now + 0.45)
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6)
@@ -67,7 +65,7 @@ export default function WatTestExecutionPage() {
     }
   }, [currentWordIndex, testState, playAirHorn])
 
-  // 10-Second Automatic Word Switching (No visible clocks or timers in active mode)
+  // 10-Second Automatic Word Switching
   useEffect(() => {
     if (testState === 'active') {
       timerRef.current = setInterval(() => {
@@ -75,7 +73,6 @@ export default function WatTestExecutionPage() {
           if (prevIdx < testSet.words.length - 1) {
             return prevIdx + 1
           } else {
-            // Reached final word
             setTestState('complete')
             if (document.fullscreenElement) {
               document.exitFullscreen().catch(e => console.log(e))
@@ -83,7 +80,7 @@ export default function WatTestExecutionPage() {
             return prevIdx
           }
         })
-      }, 10000) // Exactly 10 seconds per slide
+      }, 10000) // Exactly 10 seconds per stimulus word
     } else {
       if (timerRef.current) clearInterval(timerRef.current)
     }
@@ -93,11 +90,10 @@ export default function WatTestExecutionPage() {
     }
   }, [testState, testSet.words.length])
 
-  // Listen for browser full screen exit (e.g. pressing Escape key) to return gracefully
+  // Listen for Escape key to exit cleanly
   useEffect(() => {
     const handleFullscreenChange = () => {
       if (!document.fullscreenElement && testState === 'active') {
-        // If user pressed ESC, stop timer and return to intro or completion
         if (timerRef.current) clearInterval(timerRef.current)
         setTestState('intro')
         setCurrentWordIndex(0)
@@ -132,70 +128,96 @@ export default function WatTestExecutionPage() {
     setTestState('active')
   }
 
-  // ── INTRO SCREEN (CLEAN, OFFICIAL ACADEMY STYLE) ───────────────────────────
+  // Adaptive Font Sizing to ensure long words NEVER overflow the projection box
+  const getAdaptiveFontSize = (w?: string) => {
+    const len = w?.length || 0
+    if (len >= 15) return 'text-3xl sm:text-5xl md:text-6xl lg:text-7xl'
+    if (len >= 12) return 'text-4xl sm:text-6xl md:text-7xl lg:text-8xl'
+    if (len >= 9)  return 'text-5xl sm:text-7xl md:text-8xl lg:text-[8.5rem]'
+    return 'text-6xl sm:text-8xl md:text-9xl lg:text-[10rem]'
+  }
+
+  // ── INTRO SCREEN (OFFICIAL MILITARY INSTRUCTIONS, NO LOGO IN CARD) ────────
   if (testState === 'intro') {
     return (
       <div className="min-h-screen bg-slate-950 text-white flex flex-col justify-between p-4 sm:p-8 font-sans selection:bg-[#B8212E] selection:text-white">
-        <div className="max-w-2xl mx-auto w-full my-auto bg-[#0A192F] border border-[#1A2E4C] rounded-3xl p-6 sm:p-10 shadow-2xl space-y-8 relative">
+        <div className="max-w-3xl mx-auto w-full my-auto bg-[#0A192F] border border-[#1A2E4C] rounded-3xl p-6 sm:p-10 shadow-2xl space-y-8 relative">
           
+          {/* Top Bar - Simple & Official (No Logo Inside Card as requested) */}
           <div className="flex items-center justify-between pb-6 border-b border-slate-800">
-            <Link href="/issb/wat" className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-white transition-colors">
-              <ArrowLeft className="w-4 h-4" /> Return to WAT Directory
+            <Link href="/issb/wat" className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-white transition-colors uppercase tracking-wider">
+              <ArrowLeft className="w-4 h-4" /> Return to Test Hub
             </Link>
-            <div className="flex items-center gap-2.5">
-              <Image src="/logo.jpg" alt="Engineer Yasin" width={36} height={36} className="rounded-full border border-white/40 object-cover shadow" />
-              <span className="text-xs font-black tracking-wider text-white uppercase">Official WAT Projection</span>
-            </div>
+            <span className="px-3 py-1 bg-slate-900 border border-slate-800 text-emerald-400 font-extrabold text-[11px] rounded-full uppercase tracking-wider">
+              Official Selection Standard
+            </span>
           </div>
 
-          <div className="text-center space-y-3">
+          <div className="space-y-2 border-b border-slate-800 pb-6">
+            <span className="text-xs font-black uppercase tracking-widest text-[#D4AF37] block">
+              Inter Services Selection Board (ISSB)
+            </span>
             <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-white uppercase">
               {testSet.title}
             </h1>
-            <p className="text-xs sm:text-sm text-gray-300 max-w-lg mx-auto font-medium leading-relaxed">
-              {testSet.description} Simulated in strict physical projection room conditions with automatic 10-second slide transition and Air Horn hooter sound.
+            <p className="text-xs sm:text-sm text-gray-400 font-medium">
+              Psychological Assessment • Word Association Test
             </p>
           </div>
 
-          <div className="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-3 text-center text-xs font-bold text-gray-300">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-3 bg-slate-900 rounded-xl border border-slate-800">
-                <span className="block text-emerald-400 font-black text-lg">100 Words</span>
-                <span className="text-[11px] text-gray-400 uppercase">Total Battery</span>
-              </div>
-              <div className="p-3 bg-slate-900 rounded-xl border border-slate-800">
-                <span className="block text-amber-400 font-black text-lg">10 Seconds</span>
-                <span className="text-[11px] text-gray-400 uppercase">Per Stimulus Word</span>
-              </div>
-            </div>
-            <p className="text-[11px] text-gray-400 pt-1">
-              📢 An authentic Air Horn sound plays as every new word appears on screen. Keep your pen ready!
-            </p>
+          {/* Official Instructions Section */}
+          <div className="space-y-4 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-inner">
+            <h2 className="text-sm sm:text-base font-black text-[#D4AF37] uppercase tracking-wider flex items-center gap-2">
+              📋 Official Candidate Instructions (Read Carefully)
+            </h2>
+            
+            <ul className="space-y-3 text-xs sm:text-sm text-gray-200 font-medium leading-relaxed">
+              <li className="flex items-start gap-2.5">
+                <span className="text-emerald-400 font-bold shrink-0">1.</span>
+                <span>A sequence of exactly <strong>100 stimulus words</strong> will be projected on the screen continuously.</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="text-emerald-400 font-bold shrink-0">2.</span>
+                <span>Each word will be displayed for exactly <strong>10 seconds</strong> before automatically transitioning to the next word.</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="text-emerald-400 font-bold shrink-0">3.</span>
+                <span>As soon as a word appears, read it and immediately write down the <strong>first spontaneous sentence</strong> that comes to mind on your answer sheet against the corresponding serial number.</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="text-emerald-400 font-bold shrink-0">4.</span>
+                <span>Do not linger or pause; trust your first positive thought and keep moving forward with the projection timeline.</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="text-emerald-400 font-bold shrink-0">5.</span>
+                <span>Ensure your handwriting remains clean, legible, and clear throughout all 100 serials.</span>
+              </li>
+            </ul>
           </div>
 
           {/* Mandatory WhatsApp Gate & Start Button */}
-          <div className="space-y-3 pt-2">
+          <div className="space-y-4 pt-2">
             {!hasJoinedWhatsApp ? (
-              <div className="space-y-3 bg-[#112240] border border-emerald-500/40 p-5 rounded-2xl text-center">
-                <span className="text-xs font-black text-emerald-300 uppercase tracking-wide block">
-                  🟢 Step 1: Candidate Group Verification
+              <div className="space-y-3 bg-[#112240] border border-emerald-500/40 p-6 rounded-2xl text-center">
+                <span className="text-xs sm:text-sm font-black text-emerald-300 uppercase tracking-wide block">
+                  🟢 Step 1: Candidate Verification Required
                 </span>
-                <p className="text-[11px] sm:text-xs text-gray-300 font-medium">
-                  Join Engineer Yasin&apos;s official WhatsApp learning community once to unlock full-window projection simulation forever.
+                <p className="text-xs text-gray-300 font-medium">
+                  Join Engineer Yasin&apos;s official WhatsApp learning community once to unlock full-screen simulated military testing.
                 </p>
                 <button
                   onClick={handleWhatsAppJoin}
                   className="w-full py-4 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-black text-xs sm:text-sm uppercase tracking-widest shadow-xl transition-all flex items-center justify-center gap-2 animate-pulse"
                 >
-                  <MessageCircle className="w-5 h-5 fill-current" /> Join Official WhatsApp Community ➔
+                  <MessageCircle className="w-5 h-5 fill-current" /> Join Official WhatsApp Group ➔
                 </button>
               </div>
             ) : (
               <button
                 onClick={handleStartFullscreen}
-                className="w-full py-5 rounded-2xl bg-[#B8212E] hover:bg-[#961a25] active:scale-95 text-white font-black text-sm sm:text-base uppercase tracking-widest shadow-2xl transition-all flex items-center justify-center gap-3 border border-rose-400/30"
+                className="w-full py-5 rounded-2xl bg-[#B8212E] hover:bg-[#961a25] active:scale-95 text-white font-black text-base sm:text-lg uppercase tracking-widest shadow-2xl transition-all flex items-center justify-center gap-3 border border-rose-400/30"
               >
-                🚀 Launch Full-Screen WAT Battery (100 Words) ➔
+                ⚡ Start Test
               </button>
             )}
           </div>
@@ -216,24 +238,24 @@ export default function WatTestExecutionPage() {
               ✓
             </div>
             <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight uppercase">
-              Battery Completed: <span className="text-emerald-400">{testSet.title}</span>
+              Test Completed: <span className="text-emerald-400">{testSet.title}</span>
             </h1>
             <p className="text-xs sm:text-base text-gray-300 max-w-xl mx-auto font-medium">
-              You attempted all 100 stimulus words in continuous 10-second projector intervals. Review your written answer sheet against the vocabulary sequence below.
+              You have attempted all 100 stimulus words under standard timed projection intervals. Review your written answer sheet against the word pool below.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
               <button
                 onClick={handleStartFullscreen}
-                className="px-6 py-3.5 bg-slate-800 hover:bg-slate-700 font-bold text-xs uppercase tracking-wider text-white rounded-xl transition-colors flex items-center gap-2"
+                className="px-6 py-3.5 bg-slate-800 hover:bg-slate-700 font-bold text-xs sm:text-sm uppercase tracking-wider text-white rounded-xl transition-colors flex items-center gap-2"
               >
                 <RotateCcw className="w-4 h-4" /> Attempt Again
               </button>
               <Link
                 href="/issb/wat"
-                className="px-8 py-3.5 bg-[#B8212E] hover:bg-[#961a25] font-black text-xs uppercase tracking-wider text-white rounded-xl shadow-lg transition-colors flex items-center gap-2"
+                className="px-8 py-3.5 bg-[#B8212E] hover:bg-[#961a25] font-black text-xs sm:text-sm uppercase tracking-wider text-white rounded-xl shadow-lg transition-colors flex items-center gap-2"
               >
-                Return to Directory ➔
+                Return to Test Hub ➔
               </Link>
             </div>
           </div>
@@ -259,21 +281,20 @@ export default function WatTestExecutionPage() {
   }
 
   // ── ACTIVE FULLSCREEN TESTING MODE (PURE ACADEMY PROJECTOR STYLE) ─────────
-  // No timers, no progress bars, no exit buttons, no difficulty labels!
-  // Just pure black background, crisp white frame with ornamental corners, logo top-right, word dead center!
+  // Black backdrop, white border with corners, top-right logo only, adaptive centered text!
   return (
     <div className="fixed inset-0 z-[999999] w-screen h-screen bg-black text-white flex items-center justify-center p-3 sm:p-6 lg:p-8 select-none overflow-hidden font-sans">
       
       {/* Outer White Frame Box Covering Full Screen */}
-      <div className="w-full h-full border-[3px] sm:border-[5px] border-white relative flex items-center justify-center p-4">
+      <div className="w-full h-full border-[3px] sm:border-[5px] border-white relative flex items-center justify-center p-4 sm:p-8">
         
-        {/* Decorative Traditional Corner Ornamentations (Top-Left, Top-Right, Bottom-Left, Bottom-Right) */}
+        {/* Decorative Traditional Corner Ornamentations */}
         <div className="absolute top-2 left-2 w-8 h-8 sm:w-12 sm:h-12 border-t-4 border-l-4 border-white pointer-events-none" />
         <div className="absolute top-2 right-2 w-8 h-8 sm:w-12 sm:h-12 border-t-4 border-r-4 border-white pointer-events-none" />
         <div className="absolute bottom-2 left-2 w-8 h-8 sm:w-12 sm:h-12 border-b-4 border-l-4 border-white pointer-events-none" />
         <div className="absolute bottom-2 right-2 w-8 h-8 sm:w-12 sm:h-12 border-b-4 border-r-4 border-white pointer-events-none" />
 
-        {/* Small Academy Logo on Top-Right Corner (Exactly as requested) */}
+        {/* Small Academy Logo on Top-Right Corner ONLY */}
         <div className="absolute top-4 right-4 sm:top-6 sm:right-8 lg:top-8 lg:right-12 flex flex-col items-center gap-1 opacity-95">
           <div className="p-0.5 rounded-full border-2 border-white bg-black">
             <Image 
@@ -289,9 +310,9 @@ export default function WatTestExecutionPage() {
           </span>
         </div>
 
-        {/* Giant Single Word Dead Center in Crisp White */}
-        <div className="w-full px-4 text-center my-auto flex items-center justify-center">
-          <h1 className="text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] font-black tracking-normal text-white uppercase leading-none drop-shadow-md py-6">
+        {/* Giant Single Word Dead Center - Adaptive font sizing to prevent boundary overflow */}
+        <div className="w-full max-w-full px-4 sm:px-12 md:px-20 flex items-center justify-center my-auto overflow-hidden">
+          <h1 className={`${getAdaptiveFontSize(currentWord.word)} font-black tracking-normal text-white uppercase leading-none drop-shadow-md py-6 text-center break-words max-w-full`}>
             {currentWord.word}
           </h1>
         </div>

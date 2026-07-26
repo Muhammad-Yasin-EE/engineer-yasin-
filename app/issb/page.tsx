@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import IssbTimelineExplorer from '@/components/IssbTimelineExplorer';
 
 import {
   ArrowRight, Brain, Users, UserCheck, ChevronRight,
@@ -600,6 +601,12 @@ export default function ISSBPage() {
               </div>
             </div>
           </section>
+
+          {/* ── INTERACTIVE 4-DAYS ISSB SCHEDULE EXPLORER ── */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+            <IssbTimelineExplorer />
+          </div>
+
         </div>
       )}
 

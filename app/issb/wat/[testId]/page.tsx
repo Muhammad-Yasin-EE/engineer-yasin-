@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { watSets, getWatSetById, WatWord } from '@/lib/data/watData'
-import { ArrowLeft, Volume2, VolumeX, Pause, Play, RotateCcw, CheckCircle2, AlertCircle, ShieldCheck, MessageCircle, Maximize2, Sparkles, Brain } from 'lucide-react'
+import { ArrowLeft, Volume2, VolumeX, Pause, Play, RotateCcw, CheckCircle2, ShieldCheck, MessageCircle, Maximize2, Sun, Moon, Brain, Award, Clock } from 'lucide-react'
 
 export default function WatTestExecutionPage() {
   const router = useRouter()
@@ -15,10 +15,21 @@ export default function WatTestExecutionPage() {
 
   const [testState, setTestState] = useState<'intro' | 'active' | 'paused' | 'complete'>('intro')
   const [currentWordIndex, setCurrentWordIndex] = useState<number>(0)
-  const [timeLeft, setTimeLeft] = useState<number>(10) // 10 seconds per word
+  const [timerDuration, setTimerDuration] = useState<number>(10) // default 10 seconds
+  const [timeLeft, setTimeLeft] = useState<number>(10)
   const [isMuted, setIsMuted] = useState<boolean>(false)
   const [hasJoinedWhatsApp, setHasJoinedWhatsApp] = useState<boolean>(false)
-  
+  const [projectionTheme, setProjectionTheme] = useState<'dark' | 'white'>('dark')
+
+  // Self-Audit checklist state for completion review
+  const [auditChecklist, setAuditChecklist] = useState({
+    attemptedAll: false,
+    noPronouns: false,
+    positiveMorale: false,
+    actionOriented: false,
+    cleanHandwriting: false
+  })
+
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const currentWord: WatWord = testSet.words[currentWordIndex] || testSet.words[0]
 
@@ -26,6 +37,13 @@ export default function WatTestExecutionPage() {
     const joined = localStorage.getItem('wat_joined_group') === 'true'
     if (joined) setHasJoinedWhatsApp(true)
   }, [])
+
+  // Sync timeLeft when timerDuration is changed by user on intro screen
+  useEffect(() => {
+    if (testState === 'intro') {
+      setTimeLeft(timerDuration)
+    }
+  }, [timerDuration, testState])
 
   // ── Web Audio API 1: Slide Change Chime (Plays on every new word display) ──
   const playWordChangeChime = () => {
@@ -53,14 +71,13 @@ export default function WatTestExecutionPage() {
     }
   }
 
-  // ── Web Audio API 2: Loud Tactical 9th Second Alert Buzzer (Hoshiyar sound) ──
-  const play9thSecondBuzzer = () => {
+  // ── Web Audio API 2: Loud Tactical Alert Buzzer (At 1 second remaining) ──
+  const playAlarmBuzzer = () => {
     if (isMuted) return
     try {
       const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
       const now = audioCtx.currentTime
 
-      // Double square-wave tactical alert
       const osc1 = audioCtx.createOscillator()
       const gain1 = audioCtx.createGain()
       osc1.type = 'square'
@@ -89,26 +106,24 @@ export default function WatTestExecutionPage() {
     }
   }
 
-  // Play chime immediately whenever word switches in active state
   useEffect(() => {
     if (testState === 'active') {
       playWordChangeChime()
     }
   }, [currentWordIndex, testState])
 
-  // Countdown timer logic
   useEffect(() => {
     if (testState === 'active') {
       timerRef.current = setInterval(() => {
         setTimeLeft(prev => {
-          // Play buzzer at 9th second (1s remaining)
+          // Trigger alarm when 1 second is left (e.g., 9th second on a 10s timer)
           if (prev === 2) {
-            play9thSecondBuzzer()
+            playAlarmBuzzer()
           }
           if (prev <= 1) {
             if (currentWordIndex < testSet.words.length - 1) {
               setCurrentWordIndex(idx => idx + 1)
-              return 10
+              return timerDuration
             } else {
               setTestState('complete')
               if (document.fullscreenElement) {
@@ -127,7 +142,7 @@ export default function WatTestExecutionPage() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
     }
-  }, [testState, currentWordIndex, isMuted, testSet.words.length])
+  }, [testState, currentWordIndex, isMuted, testSet.words.length, timerDuration])
 
   const handleWhatsAppJoin = () => {
     window.open('https://chat.whatsapp.com/IzPd4vwXbrjGhAkanhYvTp?s=cl&p=a&ilr=0', '_blank')
@@ -141,7 +156,6 @@ export default function WatTestExecutionPage() {
       return
     }
 
-    // Enter full screen window projection mode
     try {
       const el = document.documentElement
       if (el.requestFullscreen) {
@@ -152,7 +166,7 @@ export default function WatTestExecutionPage() {
     }
 
     setCurrentWordIndex(0)
-    setTimeLeft(10)
+    setTimeLeft(timerDuration)
     setTestState('active')
   }
 
@@ -162,11 +176,10 @@ export default function WatTestExecutionPage() {
     }
     if (timerRef.current) clearInterval(timerRef.current)
     setCurrentWordIndex(0)
-    setTimeLeft(10)
+    setTimeLeft(timerDuration)
     setTestState('intro')
   }
 
-  // Smart Font Auto-Scaler for small 320px mobile screens
   const getWordFontSize = (w: string) => {
     if (!w) return 'text-4xl sm:text-7xl lg:text-9xl'
     if (w.length > 12) return 'text-3xl sm:text-6xl lg:text-8xl'
@@ -175,182 +188,194 @@ export default function WatTestExecutionPage() {
     return 'text-5xl sm:text-8xl lg:text-9xl'
   }
 
-  // ── INTRO / 2-STEP GATE SCREEN ─────────────────────────────────────────────
+  // Calculate self-audit score percentage
+  const calcScore = () => {
+    const vals = Object.values(auditChecklist)
+    const checked = vals.filter(Boolean).length
+    return Math.round((checked / 5) * 100)
+  }
+
+  // ── INTRO SCREEN (ULTRA-CLEAN EXECUTIVE MINIMALIST DESIGN) ─────────────────
   if (testState === 'intro') {
     return (
       <div className="min-h-screen bg-slate-950 text-white flex flex-col justify-between p-4 sm:p-8 selection:bg-[#B8212E] selection:text-white font-sans">
-        <div className="max-w-3xl mx-auto w-full my-auto space-y-8 bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-12 shadow-2xl relative overflow-hidden">
+        <div className="max-w-2xl mx-auto w-full my-auto bg-[#0A192F] border border-[#1A2E4C] rounded-3xl p-6 sm:p-10 shadow-2xl space-y-8 relative overflow-hidden">
           
-          {/* Background Ambient Glow (Disabled on small phones for 60 FPS performance) */}
-          <div className="hidden sm:block absolute -right-20 -top-20 w-80 h-80 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="hidden sm:block absolute -left-20 -bottom-20 w-80 h-80 bg-[#B8212E]/10 rounded-full blur-3xl pointer-events-none"></div>
-
-          {/* Header & Logo */}
-          <div className="flex items-center justify-between border-b border-slate-800 pb-6 relative z-10">
-            <Link href="/issb/wat" className="inline-flex items-center gap-1 text-xs font-bold text-gray-400 hover:text-white transition-colors">
-              <ArrowLeft className="w-4 h-4" /> All WAT Sets
+          {/* Subtle Top Header */}
+          <div className="flex items-center justify-between pb-6 border-b border-slate-800">
+            <Link href="/issb/wat" className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-white transition-colors">
+              <ArrowLeft className="w-4 h-4" /> Exit to Directory
             </Link>
-            
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Image src="/logo.jpg" alt="Engineer Yasin Logo" width={36} height={36} className="rounded-full border border-[#D4AF37] object-cover shadow" />
-              <div className="text-left">
-                <span className="text-[11px] sm:text-xs font-black text-white uppercase tracking-wider block">Engineer Yasin</span>
-                <span className="text-[9px] font-extrabold text-[#D4AF37] uppercase tracking-widest block">Official ISSB Prep</span>
-              </div>
+            <div className="flex items-center gap-2.5">
+              <Image src="/logo.jpg" alt="Engineer Yasin" width={32} height={32} className="rounded-full border border-[#D4AF37] shadow" />
+              <span className="text-xs font-black tracking-wider text-[#D4AF37] uppercase">Official WAT Hall</span>
             </div>
           </div>
 
-          {/* Title & Stats */}
-          <div className="space-y-3 relative z-10">
-            <span className="px-3 py-1 rounded-full bg-[#112240] text-[#D4AF37] border border-[#233554] text-[10px] font-black uppercase tracking-widest inline-flex items-center gap-1.5">
-              <Maximize2 className="w-3 h-3 text-emerald-400" /> Full-Screen Cinema Mode
-            </span>
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
+          {/* Clean Title & Guidance */}
+          <div className="text-center space-y-3">
+            <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-white">
               {testSet.title}
             </h1>
-            <p className="text-xs sm:text-sm text-gray-300 font-medium leading-relaxed">
-              {testSet.description} Attempted exactly as in official ISSB psychological test projector rooms.
+            <p className="text-xs sm:text-sm text-gray-300 max-w-lg mx-auto font-medium leading-relaxed">
+              {testSet.description} Prepared for high-pressure projector environments with sound alerts.
             </p>
           </div>
 
-          {/* Quick Specs Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 py-2 relative z-10">
-            <div className="bg-slate-950/80 border border-slate-800/90 p-3 sm:p-4 rounded-2xl text-center">
-              <span className="text-xl sm:text-2xl font-black text-amber-400 block">100 Words</span>
-              <span className="text-[10px] sm:text-[11px] text-gray-400 uppercase tracking-wider font-bold">Total Battery Count</span>
+          {/* Configuration Box: Speed Selector & Theme */}
+          <div className="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl space-y-4">
+            <div>
+              <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest block mb-2 text-center">
+                ⚡ Step 1: Select Slide Projection Speed
+              </span>
+              <div className="grid grid-cols-3 gap-2 text-xs font-black">
+                {[
+                  { duration: 15, label: 'Beginner (15s)', color: 'border-emerald-500 text-emerald-400 bg-emerald-500/10' },
+                  { duration: 10, label: 'Standard (10s)', color: 'border-[#D4AF37] text-amber-300 bg-amber-500/10' },
+                  { duration: 8, label: 'Stress Mode (8s)', color: 'border-rose-500 text-rose-400 bg-rose-500/10' },
+                ].map((item) => (
+                  <button
+                    key={item.duration}
+                    onClick={() => setTimerDuration(item.duration)}
+                    className={`py-2.5 px-2 rounded-xl border transition-all truncate text-center ${timerDuration === item.duration ? `${item.color} shadow-lg ring-2 ring-white/20` : 'border-slate-800 text-slate-500 bg-slate-900 hover:text-slate-300'}`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="bg-slate-950/80 border border-slate-800/90 p-3 sm:p-4 rounded-2xl text-center">
-              <span className="text-xl sm:text-2xl font-black text-emerald-400 block">10 Seconds</span>
-              <span className="text-[10px] sm:text-[11px] text-gray-400 uppercase tracking-wider font-bold">Slide Chime Beep</span>
-            </div>
-            <div className="bg-slate-950/80 border border-slate-800/90 p-3 sm:p-4 rounded-2xl text-center">
-              <span className="text-xl sm:text-2xl font-black text-rose-500 block">9th Sec Alarm</span>
-              <span className="text-[10px] sm:text-[11px] text-gray-400 uppercase tracking-wider font-bold">Loud Alert Tone</span>
+
+            <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs font-bold text-gray-300">
+              <span className="flex items-center gap-1.5">
+                {projectionTheme === 'dark' ? <Moon className="w-4 h-4 text-amber-400" /> : <Sun className="w-4 h-4 text-amber-400" />}
+                Projection Hall Theme:
+              </span>
+              <button
+                onClick={() => setProjectionTheme(projectionTheme === 'dark' ? 'white' : 'dark')}
+                className="px-3 py-1 rounded-lg bg-slate-900 border border-slate-700 hover:border-[#D4AF37] text-xs font-black text-[#D4AF37] uppercase transition-colors"
+              >
+                {projectionTheme === 'dark' ? '🌙 Deep Dark Cinema' : '☀️ White Classroom Slide'}
+              </button>
             </div>
           </div>
 
-          {/* 2-Step Gate verification Box */}
-          <div className="bg-[#112240] border-2 border-emerald-500/40 rounded-3xl p-5 sm:p-6 shadow-xl relative z-10 space-y-5">
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <h3 className="text-sm sm:text-base font-black text-white uppercase tracking-wider flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-emerald-400" /> Mandatory Candidate Verification
-              </h3>
-              {hasJoinedWhatsApp && (
-                <span className="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 font-extrabold text-[10px] uppercase tracking-wider">
-                  ✔ Group Verified
+          {/* WhatsApp Verification Gate / Launch Button */}
+          <div className="space-y-3 pt-2">
+            {!hasJoinedWhatsApp ? (
+              <div className="space-y-3 bg-[#112240] border border-emerald-500/40 p-5 rounded-2xl text-center">
+                <span className="text-xs font-black text-emerald-300 uppercase tracking-wide block">
+                  🟢 Step 2: Security Gate (One-Time Verification)
                 </span>
-              )}
-            </div>
-
-            <p className="text-xs sm:text-sm text-gray-300 font-medium leading-relaxed">
-              To unlock full-window projection with audio alarms, candidates must join Engineer Yasin&apos;s official WhatsApp learning community first.
-            </p>
-
-            <div className="space-y-3">
-              {!hasJoinedWhatsApp ? (
-                <>
-                  <button
-                    onClick={handleWhatsAppJoin}
-                    className="w-full py-4 rounded-2xl bg-[#25D366] hover:bg-[#1EBE5D] active:scale-98 text-white font-black text-xs sm:text-sm uppercase tracking-widest shadow-xl transition-all flex items-center justify-center gap-3 border border-emerald-400/30 animate-pulse"
-                  >
-                    <MessageCircle className="w-5 h-5 fill-current" /> 🟢 Step 1: Join Official WhatsApp Group
-                  </button>
-                  <button
-                    disabled
-                    className="w-full py-4 rounded-2xl bg-slate-800 border border-slate-700 text-slate-500 font-extrabold text-xs uppercase tracking-wider cursor-not-allowed text-center block"
-                  >
-                    🔒 Step 2: Launch Full-Screen Test (Join Group First)
-                  </button>
-                </>
-              ) : (
+                <p className="text-[11px] sm:text-xs text-gray-300 font-medium">
+                  Join Engineer Yasin&apos;s official candidate WhatsApp community to unblock full-window simulation mode forever.
+                </p>
                 <button
-                  onClick={handleStartFullscreen}
-                  className="w-full py-5 rounded-2xl bg-[#B8212E] hover:bg-[#961a25] active:scale-98 text-white font-black text-sm sm:text-base uppercase tracking-widest shadow-2xl transition-all flex items-center justify-center gap-3 border border-rose-400/30 hover:shadow-rose-900/40"
+                  onClick={handleWhatsAppJoin}
+                  className="w-full py-3.5 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-black text-xs sm:text-sm uppercase tracking-widest shadow-xl transition-all flex items-center justify-center gap-2"
                 >
-                  🚀 Launch Full-Screen WAT Battery (100 Words) ➔
+                  <MessageCircle className="w-5 h-5 fill-current" /> Join Official WhatsApp Community ➔
                 </button>
-              )}
-            </div>
+              </div>
+            ) : (
+              <button
+                onClick={handleStartFullscreen}
+                className="w-full py-5 rounded-2xl bg-[#B8212E] hover:bg-[#961a25] active:scale-95 text-white font-black text-sm sm:text-base uppercase tracking-widest shadow-2xl transition-all flex items-center justify-center gap-3 border border-rose-400/30"
+              >
+                🚀 Launch Full-Screen WAT Battery ({timerDuration}s Timer) ➔
+              </button>
+            )}
           </div>
-          
+
         </div>
       </div>
     )
   }
 
-  // ── COMPLETION REVIEW SCREEN ──────────────────────────────────────────────
+  // ── COMPLETION REVIEW SCREEN (WITH SELF-AUDIT CALCULATOR) ─────────────────
   if (testState === 'complete') {
+    const score = calcScore()
     return (
       <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-8 font-sans selection:bg-[#B8212E] selection:text-white pb-24">
-        <div className="max-w-5xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-8">
           
-          <div className="bg-gradient-to-r from-[#0A192F] via-[#112240] to-[#0A192F] border border-[#233554] rounded-3xl p-8 sm:p-12 text-center space-y-5 shadow-2xl">
-            <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-3xl font-extrabold mx-auto shadow">
-              ✓
-            </div>
-            <h1 className="text-2xl sm:text-5xl font-black text-white tracking-tight">
-              🎉 Test Battery Complete!
+          <div className="bg-[#0A192F] border border-[#1A2E4C] rounded-3xl p-8 sm:p-10 text-center space-y-4 shadow-2xl">
+            <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
+              🎉 Battery Completed: <span className="text-emerald-400">{testSet.title}</span>
             </h1>
-            <p className="text-xs sm:text-base text-gray-300 max-w-2xl mx-auto font-medium">
-              You have completed all 100 words of <strong className="text-amber-400">{testSet.title}</strong> in official projection time. Now match your written sheet against the vocabulary below to self-evaluate your psychological responses.
+            <p className="text-xs sm:text-sm text-gray-300 max-w-xl mx-auto font-medium">
+              You attempted 100 words in official sequential timing. Before submitting or closing your answer sheet, run this mandatory Self-Audit Checklist to compute your recommendation chance.
             </p>
 
-            <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+            {/* Interactive Self-Audit Score Calculator */}
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-left my-6 space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 className="text-sm sm:text-base font-black text-[#D4AF37] uppercase tracking-wider flex items-center gap-2">
+                  <Award className="w-5 h-5 text-[#D4AF37]" /> Interactive Officer Likelihood Calculator
+                </h3>
+                <span className={`px-3 py-1 rounded-full text-xs font-black uppercase ${score >= 80 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : score >= 40 ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'}`}>
+                  Estimated Likelihood: {score}%
+                </span>
+              </div>
+
+              <div className="space-y-2 text-xs font-bold">
+                {[
+                  { id: 'attemptedAll', text: 'I attempted 90+ words without leaving excessive blank gaps in my numbering sequence.' },
+                  { id: 'noPronouns', text: 'I avoided personal pronouns (I, Me, My, Mine) in almost all of my constructed sentences.' },
+                  { id: 'positiveMorale', text: 'I transformed negative stress words (Suicide, Death, Defeat, Dark) into positive constructive statements.' },
+                  { id: 'actionOriented', text: 'I avoided childish moral preaching ("We should never lie", "Honesty is good") and showed real leadership.' },
+                  { id: 'cleanHandwriting', text: 'My handwriting remained legible under the 10-second timer pressure.' },
+                ].map((chk) => (
+                  <label key={chk.id} className="flex items-center gap-3 p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 hover:bg-slate-800/40 cursor-pointer transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={auditChecklist[chk.id as keyof typeof auditChecklist]}
+                      onChange={(e) => setAuditChecklist({ ...auditChecklist, [chk.id]: e.target.checked })}
+                      className="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-400 bg-slate-900 border-slate-700"
+                    />
+                    <span className="text-gray-200">{chk.text}</span>
+                  </label>
+                ))}
+              </div>
+
+              <div className="p-4 rounded-xl bg-[#112240] border border-[#233554] text-xs font-medium text-gray-300">
+                <strong className="text-white block mb-1">🎓 Engineer Yasin&apos;s Feedback:</strong>
+                {score >= 80 
+                  ? 'Excellent! Your subconscious orientation aligns closely with military officer leadership attributes. Continue daily timed battery drills to cement your reaction consistency.'
+                  : 'Needs Improvement: Do not rush into generic sentences. Review our Solved WAT Notes to learn how to instantly pivot stress vocabulary into decisive leadership reactions.'}
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
               <button
                 onClick={handleStartFullscreen}
-                className="px-6 py-3.5 bg-slate-800 hover:bg-slate-700 font-bold text-xs uppercase tracking-wider text-white rounded-xl transition-colors flex items-center gap-2"
+                className="px-6 py-3 bg-slate-800 hover:bg-slate-700 font-bold text-xs uppercase tracking-wider text-white rounded-xl transition-colors flex items-center gap-2"
               >
                 <RotateCcw className="w-4 h-4" /> Attempt Again
               </button>
               <Link
                 href="/issb/wat"
-                className="px-8 py-3.5 bg-[#B8212E] hover:bg-[#961a25] font-black text-xs uppercase tracking-wider text-white rounded-xl shadow-lg transition-colors flex items-center gap-2"
+                className="px-8 py-3 bg-[#B8212E] hover:bg-[#961a25] font-black text-xs uppercase tracking-wider text-white rounded-xl shadow-lg transition-colors flex items-center gap-2"
               >
-                Select Another Battery ➔
+                Return to Directory ➔
               </Link>
-            </div>
-          </div>
-
-          {/* Golden Rules Review Banner */}
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
-            <h3 className="text-base sm:text-lg font-black text-[#D4AF37] uppercase tracking-wider mb-4 flex items-center gap-2">
-              <Brain className="w-5 h-5 text-[#D4AF37]" /> Officer&apos;s Self-Evaluation Checklist
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-medium text-gray-300">
-              <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800">
-                <span className="font-bold text-emerald-400 block mb-1">✓ Constructive Optimism</span>
-                Turn negative words (e.g. Suicide, Hate, Death) into positive statements about morale, safety, or courage.
-              </div>
-              <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800">
-                <span className="font-bold text-amber-400 block mb-1">🚫 Avoid Personal Pronouns</span>
-                Avoid starting sentences with &quot;I&quot;, &quot;Me&quot;, or &quot;My&quot; as it signals egocentricity and narrow thinking.
-              </div>
-              <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800">
-                <span className="font-bold text-rose-400 block mb-1">🚫 No Moral Preaching</span>
-                Do not write proverbs or advisory sentences like &quot;We should be kind&quot; or &quot;Honesty is best&quot;.
-              </div>
-              <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800">
-                <span className="font-bold text-blue-400 block mb-1">⚡ Action &amp; Leadership</span>
-                Reflect officer qualities like determination, rapid decision-making, discipline, and patriotism under stress.
-              </div>
             </div>
           </div>
 
           {/* Complete 100 Words Table */}
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
-            <h3 className="text-lg sm:text-xl font-bold text-white mb-6">
-              Complete Vocabulary List (100 Words)
+            <h3 className="text-base sm:text-lg font-bold text-white mb-4">
+              Complete Vocabulary Review Pool ({testSet.words.length} Words)
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-2.5 sm:gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-2.5">
               {testSet.words.map((w, idx) => {
                 let badgeColor = 'text-emerald-400 border-emerald-500/20 bg-emerald-500/5'
                 if (w.difficulty === 'moderate') badgeColor = 'text-amber-400 border-amber-500/20 bg-amber-500/5'
                 if (w.difficulty === 'hard') badgeColor = 'text-rose-400 border-rose-500/20 bg-rose-500/5'
                 
                 return (
-                  <div key={idx} className={`p-2.5 sm:p-3 rounded-2xl border text-center flex flex-col justify-between gap-1 sm:gap-1.5 ${badgeColor}`}>
-                    <span className="text-[9px] sm:text-[10px] opacity-75 font-extrabold">#{idx + 1} • {w.difficulty.toUpperCase()}</span>
-                    <span className="text-xs sm:text-sm font-black text-white truncate">{w.word}</span>
+                  <div key={idx} className={`p-2.5 rounded-xl border text-center flex flex-col justify-between gap-1 ${badgeColor}`}>
+                    <span className="text-[9px] opacity-75 font-extrabold">#{idx + 1} • {w.difficulty.toUpperCase()}</span>
+                    <span className="text-xs font-black text-white truncate">{w.word}</span>
                   </div>
                 )
               })}
@@ -362,79 +387,69 @@ export default function WatTestExecutionPage() {
     )
   }
 
-  // ── ACTIVE FULL-WINDOW REAL-TIME PROJECTION SCREEN ────────────────────────
-  let diffBadge = { label: '🟢 Easy / Basic', bg: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30' }
-  if (currentWord.difficulty === 'moderate') diffBadge = { label: '🟡 Moderate / Action', bg: 'bg-amber-500/10 text-amber-300 border-amber-500/30' }
-  if (currentWord.difficulty === 'hard') diffBadge = { label: '🔴 Hard / Psychological Stress', bg: 'bg-rose-500/10 text-rose-300 border-rose-500/30' }
+  // ── ACTIVE PROJECTION HALL (MINIMALIST CINEMA / WHITE SLIDE MODE) ─────────
+  const isWhite = projectionTheme === 'white'
 
   return (
-    <div className="fixed inset-0 z-[99999] w-screen h-screen bg-[#060D1A] text-white flex flex-col justify-between font-sans select-none overflow-hidden p-4 sm:p-8">
+    <div className={`fixed inset-0 z-[99999] w-screen h-screen flex flex-col justify-between font-sans select-none overflow-hidden p-4 sm:p-8 transition-colors duration-300 ${isWhite ? 'bg-white text-gray-950' : 'bg-[#060D1A] text-white'}`}>
       
-      {/* Top Header with Engineer Yasin Official Logo Watermark */}
-      <header className="w-full flex items-center justify-between border-b border-[#1A2E4C] pb-4 px-2">
-        <div className="flex items-center gap-3 sm:gap-4">
-          <Image src="/logo.jpg" alt="Engineer Yasin Logo" width={48} height={48} className="w-10 h-10 sm:w-14 sm:h-14 rounded-full border-2 border-[#D4AF37] object-cover shadow-2xl shrink-0" />
+      {/* Top Header Watermark (Minimalist & Unintrusive) */}
+      <header className={`w-full flex items-center justify-between pb-3 border-b px-2 ${isWhite ? 'border-gray-200' : 'border-[#1A2E4C]'}`}>
+        <div className="flex items-center gap-3">
+          <Image src="/logo.jpg" alt="Engineer Yasin Logo" width={44} height={44} className="w-9 h-9 sm:w-12 sm:h-12 rounded-full border border-[#D4AF37] object-cover shadow-lg shrink-0" />
           <div>
-            <span className="text-base sm:text-2xl font-black text-[#D4AF37] tracking-wider uppercase block leading-tight drop-shadow-md">
+            <span className="text-xs sm:text-lg font-black text-[#D4AF37] tracking-wider uppercase block leading-none">
               Engineer Yasin ISSB Prep
             </span>
-            <span className="text-[10px] sm:text-xs text-gray-300 uppercase font-extrabold tracking-widest flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block"></span> Official Projector Room Battery
+            <span className={`text-[9px] sm:text-[11px] font-bold tracking-widest uppercase mt-0.5 block ${isWhite ? 'text-gray-600' : 'text-gray-300'}`}>
+              Official Hall Projection • {timerDuration}s Timer
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => setIsMuted(!isMuted)}
-            className="p-2 sm:p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-gray-200 transition-colors border border-slate-700"
-            title="Toggle Alarm Mute"
+            className={`p-2 rounded-xl transition-colors border ${isWhite ? 'bg-gray-100 border-gray-300 text-gray-800 hover:bg-gray-200' : 'bg-slate-800 border-slate-700 text-gray-200 hover:bg-slate-700'}`}
+            title="Toggle Audio Beep"
           >
-            {isMuted ? <VolumeX className="w-5 h-5 text-rose-400" /> : <Volume2 className="w-5 h-5 text-emerald-400" />}
+            {isMuted ? <VolumeX className="w-4 h-4 text-rose-500" /> : <Volume2 className="w-4 h-4 text-emerald-500" />}
           </button>
           
           <button
             onClick={() => setTestState(testState === 'paused' ? 'active' : 'paused')}
-            className="px-3 sm:px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-colors uppercase tracking-wider border border-slate-700"
+            className={`px-3.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-colors uppercase tracking-wider border ${isWhite ? 'bg-gray-100 border-gray-300 text-gray-900 hover:bg-gray-200' : 'bg-slate-800 border-slate-700 text-white hover:bg-slate-700'}`}
           >
-            {testState === 'paused' ? <Play className="w-4 h-4 text-emerald-400 fill-current" /> : <Pause className="w-4 h-4 text-amber-400" />}
+            {testState === 'paused' ? <Play className="w-3.5 h-3.5 text-emerald-500 fill-current" /> : <Pause className="w-3.5 h-3.5 text-amber-500" />}
             <span className="hidden xs:inline">{testState === 'paused' ? 'Resume' : 'Pause'}</span>
           </button>
 
           <button
             onClick={handleQuit}
-            className="px-3.5 sm:px-5 py-2 rounded-xl bg-rose-600/20 border border-rose-500/40 text-rose-300 font-bold text-xs sm:text-sm uppercase tracking-wider hover:bg-rose-600/40 transition-colors"
+            className="px-4 py-1.5 rounded-xl bg-rose-600/20 border border-rose-500/40 text-rose-500 font-bold text-xs uppercase tracking-wider hover:bg-rose-600/30 transition-colors"
           >
             Exit
           </button>
         </div>
       </header>
 
-      {/* Center Cinema Projection Stage */}
-      <main className="flex-1 flex flex-col items-center justify-center w-full my-auto text-center relative px-4">
-        {/* Background Ambient Spotlight */}
-        <div className="absolute inset-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-500/10 via-slate-950/20 to-transparent pointer-events-none"></div>
-
-        <div className="space-y-6 relative z-10 w-full max-w-5xl">
-          {/* Word number and difficulty indicator */}
-          <div className="flex items-center justify-center gap-3 flex-wrap">
-            <span className="px-5 py-1.5 rounded-full bg-[#0A192F] border-2 border-[#D4AF37]/50 text-[#D4AF37] text-sm sm:text-lg font-black uppercase tracking-widest shadow-2xl">
-              ⚡ Word {currentWordIndex + 1} of 100
-            </span>
-            <span className={`px-4 py-1.5 rounded-full text-xs sm:text-sm font-extrabold uppercase border-2 shadow-lg ${diffBadge.bg}`}>
-              {diffBadge.label}
+      {/* Center Giant Word Screen */}
+      <main className="flex-1 flex flex-col items-center justify-center w-full my-auto text-center px-4">
+        <div className="space-y-4 w-full max-w-5xl">
+          <div className="flex items-center justify-center gap-3">
+            <span className={`px-4 py-1 rounded-full text-xs sm:text-sm font-black uppercase tracking-widest border shadow-sm ${isWhite ? 'bg-gray-100 border-gray-300 text-gray-800' : 'bg-[#0A192F] border-[#D4AF37]/40 text-[#D4AF37]'}`}>
+              Word {currentWordIndex + 1} of 100
             </span>
           </div>
 
-          {/* Giant Word Display Box */}
-          <div className="py-16 sm:py-28 bg-gradient-to-b from-[#0C1B33] to-[#081222] border-2 border-[#1E3660] rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.8)] px-6 w-full flex items-center justify-center min-h-[20rem] sm:min-h-[28rem] transition-all">
+          <div className={`py-20 sm:py-32 rounded-3xl w-full flex items-center justify-center min-h-[22rem] sm:min-h-[28rem] transition-all ${isWhite ? 'bg-gray-50 border-2 border-gray-300 shadow-inner' : 'bg-gradient-to-b from-[#0C1B33] to-[#081222] border-2 border-[#1E3660] shadow-[0_0_60px_rgba(0,0,0,0.8)]'}`}>
             {testState === 'paused' ? (
-              <div className="space-y-4 text-center">
-                <p className="text-3xl font-black text-amber-400 uppercase tracking-widest">⚠️ Projection Paused</p>
-                <p className="text-sm text-gray-300">Click Resume in the top right corner to continue from Word #{currentWordIndex + 1}</p>
+              <div className="space-y-3">
+                <p className="text-2xl sm:text-4xl font-black text-amber-500 uppercase tracking-widest">⚠️ Projection Paused</p>
+                <p className={`text-xs sm:text-sm font-medium ${isWhite ? 'text-gray-600' : 'text-gray-300'}`}>Click Resume in top right to continue from Word #{currentWordIndex + 1}</p>
               </div>
             ) : (
-              <h2 className={`${getWordFontSize(currentWord.word)} font-black tracking-[0.05em] sm:tracking-[0.08em] text-white drop-shadow-[0_4px_25px_rgba(255,255,255,0.25)] uppercase transition-all duration-200 break-words max-w-full px-2`}>
+              <h2 className={`${getWordFontSize(currentWord.word)} font-black tracking-[0.06em] uppercase transition-all duration-200 break-words max-w-full px-4 ${isWhite ? 'text-gray-950 drop-shadow' : 'text-white drop-shadow-[0_4px_25px_rgba(255,255,255,0.25)]'}`}>
                 {currentWord.word}
               </h2>
             )}
@@ -442,33 +457,29 @@ export default function WatTestExecutionPage() {
         </div>
       </main>
 
-      {/* Bottom Countdown Clock & Progress */}
-      <footer className="w-full space-y-4 pt-4 border-t border-[#1A2E4C] px-2">
-        <div className="flex items-center justify-between text-xs sm:text-base font-black uppercase tracking-wider text-gray-200">
-          <span className="flex items-center gap-2 text-emerald-400">
-            ⏱️ Timer: <strong className="text-white font-extrabold text-lg sm:text-xl bg-slate-900 px-3 py-0.5 rounded border border-slate-700">{timeLeft}s</strong>
-          </span>
-          
-          <span className={`px-3 py-1 rounded-full text-xs sm:text-sm transition-all ${timeLeft <= 2 ? 'bg-rose-600 text-white animate-pulse font-black shadow-[0_0_20px_rgba(244,63,94,0.6)]' : 'text-amber-400 font-bold'}`}>
-            {timeLeft <= 2 ? '📢 ALARM: WORD SWITCHING!' : '🔊 Chime plays as word changes & alarm at 9s'}
+      {/* Ultra-Clean Sleek Countdown Footer */}
+      <footer className={`w-full pt-3 border-t px-2 ${isWhite ? 'border-gray-200' : 'border-[#1A2E4C]'}`}>
+        <div className="flex items-center justify-between text-xs sm:text-sm font-black uppercase tracking-wider mb-2">
+          <span className="flex items-center gap-1.5 text-emerald-500">
+            ⏱️ Timer: <strong className={`font-extrabold px-2.5 py-0.5 rounded border ${isWhite ? 'bg-gray-200 border-gray-300 text-gray-900' : 'bg-slate-900 border-slate-700 text-white'}`}>{timeLeft}s</strong>
           </span>
 
-          <span className="text-gray-300">
-            Progress: <strong className="text-amber-400">{Math.round(((currentWordIndex + 1) / 100) * 100)}%</strong>
+          <span className={`px-3 py-0.5 rounded-full text-[11px] sm:text-xs font-black transition-all ${timeLeft <= 2 ? 'bg-rose-600 text-white animate-pulse shadow-lg shadow-rose-600/50' : isWhite ? 'text-gray-500' : 'text-amber-400'}`}>
+            {timeLeft <= 2 ? '📢 SIREN ACTIVE: SWITCHING!' : '🔊 Audible chime at word change & 1s alarm'}
+          </span>
+
+          <span className={isWhite ? 'text-gray-700' : 'text-gray-300'}>
+            Progress: <strong className="text-amber-500">{Math.round(((currentWordIndex + 1) / 100) * 100)}%</strong>
           </span>
         </div>
 
-        {/* Smooth Animated Progress Bar */}
-        <div className="w-full h-4 sm:h-5 bg-slate-950 border border-slate-800 rounded-full overflow-hidden shadow-inner p-0.5">
+        {/* Thin Animated Time Bar */}
+        <div className={`w-full h-2.5 rounded-full overflow-hidden p-0.5 ${isWhite ? 'bg-gray-200' : 'bg-slate-950 border border-slate-800'}`}>
           <div 
-            className={`h-full rounded-full transition-all duration-1000 shadow-lg ${timeLeft <= 2 ? 'bg-rose-500 animate-pulse shadow-rose-500/50' : timeLeft <= 5 ? 'bg-amber-400' : 'bg-gradient-to-r from-emerald-500 to-[#25D366]'}`}
-            style={{ width: `${((10 - timeLeft) / 10) * 100}%` }}
+            className={`h-full rounded-full transition-all duration-1000 ${timeLeft <= 2 ? 'bg-rose-600' : timeLeft <= 5 ? 'bg-amber-400' : 'bg-[#25D366]'}`}
+            style={{ width: `${((timerDuration - timeLeft) / timerDuration) * 100}%` }}
           />
         </div>
-
-        <p className="text-center text-[10px] sm:text-xs text-gray-400 font-bold uppercase tracking-widest pt-0.5">
-          Write sentences immediately on paper • Do not skip • Build constructive armed forces mentality
-        </p>
       </footer>
 
     </div>

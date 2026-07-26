@@ -3,6 +3,8 @@ import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import BookCard from '@/components/BookCard'
 import CategoryCard from '@/components/CategoryCard'
+import LiveTrustTicker from '@/components/LiveTrustTicker'
+import EligibilityCalculator from '@/components/EligibilityCalculator'
 import { 
   GraduationCap, Briefcase, Download, Hammer, BookOpen, 
   Sparkles, Layers, ArrowRight, ShieldCheck, FileText,
@@ -127,6 +129,9 @@ export default async function HomePage() {
   return (
     <div className="space-y-20 pb-24 bg-slate-50 text-gray-800 font-sans selection:bg-[#B8212E] selection:text-white">
       
+      {/* ── LIVE CANDIDATE TICKER & TRUST AUTHORITY BANNER ─────────────────── */}
+      <LiveTrustTicker />
+
       {/* ── HERO SECTION (Ultra Premium Dark Suite) ───────────────────────── */}
       <section className="relative overflow-hidden bg-[#0A192F] py-20 sm:py-28 text-white border-b border-[#112240] shadow-2xl">
         <div className="absolute top-0 -left-40 w-96 h-96 bg-[#B8212E]/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
@@ -390,6 +395,9 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── INTERACTIVE ARMED FORCES ELIGIBILITY & AGE CHECKER ───────────── */}
+      <EligibilityCalculator />
 
       {/* ── FEATURED APPS & SOFTWARE (Secure 2-Step Vault) ───────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

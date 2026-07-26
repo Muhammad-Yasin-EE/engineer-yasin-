@@ -180,12 +180,8 @@ export default function WatTestExecutionPage() {
     setTestState('intro')
   }
 
-  const getWordFontSize = (w: string) => {
-    if (!w) return 'text-4xl sm:text-7xl lg:text-9xl'
-    if (w.length > 12) return 'text-3xl sm:text-6xl lg:text-8xl'
-    if (w.length > 9) return 'text-4xl sm:text-7xl lg:text-9xl'
-    if (w.length > 7) return 'text-5xl sm:text-7xl lg:text-9xl'
-    return 'text-5xl sm:text-8xl lg:text-9xl'
+  const getWordFontSize = (w?: string) => {
+    return 'text-4xl sm:text-6xl md:text-7xl lg:text-8xl'
   }
 
   // Calculate self-audit score percentage

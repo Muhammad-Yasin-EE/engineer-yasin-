@@ -40,19 +40,17 @@ export default function WatIndexPage() {
             </div>
           </div>
           
-          <div className="flex items-center gap-4 sm:gap-6 pt-2">
-            <Image src="/logo.jpg" alt="Engineer Yasin Logo" width={72} height={72} className="w-14 h-14 sm:w-20 sm:h-20 rounded-full border-2 border-[#D4AF37] object-cover shadow-2xl shrink-0" />
-            <div className="space-y-1">
-              <span className="text-xs sm:text-sm font-black uppercase tracking-widest text-[#D4AF37] block">Official ISSB Psychological Selection</span>
-              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
-                Word Association <span className="text-emerald-400">Test (WAT) Hub</span>
-              </h1>
-            </div>
+          <div className="space-y-2 pt-2 max-w-4xl">
+            <span className="text-xs sm:text-sm font-black uppercase tracking-widest text-[#D4AF37] block">
+              Official ISSB Psychological Selection
+            </span>
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight uppercase">
+              Word Association <span className="text-emerald-400">Test (WAT) Hub</span>
+            </h1>
+            <p className="text-xs sm:text-sm md:text-base text-gray-300 font-medium leading-relaxed pt-2 max-w-3xl">
+              Welcome to the official testing repository. Attempt real-time psychological testing in authentic projector hall mode. Each test contains exactly <strong className="text-white font-black">100 official stimulus words</strong> with standard slide transition intervals.
+            </p>
           </div>
-
-          <p className="text-xs sm:text-base text-gray-300 max-w-3xl font-medium leading-relaxed">
-            Welcome to the official testing repository. Attempt real-time psychological testing in authentic projector hall mode. Each test contains exactly <strong className="text-white font-black">100 official stimulus words</strong> with standard slide transition intervals.
-          </p>
 
           {/* Official Testing Criteria Pills */}
           <div className="flex flex-wrap items-center gap-3 pt-2 text-xs font-black uppercase tracking-wider text-gray-300">

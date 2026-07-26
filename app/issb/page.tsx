@@ -625,32 +625,34 @@ export default function ISSBPage() {
             </p>
           </div>
 
-          {/* ── ENGINEER YASIN ISSB PREP (REAL-TIME WAT MODULE BANNER) ───────── */}
-          <div className="mb-12 relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#0A192F] via-[#112240] to-[#0A192F] text-white p-8 sm:p-12 border border-[#1d335a] shadow-2xl">
-            <div className="absolute top-0 right-0 w-1/2 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-rose-500/20 via-transparent to-transparent pointer-events-none" />
+          {/* ── OFFICIAL ISSB EVALUATION PROTOCOL BANNER ───────── */}
+          <div className="mb-12 relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#0A192F] via-[#112240] to-[#0A192F] text-white p-8 sm:p-12 border border-[#1E3660] shadow-2xl">
+            <div className="absolute top-0 right-0 w-1/2 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-500/15 via-transparent to-transparent pointer-events-none" />
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
-              <div className="space-y-4 max-w-2xl">
-                <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-black uppercase tracking-widest">
-                  🎖️ Engineer Yasin ISSB Prep • Real-Time Module
+              <div className="space-y-4 max-w-3xl">
+                <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-black uppercase tracking-widest text-[#D4AF37]">
+                  🇵🇰 Official ISSB Selection Standards &amp; Protocols
                 </span>
-                <h3 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-                  Official WAT Test Hub
+                <h3 className="text-2xl sm:text-4xl font-black text-white tracking-tight uppercase">
+                  Comprehensive Military Testing Criteria
                 </h3>
-                <p className="text-sm text-gray-300 font-medium leading-relaxed">
-                  Experience authentic testing center conditions! Attempt <strong className="text-amber-400">15 Complete Tests (1,500 Words)</strong> in distraction-free black screen projection with decorative white border frame, top-right academy insignia, and an authentic Air Horn hooter sound on every word transition.
+                <p className="text-xs sm:text-sm text-gray-300 font-medium leading-relaxed">
+                  The Inter Services Selection Board evaluates candidates through three scientific testing dimensions: <strong className="text-white">Psychology Assessments (Day 1)</strong>, <strong className="text-white">GTO Tactical Obstacles (Days 2–3)</strong>, and <strong className="text-white">Deputy President Interviews (Days 3–4)</strong>. All preparatory modules below follow standard operational criteria.
                 </p>
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-1 text-[11px] font-extrabold text-slate-200">
-                  <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">⚡ Official 10s Interval</span>
-                  <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">📢 Air Horn Hooter Audio</span>
-                  <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">🎬 Official Projector Hall</span>
+                  <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">🧠 Psychology Battery</span>
+                  <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">🎯 GTO Field Tasks</span>
+                  <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">⭐ DP Interview Standards</span>
                 </div>
               </div>
-              <Link
-                href="/issb/wat"
-                className="px-8 py-5 bg-[#B8212E] hover:bg-[#961a25] active:scale-95 text-white font-black text-sm uppercase tracking-wider rounded-2xl shadow-2xl transition-all shrink-0 flex items-center justify-center gap-2 border border-rose-400/20 hover:shadow-rose-900/40"
+              <a
+                href="https://wa.me/923116826552?text=Hello%20Engineer%20Yasin,%20please%20guide%20me%20regarding%20Official%20ISSB%20Testing%20Protocols%20and%20Notes!"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-8 py-5 bg-[#25D366] hover:bg-[#1EBE5D] active:scale-95 text-white font-black text-xs sm:text-sm uppercase tracking-wider rounded-2xl shadow-2xl transition-all shrink-0 flex items-center justify-center gap-2 border border-emerald-400/20 hover:shadow-emerald-900/40"
               >
-                ⚡ Open WAT Hub ➔
-              </Link>
+                📥 Get Official Notes on WhatsApp ➔
+              </a>
             </div>
           </div>
 

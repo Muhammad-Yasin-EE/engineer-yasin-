@@ -20,6 +20,7 @@ export default function WatTestExecutionPage() {
 
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const countdownTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const alarmTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const currentWord: WatWord = testSet.words[currentWordIndex] || testSet.words[0]
@@ -98,44 +99,50 @@ export default function WatTestExecutionPage() {
     }
   }, [testState])
 
-  // Play Air Horn immediately when entering active state or switching words
+  // 10-Second Automatic Word Switching & Air Horn 2 seconds before slide change
   useEffect(() => {
     if (testState === 'active') {
-      playAirHorn()
-    }
-  }, [currentWordIndex, testState, playAirHorn])
+      // When Word #1 (index 0) first appears right after countdown, sound starting horn!
+      if (currentWordIndex === 0) {
+        playAirHorn()
+      }
 
-  // 10-Second Automatic Word Switching
-  useEffect(() => {
-    if (testState === 'active') {
-      timerRef.current = setInterval(() => {
-        setCurrentWordIndex((prevIdx) => {
-          if (prevIdx < testSet.words.length - 1) {
-            return prevIdx + 1
-          } else {
-            setTestState('complete')
-            if (document.fullscreenElement) {
-              document.exitFullscreen().catch(e => console.log(e))
-            }
-            return prevIdx
+      // Schedule the Air Horn to blast exactly 2 seconds BEFORE word transitions (at the 8th second)
+      if (currentWordIndex < testSet.words.length - 1) {
+        alarmTimeoutRef.current = setTimeout(() => {
+          playAirHorn()
+        }, 8000) // 8000ms = exactly 2 seconds before the 10000ms switch
+      }
+
+      // Schedule exact slide transition at 10000ms
+      timerRef.current = setTimeout(() => {
+        if (currentWordIndex < testSet.words.length - 1) {
+          setCurrentWordIndex(prev => prev + 1)
+        } else {
+          setTestState('complete')
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(e => console.log(e))
           }
-        })
+        }
       }, 10000) // Exactly 10 seconds per stimulus word
     } else {
-      if (timerRef.current) clearInterval(timerRef.current)
+      if (timerRef.current) clearTimeout(timerRef.current)
+      if (alarmTimeoutRef.current) clearTimeout(alarmTimeoutRef.current)
     }
 
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current)
+      if (timerRef.current) clearTimeout(timerRef.current)
+      if (alarmTimeoutRef.current) clearTimeout(alarmTimeoutRef.current)
     }
-  }, [testState, testSet.words.length])
+  }, [testState, currentWordIndex, testSet.words.length, playAirHorn])
 
   // Listen for Escape key to exit cleanly
   useEffect(() => {
     const handleFullscreenChange = () => {
       if (!document.fullscreenElement && (testState === 'active' || testState === 'countdown')) {
-        if (timerRef.current) clearInterval(timerRef.current)
+        if (timerRef.current) clearTimeout(timerRef.current)
         if (countdownTimerRef.current) clearInterval(countdownTimerRef.current)
+        if (alarmTimeoutRef.current) clearTimeout(alarmTimeoutRef.current)
         setTestState('intro')
         setCurrentWordIndex(0)
         setCountdownNum(3)
@@ -233,7 +240,7 @@ export default function WatTestExecutionPage() {
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="text-emerald-400 font-bold shrink-0">3.</span>
-                <span>Each word will be displayed for exactly <strong>10 seconds</strong> before automatically transitioning to the next word with an authentic military buzzer sound.</span>
+                <span>Each word will be displayed for exactly <strong>10 seconds</strong>. An authentic military buzzer will sound exactly <strong>2 seconds before</strong> each slide transition.</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="text-emerald-400 font-bold shrink-0">4.</span>

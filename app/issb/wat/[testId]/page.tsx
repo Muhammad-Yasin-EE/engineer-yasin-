@@ -166,15 +166,24 @@ export default function WatTestExecutionPage() {
     setTestState('intro')
   }
 
+  // Smart Font Auto-Scaler for small 320px mobile screens
+  const getWordFontSize = (w: string) => {
+    if (!w) return 'text-4xl sm:text-7xl lg:text-9xl'
+    if (w.length > 12) return 'text-3xl sm:text-6xl lg:text-8xl'
+    if (w.length > 9) return 'text-4xl sm:text-7xl lg:text-9xl'
+    if (w.length > 7) return 'text-5xl sm:text-7xl lg:text-9xl'
+    return 'text-5xl sm:text-8xl lg:text-9xl'
+  }
+
   // ── INTRO / 2-STEP GATE SCREEN ─────────────────────────────────────────────
   if (testState === 'intro') {
     return (
       <div className="min-h-screen bg-slate-950 text-white flex flex-col justify-between p-4 sm:p-8 selection:bg-[#B8212E] selection:text-white font-sans">
         <div className="max-w-3xl mx-auto w-full my-auto space-y-8 bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-12 shadow-2xl relative overflow-hidden">
           
-          {/* Background Ambient Glow */}
-          <div className="absolute -right-20 -top-20 w-80 h-80 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-[#B8212E]/10 rounded-full blur-3xl pointer-events-none"></div>
+          {/* Background Ambient Glow (Disabled on small phones for 60 FPS performance) */}
+          <div className="hidden sm:block absolute -right-20 -top-20 w-80 h-80 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="hidden sm:block absolute -left-20 -bottom-20 w-80 h-80 bg-[#B8212E]/10 rounded-full blur-3xl pointer-events-none"></div>
 
           {/* Header & Logo */}
           <div className="flex items-center justify-between border-b border-slate-800 pb-6 relative z-10">
@@ -425,7 +434,7 @@ export default function WatTestExecutionPage() {
                 <p className="text-sm text-gray-300">Click Resume in the top right corner to continue from Word #{currentWordIndex + 1}</p>
               </div>
             ) : (
-              <h2 className="text-6xl sm:text-8xl lg:text-9xl font-black tracking-[0.08em] text-white drop-shadow-[0_4px_25px_rgba(255,255,255,0.25)] uppercase transition-all duration-200">
+              <h2 className={`${getWordFontSize(currentWord.word)} font-black tracking-[0.05em] sm:tracking-[0.08em] text-white drop-shadow-[0_4px_25px_rgba(255,255,255,0.25)] uppercase transition-all duration-200 break-words max-w-full px-2`}>
                 {currentWord.word}
               </h2>
             )}

@@ -647,7 +647,62 @@ export default function ISSBPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          {/* ── MOBILE ULTRA-COMPACT LIST VIEW (<640px for old/small Pakistani smartphones) ── */}
+          <div className="sm:hidden divide-y divide-gray-200 bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+            {[
+              { title: "Word Association Test (WAT)", category: "Psychology", icon: Brain, isReady: true, href: "/issb/wat" },
+              { title: "Sentence Completion (Urdu)", category: "Psychology", icon: Brain, isReady: false },
+              { title: "Sentence Completion (Eng)", category: "Psychology", icon: Brain, isReady: false },
+              { title: "Picture Story Writing (TAT)", category: "Psychology", icon: BookOpen, isReady: false },
+              { title: "Pointer Story Writing", category: "Psychology", icon: BookOpen, isReady: false },
+              { title: "Self-Description & Peer Rating", category: "Psychology", icon: UserCheck, isReady: false },
+              { title: "Group Discussion Topics", category: "GTO Indoor", icon: Users, isReady: false },
+              { title: "Group Planning Exercise (GPE)", category: "GTO Indoor", icon: Target, isReady: false },
+              { title: "Progressive Group Task (PGT)", category: "GTO Outdoor", icon: Users, isReady: false },
+              { title: "Half Group Task (HGT)", category: "GTO Outdoor", icon: Users, isReady: false },
+              { title: "Command Task (CT)", category: "GTO Outdoor", icon: Award, isReady: false },
+              { title: "Individual Obstacles Course", category: "GTO Outdoor", icon: Target, isReady: false },
+              { title: "Group Obstacle Race (Snake)", category: "GTO Outdoor", icon: Users, isReady: false },
+              { title: "Final Group Task (FGT)", category: "GTO Outdoor", icon: Users, isReady: false },
+              { title: "Personal Information Form (PIF)", category: "DP Interview", icon: UserCheck, isReady: false },
+              { title: "Deputy President Interview", category: "DP Interview", icon: Award, isReady: false }
+            ].map((item, idx) => {
+              const Icon = item.icon;
+              return (
+                <div key={idx} className="p-3.5 flex items-center justify-between gap-3 hover:bg-slate-50 transition-colors">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-100 shrink-0">
+                      <Icon className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[10px] uppercase font-black tracking-wider text-slate-500 block leading-none mb-0.5">
+                        {item.category}
+                      </span>
+                      <h4 className="text-xs font-black text-gray-900 truncate leading-snug">
+                        {item.title}
+                      </h4>
+                    </div>
+                  </div>
+                  
+                  {item.isReady ? (
+                    <Link
+                      href={item.href || '#'}
+                      className="px-3 py-2 bg-[#B8212E] hover:bg-[#961a25] active:scale-95 text-white text-[11px] font-black uppercase tracking-wider rounded-xl shadow-sm flex items-center gap-1 shrink-0"
+                    >
+                      ⚡ Start
+                    </Link>
+                  ) : (
+                    <span className="px-2.5 py-1.5 bg-slate-100 border border-slate-200 text-slate-400 font-extrabold text-[10px] rounded-lg uppercase tracking-wider shrink-0 select-none">
+                      Soon
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* ── DESKTOP & TABLET CARD GRID (>= 640px) ── */}
+          <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {[
               // ── Psychology Assessment Battery ──
               { title: "Word Association Test (WAT)", category: "Psychology Test", desc: "Attempt all 15 real-time practice sets (1,500 words) with 10s automatic projection & 9th-second audio alarm.", icon: Brain, isReady: true, href: "/issb/wat" },
@@ -673,14 +728,14 @@ export default function ISSBPage() {
             ].map((item, idx) => {
               const Icon = item.icon;
               return (
-                <div key={idx} className="bg-white border border-gray-200 hover:border-emerald-500 rounded-2xl sm:rounded-3xl p-4 sm:p-5 lg:p-6 shadow-sm hover:shadow-lg transition-all duration-200 flex flex-col justify-between group h-full">
+                <div key={idx} className="bg-white border border-gray-200 hover:border-emerald-500 rounded-3xl p-5 lg:p-6 shadow-sm hover:shadow-lg transition-all duration-200 flex flex-col justify-between group h-full">
                   <div>
-                    <div className="flex items-center justify-between gap-1.5 mb-3 sm:mb-4">
-                      <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-black text-[9px] sm:text-[10px] uppercase tracking-wider truncate max-w-[130px] sm:max-w-none">
+                    <div className="flex items-center justify-between gap-1.5 mb-4">
+                      <span className="px-2.5 py-1 rounded bg-slate-100 text-slate-700 font-black text-[10px] uppercase tracking-wider truncate">
                         {item.category}
                       </span>
                       {item.isReady ? (
-                        <span className="text-[10px] font-black text-emerald-700 bg-emerald-50 border border-emerald-300 px-2 py-0.5 rounded-full flex items-center gap-1 shrink-0">
+                        <span className="text-[10px] font-black text-emerald-700 bg-emerald-50 border border-emerald-300 px-2.5 py-0.5 rounded-full flex items-center gap-1 shrink-0">
                           ⚡ ACTIVE
                         </span>
                       ) : (
@@ -689,13 +744,13 @@ export default function ISSBPage() {
                         </span>
                       )}
                     </div>
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-50/80 text-emerald-700 flex items-center justify-center mb-3 sm:mb-4 border border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-200">
-                      <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-50/80 text-emerald-700 flex items-center justify-center mb-4 border border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-200">
+                      <Icon className="w-6 h-6" />
                     </div>
-                    <h3 className="text-sm sm:text-base lg:text-lg font-black text-gray-900 group-hover:text-emerald-700 transition-colors mb-1.5 sm:mb-2 leading-snug">
+                    <h3 className="text-base lg:text-lg font-black text-gray-900 group-hover:text-emerald-700 transition-colors mb-2 leading-snug">
                       {item.title}
                     </h3>
-                    <p className="text-[11px] sm:text-xs text-gray-500 leading-relaxed mb-4 sm:mb-6 font-medium line-clamp-3">
+                    <p className="text-xs text-gray-500 leading-relaxed mb-6 font-medium line-clamp-3">
                       {item.desc}
                     </p>
                   </div>
@@ -703,12 +758,12 @@ export default function ISSBPage() {
                   {item.isReady ? (
                     <Link
                       href={item.href || '#'}
-                      className="w-full py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl sm:rounded-2xl bg-[#B8212E] hover:bg-[#961a25] active:scale-95 text-white font-black text-[11px] sm:text-xs flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-150 uppercase tracking-wider shadow-md hover:shadow-rose-900/30 shrink-0"
+                      className="w-full py-3 px-4 rounded-2xl bg-[#B8212E] hover:bg-[#961a25] active:scale-95 text-white font-black text-xs flex items-center justify-center gap-2 transition-all duration-150 uppercase tracking-wider shadow-md hover:shadow-rose-900/30 shrink-0"
                     >
                       🚀 Start Practice Now ➔
                     </Link>
                   ) : (
-                    <div className="w-full py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl sm:rounded-2xl bg-slate-100 border border-slate-200 text-slate-400 font-extrabold text-[10px] sm:text-[11px] flex items-center justify-center gap-1.5 uppercase tracking-wider cursor-not-allowed select-none shrink-0">
+                    <div className="w-full py-3 px-4 rounded-2xl bg-slate-100 border border-slate-200 text-slate-400 font-extrabold text-[11px] flex items-center justify-center gap-1.5 uppercase tracking-wider cursor-not-allowed select-none shrink-0">
                       ⏳ Prep Module Coming Soon
                     </div>
                   )}

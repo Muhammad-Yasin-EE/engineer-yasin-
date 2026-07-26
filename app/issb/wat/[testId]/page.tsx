@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { watSets, getWatSetById, WatWord } from '@/lib/data/watData'
-import { ArrowLeft, MessageCircle, RotateCcw, CheckCircle2, ShieldCheck } from 'lucide-react'
+import { ArrowLeft, MessageCircle, RotateCcw } from 'lucide-react'
 
 export default function WatTestExecutionPage() {
   const router = useRouter()
@@ -13,11 +13,15 @@ export default function WatTestExecutionPage() {
   const testId = params.testId as string
   const testSet = getWatSetById(testId) || watSets[0]
 
-  const [testState, setTestState] = useState<'intro' | 'active' | 'complete'>('intro')
+  const [testState, setTestState] = useState<'intro' | 'countdown' | 'active' | 'complete'>('intro')
+  const [countdownNum, setCountdownNum] = useState<number>(3)
   const [currentWordIndex, setCurrentWordIndex] = useState<number>(0)
   const [hasJoinedWhatsApp, setHasJoinedWhatsApp] = useState<boolean>(false)
 
   const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const countdownTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+
   const currentWord: WatWord = testSet.words[currentWordIndex] || testSet.words[0]
 
   useEffect(() => {
@@ -25,38 +29,74 @@ export default function WatTestExecutionPage() {
     if (joined) setHasJoinedWhatsApp(true)
   }, [])
 
-  // ── Authentic Air Horn / Hooter Sound (Plays on every word switch) ──
-  const playAirHorn = useCallback(() => {
+  // ── Web Audio API Fallback Synthesizer (In case MPEG browser policy blocks audio) ──
+  const playFallbackSynth = useCallback(() => {
     try {
       const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
       const now = audioCtx.currentTime
-
-      // Air horn / Hooter triad frequencies with sawtooth/square blend
       const freqs = [370, 466, 554, 372]
       
       freqs.forEach((freq, idx) => {
         const osc = audioCtx.createOscillator()
         const gain = audioCtx.createGain()
-
         osc.type = idx % 2 === 0 ? 'sawtooth' : 'square'
-        
         osc.frequency.setValueAtTime(freq, now)
         osc.frequency.linearRampToValueAtTime(freq - 3, now + 0.6)
-
         gain.gain.setValueAtTime(0.25, now)
         gain.gain.setValueAtTime(0.25, now + 0.45)
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6)
-
         osc.connect(gain)
         gain.connect(audioCtx.destination)
-
         osc.start(now)
         osc.stop(now + 0.62)
       })
     } catch (err) {
-      console.error('Air horn synthesizer error:', err)
+      console.error('Synth fallback failed:', err)
     }
   }, [])
+
+  // ── Original Air Horn / Hooter Sound (Plays your exact AIR HORN FOR ISSB.mpeg file) ──
+  const playAirHorn = useCallback(() => {
+    try {
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0
+        audioRef.current.play().catch(e => {
+          console.log('MPEG playback blocked or error, fallback to synth horn:', e)
+          playFallbackSynth()
+        })
+      } else {
+        playFallbackSynth()
+      }
+    } catch (err) {
+      console.error('Air horn playing error:', err)
+      playFallbackSynth()
+    }
+  }, [playFallbackSynth])
+
+  // ── 3 -> 2 -> 1 Countdown Before First Word ──
+  useEffect(() => {
+    if (testState === 'countdown') {
+      countdownTimerRef.current = setInterval(() => {
+        setCountdownNum((prev) => {
+          if (prev > 1) {
+            return prev - 1
+          } else {
+            if (countdownTimerRef.current) clearInterval(countdownTimerRef.current)
+            // As countdown ends (at 1 -> 0), switch to active and play sound for Word #1!
+            setTestState('active')
+            setCurrentWordIndex(0)
+            return 0
+          }
+        })
+      }, 1000)
+    } else {
+      if (countdownTimerRef.current) clearInterval(countdownTimerRef.current)
+    }
+
+    return () => {
+      if (countdownTimerRef.current) clearInterval(countdownTimerRef.current)
+    }
+  }, [testState])
 
   // Play Air Horn immediately when entering active state or switching words
   useEffect(() => {
@@ -93,10 +133,12 @@ export default function WatTestExecutionPage() {
   // Listen for Escape key to exit cleanly
   useEffect(() => {
     const handleFullscreenChange = () => {
-      if (!document.fullscreenElement && testState === 'active') {
+      if (!document.fullscreenElement && (testState === 'active' || testState === 'countdown')) {
         if (timerRef.current) clearInterval(timerRef.current)
+        if (countdownTimerRef.current) clearInterval(countdownTimerRef.current)
         setTestState('intro')
         setCurrentWordIndex(0)
+        setCountdownNum(3)
       }
     }
     document.addEventListener('fullscreenchange', handleFullscreenChange)
@@ -115,6 +157,11 @@ export default function WatTestExecutionPage() {
       return
     }
 
+    // Preload audio on user gesture
+    if (audioRef.current) {
+      audioRef.current.load()
+    }
+
     try {
       const el = document.documentElement
       if (el.requestFullscreen) {
@@ -124,8 +171,8 @@ export default function WatTestExecutionPage() {
       console.log('Fullscreen error:', e)
     }
 
-    setCurrentWordIndex(0)
-    setTestState('active')
+    setCountdownNum(3)
+    setTestState('countdown')
   }
 
   // Adaptive Font Sizing to ensure long words NEVER overflow the projection box
@@ -141,9 +188,13 @@ export default function WatTestExecutionPage() {
   if (testState === 'intro') {
     return (
       <div className="min-h-screen bg-slate-950 text-white flex flex-col justify-between p-4 sm:p-8 font-sans selection:bg-[#B8212E] selection:text-white">
+        
+        {/* Hidden Audio Element pointing to your uploaded MPEG file */}
+        <audio ref={audioRef} src="/air-horn-issb.mpeg" preload="auto" />
+
         <div className="max-w-3xl mx-auto w-full my-auto bg-[#0A192F] border border-[#1A2E4C] rounded-3xl p-6 sm:p-10 shadow-2xl space-y-8 relative">
           
-          {/* Top Bar - Simple & Official (No Logo Inside Card as requested) */}
+          {/* Top Bar - Simple & Official */}
           <div className="flex items-center justify-between pb-6 border-b border-slate-800">
             <Link href="/issb/wat" className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-white transition-colors uppercase tracking-wider">
               <ArrowLeft className="w-4 h-4" /> Return to Test Hub
@@ -178,15 +229,15 @@ export default function WatTestExecutionPage() {
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="text-emerald-400 font-bold shrink-0">2.</span>
-                <span>Each word will be displayed for exactly <strong>10 seconds</strong> before automatically transitioning to the next word.</span>
+                <span>Before the first word appears, a brief <strong>3-second countdown</strong> will commence to prepare you.</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="text-emerald-400 font-bold shrink-0">3.</span>
-                <span>As soon as a word appears, read it and immediately write down the <strong>first spontaneous sentence</strong> that comes to mind on your answer sheet against the corresponding serial number.</span>
+                <span>Each word will be displayed for exactly <strong>10 seconds</strong> before automatically transitioning to the next word with an authentic military buzzer sound.</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="text-emerald-400 font-bold shrink-0">4.</span>
-                <span>Do not linger or pause; trust your first positive thought and keep moving forward with the projection timeline.</span>
+                <span>As soon as a word appears, write down the <strong>first spontaneous sentence</strong> that comes to mind on your answer sheet against the corresponding serial number.</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="text-emerald-400 font-bold shrink-0">5.</span>
@@ -231,6 +282,7 @@ export default function WatTestExecutionPage() {
   if (testState === 'complete') {
     return (
       <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-8 font-sans selection:bg-[#B8212E] selection:text-white pb-24">
+        <audio ref={audioRef} src="/air-horn-issb.mpeg" preload="auto" />
         <div className="max-w-4xl mx-auto space-y-8">
           
           <div className="bg-[#0A192F] border border-[#1A2E4C] rounded-3xl p-8 sm:p-12 text-center space-y-5 shadow-2xl">
@@ -280,11 +332,58 @@ export default function WatTestExecutionPage() {
     )
   }
 
+  // ── COUNTDOWN SCREEN (3 -> 2 -> 1 IN PURE PROJECTOR HALL STYLE) ───────────
+  if (testState === 'countdown') {
+    return (
+      <div className="fixed inset-0 z-[999999] w-screen h-screen bg-black text-white flex items-center justify-center p-3 sm:p-6 lg:p-8 select-none overflow-hidden font-sans">
+        
+        {/* Outer White Frame Box Covering Full Screen */}
+        <div className="w-full h-full border-[3px] sm:border-[5px] border-white relative flex flex-col items-center justify-center p-4 sm:p-8">
+          
+          {/* Decorative Traditional Corner Ornamentations */}
+          <div className="absolute top-2 left-2 w-8 h-8 sm:w-12 sm:h-12 border-t-4 border-l-4 border-white pointer-events-none" />
+          <div className="absolute top-2 right-2 w-8 h-8 sm:w-12 sm:h-12 border-t-4 border-r-4 border-white pointer-events-none" />
+          <div className="absolute bottom-2 left-2 w-8 h-8 sm:w-12 sm:h-12 border-b-4 border-l-4 border-white pointer-events-none" />
+          <div className="absolute bottom-2 right-2 w-8 h-8 sm:w-12 sm:h-12 border-b-4 border-r-4 border-white pointer-events-none" />
+
+          {/* Small Academy Logo on Top-Right Corner ONLY */}
+          <div className="absolute top-4 right-4 sm:top-6 sm:right-8 lg:top-8 lg:right-12 flex flex-col items-center gap-1 opacity-95">
+            <div className="p-0.5 rounded-full border-2 border-white bg-black">
+              <Image 
+                src="/logo.jpg" 
+                alt="Engineer Yasin Logo" 
+                width={64} 
+                height={64} 
+                className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-full object-cover" 
+              />
+            </div>
+            <span className="text-[8px] sm:text-[10px] lg:text-[11px] font-black tracking-widest text-white uppercase mt-0.5 text-center leading-none">
+              Engineer Yasin<br />Official Prep
+            </span>
+          </div>
+
+          <span className="text-xs sm:text-base font-black tracking-widest uppercase text-emerald-400 mb-4">
+            Get Ready • Test Starting In
+          </span>
+
+          {/* Giant Countdown Number */}
+          <div className="text-8xl sm:text-[12rem] lg:text-[14rem] font-black text-white leading-none animate-pulse">
+            {countdownNum}
+          </div>
+
+        </div>
+      </div>
+    )
+  }
+
   // ── ACTIVE FULLSCREEN TESTING MODE (PURE ACADEMY PROJECTOR STYLE) ─────────
-  // Black backdrop, white border with corners, top-right logo only, adaptive centered text!
+  // Black backdrop, white border with corners, top-right logo only, adaptive centered text + real audio horn!
   return (
     <div className="fixed inset-0 z-[999999] w-screen h-screen bg-black text-white flex items-center justify-center p-3 sm:p-6 lg:p-8 select-none overflow-hidden font-sans">
       
+      {/* Audio element for real recorded air horn playback */}
+      <audio ref={audioRef} src="/air-horn-issb.mpeg" preload="auto" />
+
       {/* Outer White Frame Box Covering Full Screen */}
       <div className="w-full h-full border-[3px] sm:border-[5px] border-white relative flex items-center justify-center p-4 sm:p-8">
         

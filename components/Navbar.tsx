@@ -254,63 +254,16 @@ export default function Navbar() {
               Home
             </Link>
 
-            {/* Join Army Dropdown */}
-            <div 
-              className="relative py-2"
-              onMouseEnter={() => setActiveDropdown('army')}
-              onMouseLeave={() => setActiveDropdown(null)}
-            >
-              <Link href="/prep/armed-forces" prefetch={false} className="text-gray-700 hover:text-[#B8212E] flex items-center gap-0.5 uppercase tracking-wider transition-colors">
-                Join Army
-                <ChevronDown className="w-3 h-3" />
-              </Link>
-              {activeDropdown === 'army' && (
-                <div className="absolute left-0 mt-0 w-52 bg-white border border-gray-150 shadow-xl py-2 z-50 animate-scale-in">
-                  <Link href="/prep/armed-forces" prefetch={false} className="block px-4 py-2 hover:bg-emerald-50 hover:text-emerald-800 transition-colors">PMA Long Course 2026</Link>
-                  <Link href="/prep/armed-forces" prefetch={false} className="block px-4 py-2 hover:bg-emerald-50 hover:text-emerald-800 transition-colors">Technical Cadet Course (TCC)</Link>
-                  <Link href="/prep/armed-forces" prefetch={false} className="block px-4 py-2 hover:bg-emerald-50 hover:text-emerald-800 transition-colors">AFNS &amp; LCC Induction</Link>
-                  <Link href="/prep/armed-forces" prefetch={false} className="block px-4 py-2 hover:bg-emerald-50 hover:text-emerald-800 transition-colors">Army Soldier &amp; Clerk Prep</Link>
-                </div>
-              )}
-            </div>
-
-            {/* Join Navy Dropdown */}
-            <div 
-              className="relative py-2"
-              onMouseEnter={() => setActiveDropdown('navy')}
-              onMouseLeave={() => setActiveDropdown(null)}
-            >
-              <Link href="/prep/armed-forces" prefetch={false} className="text-gray-700 hover:text-[#B8212E] flex items-center gap-0.5 uppercase tracking-wider transition-colors">
-                Join Navy
-                <ChevronDown className="w-3 h-3" />
-              </Link>
-              {activeDropdown === 'navy' && (
-                <div className="absolute left-0 mt-0 w-48 bg-white border border-gray-150 shadow-xl py-2 z-50 animate-scale-in">
-                  <Link href="/prep/armed-forces" prefetch={false} className="block px-4 py-2 hover:bg-indigo-50 hover:text-indigo-800 transition-colors">PN Cadet Permanent</Link>
-                  <Link href="/prep/armed-forces" prefetch={false} className="block px-4 py-2 hover:bg-indigo-50 hover:text-indigo-800 transition-colors">Navy SSC &amp; Marines</Link>
-                  <Link href="/prep/armed-forces" prefetch={false} className="block px-4 py-2 hover:bg-indigo-50 hover:text-indigo-800 transition-colors">Navy Sailor Technical</Link>
-                </div>
-              )}
-            </div>
-
-            {/* Join PAF Dropdown */}
-            <div 
-              className="relative py-2"
-              onMouseEnter={() => setActiveDropdown('paf')}
-              onMouseLeave={() => setActiveDropdown(null)}
-            >
-              <Link href="/prep/armed-forces" prefetch={false} className="text-gray-700 hover:text-[#B8212E] flex items-center gap-0.5 uppercase tracking-wider transition-colors">
-                Join PAF
-                <ChevronDown className="w-3 h-3" />
-              </Link>
-              {activeDropdown === 'paf' && (
-                <div className="absolute left-0 mt-0 w-52 bg-white border border-gray-150 shadow-xl py-2 z-50 animate-scale-in">
-                  <Link href="/prep/armed-forces" prefetch={false} className="block px-4 py-2 hover:bg-blue-50 hover:text-blue-800 transition-colors">GD Pilot Permanent</Link>
-                  <Link href="/prep/armed-forces" prefetch={false} className="block px-4 py-2 hover:bg-blue-50 hover:text-blue-800 transition-colors">Aeronautical Engineering</Link>
-                  <Link href="/prep/armed-forces" prefetch={false} className="block px-4 py-2 hover:bg-blue-50 hover:text-blue-800 transition-colors">Airmen &amp; IT Branch</Link>
-                </div>
-              )}
-            </div>
+            {/* Direct Links without dropdowns as requested */}
+            <Link href="/prep/army" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
+              Join Army
+            </Link>
+            <Link href="/prep/navy" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
+              Join Navy
+            </Link>
+            <Link href="/prep/paf" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
+              Join PAF
+            </Link>
 
             {/* ISSB Dropdown */}
             <div 
@@ -323,28 +276,30 @@ export default function Navbar() {
                 <ChevronDown className="w-3 h-3" />
               </Link>
               {activeDropdown === 'issb' && (
-                <div className="absolute left-0 mt-0 w-56 bg-white border border-gray-150 shadow-xl py-2 z-50 animate-scale-in">
-                  <Link href="/issb" prefetch={false} className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] transition-colors">ISSB Main 18-Test Hub</Link>
-                  <Link href="/issb/wat" prefetch={false} className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] transition-colors">WAT 2.8s Hooter Practice</Link>
-                  <Link href="/issb/tat" prefetch={false} className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] transition-colors">TAT Picture Story Writing</Link>
-                  <Link href="/issb/ranks" prefetch={false} className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] transition-colors">Forces Ranks &amp; Salary</Link>
+                <div className="absolute left-0 mt-0 w-60 bg-white border border-gray-150 shadow-xl py-2 z-50 animate-scale-in">
+                  <Link href="/issb" prefetch={false} className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] font-bold transition-colors">ISSB Information</Link>
+                  <Link href="/issb" prefetch={false} className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] font-bold transition-colors">Free ISSB Prep</Link>
+                  <Link href="/issb/coaching" prefetch={false} className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] font-bold transition-colors">ISSB Coaching &amp; Training</Link>
+                  <div className="border-t border-gray-100 my-1" />
+                  <Link href="/issb/wat" prefetch={false} className="block px-4 py-2 text-gray-500 hover:bg-rose-50 hover:text-[#B8212E] transition-colors">WAT 2.8s Hooter Practice</Link>
+                  <Link href="/issb/ranks" prefetch={false} className="block px-4 py-2 text-gray-500 hover:bg-rose-50 hover:text-[#B8212E] transition-colors">Forces Ranks &amp; Salary</Link>
                 </div>
               )}
             </div>
 
-            <Link href="/prep/armed-forces" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
+            <Link href="/colleges" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
               Colleges
             </Link>
-            <Link href="/prep/armed-forces" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
+            <Link href="/quizzes" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
               Quizzes
             </Link>
-            <Link href="/software" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
+            <Link href="/pdfs" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
               PDFs
             </Link>
-            <Link href="/services" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
+            <Link href="/videos" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
               Videos
             </Link>
-            <Link href="/blog" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
+            <Link href="/jobs" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
               Jobs
             </Link>
 
@@ -586,39 +541,17 @@ export default function Navbar() {
               Home
             </Link>
             
-            <details className="group border-b border-gray-100 pb-2">
-              <summary className="flex items-center justify-between py-1.5 cursor-pointer hover:text-[#B8212E] select-none list-none [&::-webkit-details-marker]:hidden">
-                <span>Join Army</span>
-                <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-open:rotate-180 transition-transform" />
-              </summary>
-              <div className="pl-4 flex flex-col gap-2 mt-1 pb-1 font-bold text-gray-500 capitalize">
-                <Link href="/prep/armed-forces" onClick={() => setMobileMenuOpen(false)}>PMA Long Course 2026</Link>
-                <Link href="/prep/armed-forces" onClick={() => setMobileMenuOpen(false)}>Technical Cadet Course (TCC)</Link>
-                <Link href="/prep/armed-forces" onClick={() => setMobileMenuOpen(false)}>AFNS &amp; LCC Induction</Link>
-              </div>
-            </details>
+            <Link href="/prep/army" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block font-black">
+              Join Army
+            </Link>
 
-            <details className="group border-b border-gray-100 pb-2">
-              <summary className="flex items-center justify-between py-1.5 cursor-pointer hover:text-[#B8212E] select-none list-none [&::-webkit-details-marker]:hidden">
-                <span>Join Navy</span>
-                <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-open:rotate-180 transition-transform" />
-              </summary>
-              <div className="pl-4 flex flex-col gap-2 mt-1 pb-1 font-bold text-gray-500 capitalize">
-                <Link href="/prep/armed-forces" onClick={() => setMobileMenuOpen(false)}>PN Cadet Permanent</Link>
-                <Link href="/prep/armed-forces" onClick={() => setMobileMenuOpen(false)}>Navy SSC &amp; Marines</Link>
-              </div>
-            </details>
+            <Link href="/prep/navy" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block font-black">
+              Join Navy
+            </Link>
 
-            <details className="group border-b border-gray-100 pb-2">
-              <summary className="flex items-center justify-between py-1.5 cursor-pointer hover:text-[#B8212E] select-none list-none [&::-webkit-details-marker]:hidden">
-                <span>Join PAF</span>
-                <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-open:rotate-180 transition-transform" />
-              </summary>
-              <div className="pl-4 flex flex-col gap-2 mt-1 pb-1 font-bold text-gray-500 capitalize">
-                <Link href="/prep/armed-forces" onClick={() => setMobileMenuOpen(false)}>GD Pilot Permanent</Link>
-                <Link href="/prep/armed-forces" onClick={() => setMobileMenuOpen(false)}>Aeronautical Engineering</Link>
-              </div>
-            </details>
+            <Link href="/prep/paf" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block font-black">
+              Join PAF
+            </Link>
 
             <details className="group border-b border-gray-100 pb-2">
               <summary className="flex items-center justify-between py-1.5 cursor-pointer text-[#B8212E] select-none list-none [&::-webkit-details-marker]:hidden font-black">
@@ -626,25 +559,27 @@ export default function Navbar() {
                 <ChevronDown className="w-3.5 h-3.5 text-[#B8212E] group-open:rotate-180 transition-transform" />
               </summary>
               <div className="pl-4 flex flex-col gap-2 mt-1 pb-1 font-bold text-gray-500 capitalize">
-                <Link href="/issb" onClick={() => setMobileMenuOpen(false)}>ISSB 18-Test Portal</Link>
-                <Link href="/issb/wat" onClick={() => setMobileMenuOpen(false)}>WAT 2.8s Audio Hooter</Link>
-                <Link href="/issb/ranks" onClick={() => setMobileMenuOpen(false)}>Forces Ranks &amp; Salary</Link>
+                <Link href="/issb" onClick={() => setMobileMenuOpen(false)}>ISSB Information</Link>
+                <Link href="/issb" onClick={() => setMobileMenuOpen(false)}>Free ISSB Prep</Link>
+                <Link href="/issb/coaching" onClick={() => setMobileMenuOpen(false)}>ISSB Coaching &amp; Training</Link>
+                <Link href="/issb/wat" onClick={() => setMobileMenuOpen(false)} className="text-gray-400">WAT 2.8s Audio Hooter</Link>
+                <Link href="/issb/ranks" onClick={() => setMobileMenuOpen(false)} className="text-gray-400">Forces Ranks &amp; Salary</Link>
               </div>
             </details>
 
-            <Link href="/prep/armed-forces" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
+            <Link href="/colleges" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
               Colleges
             </Link>
-            <Link href="/prep/armed-forces" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
+            <Link href="/quizzes" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
               Quizzes
             </Link>
-            <Link href="/software" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
+            <Link href="/pdfs" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
               PDFs
             </Link>
-            <Link href="/services" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
+            <Link href="/videos" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
               Videos
             </Link>
-            <Link href="/blog" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
+            <Link href="/jobs" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
               Jobs
             </Link>
             <Link href="/blog" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 block">

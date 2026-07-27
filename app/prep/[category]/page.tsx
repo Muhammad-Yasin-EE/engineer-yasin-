@@ -55,6 +55,75 @@ const categoryData: Record<string, any> = {
       }
     ]
   },
+  'army': {
+    title: 'Pakistan Army Career Cards',
+    description: 'Explore all preliminary commissioned and non-commissioned exam portals for Pak Army 2026.',
+    icon: <ShieldCheck className="w-8 h-8 text-emerald-600" />,
+    color: 'emerald',
+    headerImageUrl: '/images/armed-forces-header.jpg',
+    subgroups: [
+      {
+        name: 'Pakistan Army Exams',
+        iconUrl: '/images/army-logo.jpg',
+        exams: [
+          { id: 'pma-long-course', name: 'PMA Long Course', cardBgUrl: '/images/card-pma.jpg' },
+          { id: 'lcc', name: 'LCC (Lady Cadet Course)', cardBgUrl: '/images/card-lcc.jpg' },
+          { id: 'dssc', name: 'DSSC', cardBgUrl: '/images/card-dssc.jpg' },
+          { id: 'tcc', name: 'TCC (Technical Cadet Course)', cardBgUrl: '/images/card-tcc.jpg' },
+          { id: 'afns', name: 'AFNS', cardBgUrl: '/images/card-afns.jpg' },
+          { id: 'm-cadet', name: 'M Cadet', cardBgUrl: '/images/card-army-amc.jpg' },
+          { id: 'amc', name: 'AMC (Medical Cadet)', cardBgUrl: '/images/card-army-amc.jpg' },
+          { id: 'soldier', name: 'Soldier', cardBgUrl: '/images/card-soldier.jpg' },
+        ]
+      }
+    ]
+  },
+  'paf': {
+    title: 'Pakistan Air Force Career Cards',
+    description: 'Explore all commissioned pilot, aeronautical engineering and airmen exam portals for PAF 2026.',
+    icon: <ShieldCheck className="w-8 h-8 text-sky-600" />,
+    color: 'blue',
+    headerImageUrl: '/images/armed-forces-header.jpg',
+    subgroups: [
+      {
+        name: 'Pakistan Air Force Exams',
+        iconUrl: '/images/paf-logo.jpg',
+        exams: [
+          { id: 'gd-pilot', name: 'GD Pilot', cardBgUrl: '/images/card-gd-pilot.jpg' },
+          { id: 'aeronautical-engineering', name: 'Aeronautical Engineering', cardBgUrl: '/images/card-aeronautical.jpg' },
+          { id: 'air-defence', name: 'Air Defence', cardBgUrl: '/images/card-air-defence.jpg' },
+          { id: 'logistics', name: 'Logistics', cardBgUrl: '/images/card-paf-logistics.jpg' },
+          { id: 'it', name: 'Information Tech', cardBgUrl: '/images/card-paf-it.jpg' },
+          { id: 'education', name: 'Education', cardBgUrl: '/images/card-paf-education.jpg' },
+          { id: 'admin', name: 'Admin', cardBgUrl: '/images/card-paf-admin.jpg' },
+          { id: 'accounts', name: 'Accounts', cardBgUrl: '/images/card-paf-accounts.jpg' },
+          { id: 'airmen', name: 'Airmen', cardBgUrl: '/images/card-paf-airmen.jpg' },
+        ]
+      }
+    ]
+  },
+  'navy': {
+    title: 'Pakistan Navy Career Cards',
+    description: 'Explore all PN Cadet, Short Service Commission, Marines and Technical Sailor portals for Pak Navy 2026.',
+    icon: <ShieldCheck className="w-8 h-8 text-indigo-600" />,
+    color: 'blue',
+    headerImageUrl: '/images/armed-forces-header.jpg',
+    subgroups: [
+      {
+        name: 'Pakistan Navy Exams',
+        iconUrl: '/images/navy-logo.jpg',
+        exams: [
+          { id: 'pn-cadet', name: 'PN Cadet', cardBgUrl: '/images/card-pn-cadet.jpg' },
+          { id: 'm-cadet-navy', name: 'M Cadet', cardBgUrl: '/images/card-army-amc.jpg' },
+          { id: 'pnec', name: 'PNEC / Cadet Scheme', cardBgUrl: '/images/card-navy-pnec.jpg' },
+          { id: 'ssc', name: 'SSC', cardBgUrl: '/images/card-ssc-navy.jpg' },
+          { id: 'marines', name: 'Marines', cardBgUrl: '/images/card-marines.jpg' },
+          { id: 'sailor', name: 'Sailor', cardBgUrl: '/images/card-sailor.jpg' },
+          { id: 'civilian', name: 'Civilian', cardBgUrl: '/images/card-civilian.jpg' },
+        ]
+      }
+    ]
+  },
   'public-service': {
     title: 'Public Service Commissions',
     description: 'Federal and Provincial Public Service Commission Preparation.',

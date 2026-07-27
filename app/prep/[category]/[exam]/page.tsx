@@ -41,7 +41,7 @@ export default async function ExamPage({
   const supabase = await createClient()
 
   // ── Fallback for non-armed-forces or unknown exams ─────────────────────────
-  if (category !== 'armed-forces' || !info) {
+  if (!['armed-forces', 'army', 'navy', 'paf'].includes(category) || !info) {
     const title = formatTitle(exam)
     let headerBg = '/images/exam-army-bg.jpg'
     if (['pma-long-course', 'lcc', 'dssc', 'tcc', 'afns', 'soldier', 'm-cadet', 'amc'].includes(exam))
@@ -157,7 +157,7 @@ export default async function ExamPage({
             href={`/prep/${category}`}
             className="inline-flex items-center gap-1.5 text-xs font-bold text-white/70 hover:text-white transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" /> Armed Forces
+            <ArrowLeft className="w-4 h-4" /> {category === 'army' ? 'Pak Army Cards' : category === 'navy' ? 'Pak Navy Cards' : category === 'paf' ? 'Pak Air Force Cards' : 'Armed Forces'}
           </Link>
           <div
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-widest ${clr.badge}`}

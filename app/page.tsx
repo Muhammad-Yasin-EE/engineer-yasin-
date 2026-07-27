@@ -323,11 +323,11 @@ export default async function Home() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8 justify-items-center">
           {[
-            { title: "Join Pak Army", img: "/images/pak_army_emblem.jpg", href: "/prep/armed-forces", ring: "border-emerald-600/60" },
-            { title: "Join Pak Navy", img: "/images/pak_navy_emblem.jpg", href: "/prep/armed-forces", ring: "border-indigo-600/60" },
-            { title: "Join Pak Air Force", img: "/images/paf-logo.jpg", href: "/prep/armed-forces", ring: "border-sky-500/60" },
+            { title: "Join Pak Army", img: "/images/pak_army_emblem.jpg", href: "/prep/army", ring: "border-emerald-600/60" },
+            { title: "Join Pak Navy", img: "/images/pak_navy_emblem.jpg", href: "/prep/navy", ring: "border-indigo-600/60" },
+            { title: "Join Pak Air Force", img: "/images/paf-logo.jpg", href: "/prep/paf", ring: "border-sky-500/60" },
             { title: "ISSB Tests", img: "/images/issb-header.jpg", href: "/issb", ring: "border-rose-600/60" },
-            { title: "Cadet Colleges", img: "/images/card-pma.jpg", href: "/prep/armed-forces", ring: "border-amber-500/60" }
+            { title: "Cadet Colleges", img: "/images/card-pma.jpg", href: "/colleges", ring: "border-amber-500/60" }
           ].map((hub) => (
             <Link
               key={hub.title}
@@ -380,7 +380,7 @@ export default async function Home() {
             { title: "Ranks In Pak Army", desc: "Lieutenant to General", href: "/issb/ranks", icon: ShieldCheck, color: "text-emerald-700 bg-emerald-50 border-emerald-300" },
             { title: "Ranks In Pak Navy", desc: "Sub Lieut to Admiral", href: "/issb/ranks", icon: Award, color: "text-indigo-700 bg-indigo-50 border-indigo-300" },
             { title: "Ranks In PAF", desc: "Pilot Officer to Air Chief", href: "/issb/ranks", icon: Compass, color: "text-sky-700 bg-sky-50 border-sky-300" },
-            { title: "Online Quizzes", desc: "Timed Intelligence Mocks", href: "/prep/armed-forces", icon: Flame, color: "text-rose-700 bg-rose-50 border-rose-300" }
+            { title: "Online Quizzes", desc: "Timed Intelligence Mocks", href: "/quizzes", icon: Flame, color: "text-rose-700 bg-rose-50 border-rose-300" }
           ].map((item) => {
             const IIcon = item.icon
             return (
@@ -407,7 +407,7 @@ export default async function Home() {
             { title: "Army Selection Centers", desc: "AS&RC Regional Addresses", href: "#selection-centers", icon: MapPin, color: "text-emerald-700 bg-emerald-100 border-emerald-400" },
             { title: "Navy Selection Centers", desc: "PNSC Recruitment Hubs", href: "#selection-centers", icon: MapPin, color: "text-indigo-700 bg-indigo-100 border-indigo-400" },
             { title: "PAF Selection Centers", desc: "PAF Information Centers", href: "#selection-centers", icon: MapPin, color: "text-sky-700 bg-sky-100 border-sky-400" },
-            { title: "Free PDF Downloads", desc: "Verified E-Books & Notes", href: "/software", icon: Download, color: "text-purple-700 bg-purple-100 border-purple-400" }
+            { title: "Free PDF Downloads", desc: "Verified E-Books & Notes", href: "/pdfs", icon: Download, color: "text-purple-700 bg-purple-100 border-purple-400" }
           ].map((item) => {
             const IIcon = item.icon
             return (
@@ -466,16 +466,16 @@ export default async function Home() {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3.5 max-w-5xl mx-auto">
             {[
-              { label: "Online Quizzes", href: "/prep/armed-forces", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
+              { label: "Online Quizzes", href: "/quizzes", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
               { label: "ISSB Preparation", href: "/issb", bg: "bg-emerald-800 hover:bg-[#B8212E]" },
               { label: "Personality Tests", href: "/issb/wat", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
-              { label: "PMA Long Course", href: "/prep/armed-forces", bg: "bg-indigo-900 hover:bg-[#B8212E]" },
+              { label: "PMA Long Course", href: "/prep/army/pma-long-course", bg: "bg-indigo-900 hover:bg-[#B8212E]" },
               { label: "General Updates", href: "/blog", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
               { label: "Latest Blogs", href: "/blog", bg: "bg-emerald-900 hover:bg-[#B8212E]" },
-              { label: "Our Tutorials", href: "/services", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
-              { label: "ICTO Test Prep", href: "/prep/armed-forces", bg: "bg-blue-950 hover:bg-[#B8212E]" },
-              { label: "Pak Navy MCQs", href: "/prep/armed-forces", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
-              { label: "Physics Material", href: "/software", bg: "bg-teal-900 hover:bg-[#B8212E]" }
+              { label: "Our Tutorials", href: "/videos", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
+              { label: "ICTO Test Prep", href: "/prep/paf/it", bg: "bg-blue-950 hover:bg-[#B8212E]" },
+              { label: "Pak Navy MCQs", href: "/prep/navy", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
+              { label: "Physics Material", href: "/pdfs", bg: "bg-teal-900 hover:bg-[#B8212E]" }
             ].map((tag) => (
               <Link
                 key={tag.label}

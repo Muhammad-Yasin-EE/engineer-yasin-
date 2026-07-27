@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowLeft, MessageCircle, Users, CheckCircle, Target, Shield, Zap } from 'lucide-react'
 
 export default function HgtPage() {
@@ -22,6 +23,26 @@ export default function HgtPage() {
           <p className="text-xs sm:text-sm md:text-base text-gray-300 font-medium leading-relaxed max-w-3xl">
             In HGT, the original candidate squad is halved into smaller groups of 4-5 individuals. This allows the Group Testing Officer (GTO) to closely scrutinize candidates who were previously overshadowed by louder or dominating members in PGT.
           </p>
+        </div>
+
+        {/* Realistic Testing Scene Banner */}
+        <div className="relative w-full h-64 sm:h-80 md:h-[400px] rounded-3xl overflow-hidden border border-slate-800 bg-slate-900 shadow-2xl">
+          <Image
+            src="/images/gto/hgt.jpg"
+            alt="Half Group Task (HGT) Teamwork Obstacle"
+            fill
+            className="object-cover hover:scale-[1.01] transition-transform duration-500"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
+          <div className="absolute bottom-4 left-6 sm:bottom-6 sm:left-8 z-10 flex items-center gap-2">
+            <span className="px-3 py-1 bg-sky-400 text-slate-950 text-xs font-black uppercase rounded-lg shadow">
+              Official Testing Standard
+            </span>
+            <span className="text-xs font-bold text-gray-300 uppercase bg-slate-950/80 px-3 py-1 rounded-lg border border-slate-800">
+              Sub-Group Field Evaluation
+            </span>
+          </div>
         </div>
 
         {/* HGT Core Execution Protocols */}

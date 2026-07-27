@@ -10,6 +10,7 @@ export interface TatScene {
   title: string
   theme: string
   description: string
+  imageUrl?: string
   idealOfficerQualities: string[]
   sampleStory: {
     background: string
@@ -21,50 +22,54 @@ export interface TatScene {
 export const tatScenarios: TatScene[] = [
   {
     id: 1,
-    title: "Officer Overseeing Bridge Construction Over Flooded Canal",
-    theme: "Crisis Management & Civic Leadership",
-    description: "An young officer standing near a collapsing embankment while civilian workers look confused under heavy rain.",
-    idealOfficerQualities: ["Initiative", "Practical Sense", "Emotional Stability", "Team Organization"],
+    title: "Youth Scaling High Building Wall During Emergency Rescue",
+    theme: "Courage & Quick-Action Civic Rescue",
+    description: "A brave young candidate scaling an external building wall and structural pipe to reach an endangered resident trapped on an upper window terrace.",
+    imageUrl: "/images/tat/scene-1.jpg",
+    idealOfficerQualities: ["Courage", "Calculated Risk", "Physical Agility", "Selfless Service"],
     sampleStory: {
-      background: "Captain Ahmed, an engineering graduate on leave in his rural hometown, noticed heavy monsoon rains threatening the main access bridge linking three villages.",
-      currentAction: "He quickly assembled local youth and volunteer civil defense teams, organizing human chains to deploy sandbags and reinforced timber supports while coordinating with district authorities for emergency heavy machinery.",
-      positiveOutcome: "Due to his rapid foresight and structured organizational leadership, the bridge withstood the flood crest, safeguarding over 5,000 residents and establishing a permanent community disaster response committee."
+      background: "Hamza, an energetic college athlete and civil defense volunteer, was walking past a residential apartment block when an electrical short circuit ignited the stairwell, trapping an elderly resident on the second-floor terrace.",
+      currentAction: "Without panicking or waiting passively, Hamza assessed structural anchor points, utilized the exterior masonry projections and rain-pipe to scale the exterior wall safely, forced open the bolted window latch, and cleared an emergency ventilation airway.",
+      positiveOutcome: "His bold physical agility and calculated bravery allowed the trapped resident to breathe safely until Rescue 1122 fire ladders arrived, earning Hamza the Provincial Civil Valor Commendation."
     }
   },
   {
     id: 2,
-    title: "Two Students Studying Near a Technical Blueprint",
-    theme: "Intellectual Collaboration & Academic Excellence",
-    description: "Two young men late at night leaning over an electrical schematic with diagnostic instruments on a work table.",
-    idealOfficerQualities: ["Determination", "Cooperative Spirit", "Focus", "Technical Competence"],
+    title: "Seated Military Officer Contemplating Tactical Resolution",
+    theme: "Emotional Calmness & Analytical Composure",
+    description: "An armed forces officer sitting quietly with hands supporting forehead in composed mental focus before finalizing a complex strategic operational command.",
+    imageUrl: "/images/tat/scene-2.jpg",
+    idealOfficerQualities: ["Composure", "Analytical Clarity", "Emotional Resilience", "Strategic Foresight"],
     sampleStory: {
-      background: "Bilal and Usman, final-year avionics cadets, were preparing their autonomous drone tracking navigation payload for the National Aerospace Competition.",
-      currentAction: "When a persistent radar telemetry signal interference occurred just hours before final calibration, they systematically divided debugging responsibilities—Bilal isolating RF frequency noise while Usman re-calibrated sensor logic algorithms.",
-      positiveOutcome: "Their methodical teamwork eliminated the signal drift, enabling their prototype to secure first position in target tracking precision and earning an official university research grant."
+      background: "Major Tariq, commanding a remote field battalion, faced sudden unexpected communication interference due to extreme mountain blizzard conditions just hours before a critical supply drop.",
+      currentAction: "Instead of succumbing to impulsive anxiety, Major Tariq withdrew to his command table in composed silence to systematically evaluate backup secondary radio relay frequencies, alternate solar battery allocations, and ground signaling protocols.",
+      positiveOutcome: "His serene analytical focus produced a foolproof optical light-beacon contingency plan, ensuring 100% precision in airborne supply recovery and keeping garrison morale exceptionally high."
     }
   },
   {
     id: 3,
-    title: "A Youth Administering First Aid Near a Highway Accident",
-    theme: "Presence of Mind & Altruism Under Stress",
-    description: "A figure kneeling beside a motorcyclist on a dark rural road while another person flags down an approaching vehicle.",
-    idealOfficerQualities: ["Courage", "Decision Making", "Calmness Under Pressure", "Social Responsibility"],
+    title: "Young Cadet Grooming Before High-Stakes Appearance",
+    theme: "Discipline, Professional Pride & Self-Confidence",
+    description: "A confident, smartly dressed young gentleman checking his attire and posture in front of an oval vanity mirror prior to a decisive leadership assessment.",
+    imageUrl: "/images/tat/scene-3.jpg",
+    idealOfficerQualities: ["Self-Respect", "Military Grooming", "Confidence", "Punctuality"],
     sampleStory: {
-      background: "While driving back from a sports training camp, Hamza witnessed a transport truck graze a local motorcyclist on a dimly lit junction.",
-      currentAction: "Without panicking, Hamza immediately positioned his hazard-lighted car to shield the casualty from traffic, applied a tourniquet to arrest hemorrhage using his emergency med-kit, and directed a bystander to call Rescue 1122 with exact GPS coordinate references.",
-      positiveOutcome: "The casualty arrived at the trauma center within the critical golden hour making a full physical recovery, prompting Hamza to initiate weekend road-safety & first-aid awareness seminars at his college."
+      background: "Bilal, a disciplined candidate preparing for his final ISSB Deputy President Interview, understood that outer personal grooming reflects inner clarity, self-respect, and strict organizational standards.",
+      currentAction: "On the morning of his examination, he woke up early for rigorous physical calisthenics, meticulously pressed his formal blazer, polished his leather oxford shoes, and inspected his confident, upright posture in the mirror with optimistic composure.",
+      positiveOutcome: "His crisp military grooming and composed smile set an immediate commanding first impression during the interview, leading to an exemplary recommendation for presidential commission."
     }
   },
   {
     id: 4,
-    title: "Young Athlete Motivating Tired Squad at Dawn Track",
-    theme: "Stamina, Camaraderie, & Peer Leadership",
-    description: "An athletic runner looking back with an encouraging gesture at group members lagging behind on a hilly trail.",
-    idealOfficerQualities: ["Physical Fitness", "Comradeship", "Optimism", "Inspirational Leadership"],
+    title: "Courageous Citizen Intercepting Fleeing Street Snatcher",
+    theme: "Civic Vigilance & Active Law Enforcement Support",
+    description: "A vigilant pedestrian actively running to intercept an armed chain robber fleeing through a bustling market street while coordinating with law enforcement.",
+    imageUrl: "/images/tat/scene-4.jpg",
+    idealOfficerQualities: ["Social Vigilance", "Bravery", "Initiative", "Community Safety"],
     sampleStory: {
-      background: "During an intensive pre-selection cross-country endurance marathon, college athletic captain Tariq noticed his team trailing due to heat exhaustion on the final steep gradient.",
-      currentAction: "Rather than seeking individual medal victory, Tariq moderated his pace to regroup the squad, redistributed heavy supply hydration packs, and led steady rhythmic breathing drills while encouraging teammates by name.",
-      positiveOutcome: "Inspired by his self-effacing camaraderie, the entire squad surged forward in unison to complete the formation run well within qualifying timelines, claiming the regional team cohesion trophy."
+      background: "While returning from university library through Anarkali square, sports captain Usman noticed a fleeing street robber who had just snatched a female family's purse, causing panic among bystanders.",
+      currentAction: "Demonstrating swift presence of mind, Usman shouted loud clear instructions to clear the rickshaw pathway, anticipated the suspect's blind turn, sprinted diagonally to intercept the robber with an athletic tackle, and disarmed the perpetrator safely.",
+      positiveOutcome: "His bold community intervention recovered the family's valuables completely unharmed and secured the suspect until patrol officers arrived, inspiring neighborhood shopkeepers to form a vigilant citizen watch club."
     }
   }
 ]

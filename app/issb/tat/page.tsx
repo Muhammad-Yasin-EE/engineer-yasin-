@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { tatScenarios, TatScene } from '@/lib/data/issbRemainingData'
 import { ArrowLeft, MessageCircle, Eye, Shield, CheckCircle2, Award, Clock, BookOpen } from 'lucide-react'
 
@@ -67,6 +68,16 @@ export default function TatHubPage() {
                     {scene.theme.split('&')[0]}
                   </span>
                 </div>
+                {scene.imageUrl && (
+                  <div className="relative w-full h-36 sm:h-44 rounded-2xl overflow-hidden border border-slate-800 bg-slate-950/80 my-2">
+                    <Image
+                      src={scene.imageUrl}
+                      alt={scene.title}
+                      fill
+                      className="object-contain p-2 hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                )}
                 <h4 className="text-base sm:text-lg font-extrabold text-white leading-snug">
                   {scene.title}
                 </h4>
@@ -95,7 +106,18 @@ export default function TatHubPage() {
                     <Eye className="w-4 h-4 text-emerald-400" /> Observation Target: 30s
                   </span>
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-black text-white uppercase">
+                {selectedScene.imageUrl && (
+                  <div className="relative w-full h-64 sm:h-80 md:h-96 rounded-3xl overflow-hidden border border-emerald-500/40 bg-slate-950 shadow-2xl p-3 flex items-center justify-center">
+                    <Image
+                      src={selectedScene.imageUrl}
+                      alt={selectedScene.title}
+                      fill
+                      className="object-contain p-4"
+                      priority
+                    />
+                  </div>
+                )}
+                <h2 className="text-2xl sm:text-3xl font-black text-white uppercase pt-2">
                   {selectedScene.title}
                 </h2>
                 <p className="text-xs sm:text-sm text-sky-200 bg-sky-950/40 p-4 rounded-2xl border border-sky-500/20 font-medium italic">

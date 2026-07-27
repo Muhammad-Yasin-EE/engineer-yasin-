@@ -65,13 +65,13 @@ export default function WatTestExecutionPage() {
           console.log('MPEG audio playback notice:', e)
         })
 
-        // Automatically cut off after exactly 2,000ms (2 seconds) so it plays fully from 8s to 10s transition!
+        // Automatically cut off after exactly 2,800ms (2.8 seconds) so it plays fully from 8s to 10.8s transition!
         setTimeout(() => {
           if (audioRef.current) {
             audioRef.current.pause()
             audioRef.current.currentTime = 0
           }
-        }, 2000) // Exactly 2.0 seconds duration!
+        }, 2800) // Exactly 2.8 seconds duration!
       }
     } catch (err) {
       console.error('Air horn playing error:', err)

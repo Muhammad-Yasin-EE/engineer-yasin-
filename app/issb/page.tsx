@@ -661,14 +661,15 @@ export default function ISSBPage() {
             {[
               // ── Psychology Assessment Battery ──
               { title: "Word Association Test (WAT)", category: "Psychology Test", desc: "Attempt all 15 official tests (1,500 words) in simulated testing center projector mode with standard 10s slide intervals and air horn sound.", icon: Brain, isReady: true, href: "/issb/wat" },
-              { title: "Sentence Completion Test (Urdu)", category: "Psychology Test", desc: "Official incomplete Urdu stimulus sentences to train positive subconscious thought patterns and courage.", icon: Brain, isReady: false },
-              { title: "Sentence Completion Test (Eng)", category: "Psychology Test", desc: "Structured incomplete English phrases for testing optimism and emotional resilience under pressure.", icon: Brain, isReady: false },
+              { title: "Sentence Completion Test (Urdu)", category: "Psychology Test", desc: "Attempt 4 complete sets (100 Urdu incomplete sentences) in timed projector mode with 2.8s audio hooter and 3-2-1 countdown.", icon: Brain, isReady: true, href: "/issb/sct-urdu" },
+              { title: "Sentence Completion Test (Eng)", category: "Psychology Test", desc: "Attempt 4 complete sets (104 English sentence starters) in simulated testing mode with 12s timer and 2.8s air horn alarm.", icon: Brain, isReady: true, href: "/issb/sct-eng" },
+              { title: "Situation Reaction Test (SRT)", category: "Psychology Test", desc: "Complete official repository of solved situations, 55+ practice dilemmas from past experiences, and female candidate guidelines.", icon: Target, isReady: true, href: "/issb/srt" },
               { title: "Picture Story Writing (TAT)", category: "Psychology Test", desc: "Thematic Apperception Test picture prompts for developing constructive hero-oriented action narratives.", icon: BookOpen, isReady: false },
               { title: "Pointer Story Writing", category: "Psychology Test", desc: "Merit-Demerit assessment and open-ended scenario writing to evaluate candidates' moral resolution.", icon: BookOpen, isReady: false },
               { title: "Self-Description (SD) & Peer Rating", category: "Psychology Test", desc: "Comprehensive templates for parent, teacher, friend, enemy, and personal self-evaluation profiles.", icon: UserCheck, isReady: false },
               
               // ── GTO Outdoor & Indoor Tasks ──
-              { title: "Group Discussion (GD) Topics", category: "GTO Indoor Task", desc: "Current national, social, and global analytical discussion topics for leaderless group assessments.", icon: Users, isReady: false },
+              { title: "Group Discussion (GD) Topics", category: "GTO Indoor Task", desc: "Exhaustive searchable repository of 92 official leaderless GD and 3-minute lecturate topics from recent ISSB batches.", icon: Users, isReady: true, href: "/issb/gd-topics" },
               { title: "Group Planning Exercise (GPE)", category: "GTO Indoor Task", desc: "Tactical military ground maps with practical problem prioritization and resource management solutions.", icon: Target, isReady: false },
               { title: "Progressive Group Task (PGT)", category: "GTO Outdoor Task", desc: "Complete ground rule guide (Colour, Rigidity, Distance rules) with helping material bridging tactics.", icon: Users, isReady: false },
               { title: "Half Group Task (HGT)", category: "GTO Outdoor Task", desc: "Sub-group execution strategies where fewer candidates allow GTO to observe individual initiative closely.", icon: Users, isReady: false },
@@ -678,6 +679,7 @@ export default function ISSBPage() {
               { title: "Final Group Task (FGT)", category: "GTO Outdoor Task", desc: "Last collaborative test combining all squad members to assess sustained stamina and mutual cooperation.", icon: Users, isReady: false },
               
               // ── Deputy President & Bio-Data ──
+              { title: "Armed Forces Equivalent Ranks", category: "Military GK", desc: "Comparative commissioning hierarchy across Pakistan Army, Navy, and Air Force for Deputy President interview orientation.", icon: Award, isReady: true, href: "/issb/ranks" },
               { title: "Personal Information Form (PIF)", category: "DP Assessment", desc: "Flawless bio-data sheet preparation to ensure zero contradictions with psychologist and GTO testing records.", icon: UserCheck, isReady: false },
               { title: "Deputy President (DP) Interview", category: "DP Assessment", desc: "Real interview questions on military knowledge, current affairs, family background, and stress handling.", icon: Award, isReady: false }
             ].map((item, idx) => {

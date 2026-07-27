@@ -56,7 +56,7 @@ export default function WatTestExecutionPage() {
     }
   }, [])
 
-  // ── Official Recorded Air Horn Sound ONLY (Plays with automatic 1.4s clean cutoff to remove tail noise) ──
+  // ── Official Recorded Air Horn Sound ONLY (Plays for exactly 2 full seconds before shutting off at word switch) ──
   const playAirHorn = useCallback(() => {
     try {
       if (audioRef.current) {
@@ -65,13 +65,13 @@ export default function WatTestExecutionPage() {
           console.log('MPEG audio playback notice:', e)
         })
 
-        // Automatically silence any strange tail audio or outro noise remaining at the end of the file
+        // Automatically cut off after exactly 2,000ms (2 seconds) so it plays fully from 8s to 10s transition!
         setTimeout(() => {
           if (audioRef.current) {
             audioRef.current.pause()
             audioRef.current.currentTime = 0
           }
-        }, 1400) // Pure 1.4-second military horn burst!
+        }, 2000) // Exactly 2.0 seconds duration!
       }
     } catch (err) {
       console.error('Air horn playing error:', err)

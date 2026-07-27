@@ -16,15 +16,15 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Engineer Yasin | Premium Prep Hub & Software Portal",
-  description: "Official portal of Engineer Yasin. Access premium Armed Forces (PMA, PAF, Navy) preparation tests, MDCAT, CSS mock exams, VIP Android APKs, and engineering software.",
-  keywords: ["Engineer Yasin", "Engineer Yasin Book Store", "Engineer Yasin Prep Hub", "PMA Long Course Preparation", "ISSB Preparation", "PAF GD Pilot Test", "MDCAT Mock Tests", "FPSC Preparation", "Premium APK", "Free Android Mod", "Yasin Portal"],
+  title: "Engineer Yasin | Premier Armed Forces & Cadet Colleges Portal",
+  description: "Official portal of Engineer Yasin Forces Academy. Access premium Pakistan Armed Forces (PMA Long Course, PAF, Navy) initial practice tests, ISSB guidance, and Cadet Colleges preparation.",
+  keywords: ["Engineer Yasin", "Engineer Yasin Forces Academy", "Engineer Yasin Prep Hub", "PMA Long Course Preparation", "ISSB Preparation", "PAF GD Pilot Test", "PN Cadet Test", "Cadet Colleges Entry Test", "Forces MCQs Online"],
   authors: [{ name: "Engineer Yasin" }],
   openGraph: {
-    title: "Engineer Yasin | Premium Prep Hub & Software Portal",
-    description: "Official portal of Engineer Yasin. Access premium Armed Forces (PMA, PAF, Navy) preparation tests, MDCAT, CSS mock exams, VIP Android APKs, and engineering software.",
+    title: "Engineer Yasin | Premier Armed Forces & Cadet Colleges Portal",
+    description: "Official portal of Engineer Yasin Forces Academy. Access premium Pakistan Armed Forces (PMA Long Course, PAF, Navy) initial practice tests, ISSB guidance, and Cadet Colleges preparation.",
     url: "https://www.engineeryasin.xyz",
-    siteName: "Engineer Yasin Portal",
+    siteName: "Engineer Yasin Forces Portal",
     locale: "en_PK",
     type: "website",
   },

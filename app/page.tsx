@@ -1,15 +1,13 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
-import BookCard from '@/components/BookCard'
 import LiveTrustTicker from '@/components/LiveTrustTicker'
 import EligibilityCalculator from '@/components/EligibilityCalculator'
 import { ForcesCalculators, SelectionCentersSection, FaqSection } from '@/components/ForcesCalculators'
 import { 
-  GraduationCap, Briefcase, Download, Hammer, BookOpen, 
-  Sparkles, Layers, ArrowRight, ShieldCheck, FileText,
-  CheckCircle2, Award, Users, Cpu, Laptop, ChevronRight,
-  Star, Zap, MessageCircle, Flame, Shield, Compass, Code, Box, MapPin, HelpCircle
+  GraduationCap, Download, BookOpen, 
+  Sparkles, ArrowRight, ShieldCheck, FileText,
+  Award, Users, Compass, MapPin, Star, Zap, MessageCircle, Flame, Shield
 } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
@@ -53,21 +51,11 @@ function formatQuizDisplay(title: string = '', cat: string = '') {
 export default async function Home() {
   const supabase = createClient()
   
-  let software: any[] = []
   let quizzes: any[] = []
   let errorMsg: string | null = null
 
   try {
-    // 1. Fetch recent software items for the Software Vault Showcase
-    const { data: softData, error: softError } = await supabase
-      .from('items')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(6)
-    if (softError) throw softError
-    software = softData || []
-
-    // 2. Fetch quizzes for our Featured Mock Tests Showcase
+    // 1. Fetch quizzes for our Featured Mock Tests Showcase
     const { data: quizData, error: quizError } = await supabase
       .from('quizzes')
       .select('id, title, description, category, created_at')
@@ -180,8 +168,8 @@ export default async function Home() {
                   {[
                     { title: "Armed Forces", icon: ShieldCheck, href: "/prep/armed-forces", color: "text-emerald-700" },
                     { title: "ISSB Portal", icon: Award, href: "/issb", color: "text-amber-700" },
-                    { title: "Tech Software", icon: Download, href: "/software", color: "text-blue-700" },
-                    { title: "Eng Services", icon: Hammer, href: "/services", color: "text-rose-700" },
+                    { title: "Cadet Colleges", icon: GraduationCap, href: "/colleges", color: "text-blue-700" },
+                    { title: "PDFs Library", icon: Download, href: "/pdfs", color: "text-rose-700" },
                   ].map((tab) => {
                     const TIcon = tab.icon;
                     return (
@@ -443,7 +431,7 @@ export default async function Home() {
               OUR MISSION
             </h2>
             <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed font-medium text-justify sm:text-center">
-              &ldquo;Engineer Yasin Forces Academy is dedicated to shaping the defenders and leaders of tomorrow. With a firm commitment to excellence in guidance, preparation, and motivation, we provide an unparalleled online learning experience for candidates preparing for careers in the Pakistan Army, Navy, and Air Force. We integrate authentic military testing standards, realistic timed simulations, and world-class technical engineering consulting under one unified digital roof.&rdquo;
+              &ldquo;Engineer Yasin Forces Academy is dedicated to shaping the defenders and leaders of tomorrow. With a firm commitment to excellence in guidance, preparation, and motivation, we provide an unparalleled online learning experience for candidates preparing for careers in the Pakistan Army, Navy, and Air Force. We integrate authentic military testing standards, realistic timed simulations, and expert mentoring under one unified digital roof to ensure your triumph in selection exams.&rdquo;
             </p>
             <div className="pt-4 flex items-center justify-center gap-6 text-xs sm:text-sm font-black text-[#0A192F]">
               <span>⚔️ Courage</span> &bull; <span>🛡️ Honour</span> &bull; <span>🇵🇰 Dedication</span>
@@ -472,10 +460,10 @@ export default async function Home() {
               { label: "PMA Long Course", href: "/prep/army/pma-long-course", bg: "bg-indigo-900 hover:bg-[#B8212E]" },
               { label: "General Updates", href: "/blog", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
               { label: "Latest Blogs", href: "/blog", bg: "bg-emerald-900 hover:bg-[#B8212E]" },
-              { label: "Our Tutorials", href: "/videos", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
-              { label: "ICTO Test Prep", href: "/prep/paf/it", bg: "bg-blue-950 hover:bg-[#B8212E]" },
+              { label: "Cadet Colleges Prep", href: "/colleges", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
+              { label: "PAF Initial MCQs", href: "/prep/paf", bg: "bg-blue-950 hover:bg-[#B8212E]" },
               { label: "Pak Navy MCQs", href: "/prep/navy", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
-              { label: "Physics Material", href: "/pdfs", bg: "bg-teal-900 hover:bg-[#B8212E]" }
+              { label: "Free PDF Notes", href: "/pdfs", bg: "bg-teal-900 hover:bg-[#B8212E]" }
             ].map((tag) => (
               <Link
                 key={tag.label}
@@ -500,8 +488,8 @@ export default async function Home() {
           {[
             { title: "Unlimited Free Mocks", desc: "Instant result evaluations with explanation notes for PMA, PAF & Navy exams.", icon: Zap, bg: "bg-amber-50 text-amber-600 border-amber-200" },
             { title: "ISSB Specialists", desc: "Personal evaluations and mock interviews by retired military officers.", icon: Award, bg: "bg-rose-50 text-[#B8212E] border-rose-200" },
-            { title: "2-Step Software Vault", desc: "Verified APKs & desktop software delivered straight to your WhatsApp securely.", icon: CheckCircle2, bg: "bg-emerald-50 text-emerald-600 border-emerald-200" },
-            { title: "Engineering Agency", desc: "Professional MATLAB simulations, 3D mechanical designs & coding solutions.", icon: Cpu, bg: "bg-blue-50 text-blue-600 border-blue-200" }
+            { title: "Verified Past Papers", desc: "Comprehensive PDF question banks and cheat sheets compiled from recent test centers.", icon: FileText, bg: "bg-emerald-50 text-emerald-600 border-emerald-200" },
+            { title: "Cadet Colleges Guidance", desc: "Complete syllabus breakdown and preparatory modules for 8th & 11th class entry exams.", icon: GraduationCap, bg: "bg-blue-50 text-blue-600 border-blue-200" }
           ].map((feat, i) => {
             const FIcon = feat.icon;
             return (
@@ -650,103 +638,6 @@ export default async function Home() {
         <FaqSection />
       </section>
 
-      {/* ── FEATURED APPS & SOFTWARE (Secure 2-Step Vault) ───────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 pb-4 border-b border-gray-200 gap-4">
-          <div>
-            <span className="inline-flex items-center gap-1 text-xs font-black uppercase tracking-widest text-violet-600 mb-2">
-              <Download className="w-4 h-4 text-violet-600" /> Secure Software Vault
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-gray-900 tracking-tight">
-              Featured Apps &amp; Tech Tools
-            </h2>
-          </div>
-          <Link 
-            href="/software" 
-            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-black text-white bg-violet-600 hover:bg-violet-700 px-5 py-3 rounded-xl shadow-md transition-all uppercase tracking-wider shrink-0"
-          >
-            Browse Full Software Library <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-
-        {software.length === 0 ? (
-          <div className="py-16 bg-white border-2 border-dashed border-gray-200 rounded-3xl flex flex-col items-center justify-center text-gray-400 text-sm font-semibold">
-            <Download className="w-12 h-12 text-gray-300 mb-2" />
-            No software uploaded yet. Check back soon!
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {software.map(item => (
-              <BookCard key={item.id} {...item} />
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* ── ENGINEERING & PROGRAMMING SERVICES ───────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-3xl p-8 sm:p-12 text-[#0A192F] border-2 border-gray-200 shadow-xl relative overflow-hidden">
-          <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-blue-50 rounded-full blur-3xl pointer-events-none"></div>
-
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4 border-b border-gray-200 pb-6">
-            <div className="space-y-2">
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-50 text-blue-900 border border-blue-200 text-xs font-black uppercase tracking-wider shadow-2xs">
-                <Hammer className="w-3.5 h-3.5 text-blue-600" /> Expert Technical Consultancy
-              </span>
-              <h2 className="text-2xl sm:text-4xl font-black text-[#0A192F] tracking-tight">
-                Engineering &amp; Programming Services
-              </h2>
-              <p className="text-gray-600 text-xs sm:text-sm font-medium">
-                Need customized technical help? Hire Engineer Yasin &amp; team for your complex simulations and digital tasks.
-              </p>
-            </div>
-            <Link
-              href="/services"
-              className="px-5 py-3 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-[#0A192F] text-xs font-black uppercase tracking-wider transition-all shrink-0 self-start md:self-auto flex items-center gap-1.5 shadow-xs"
-            >
-              View All Services <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { title: "MATLAB & Simulink", desc: "Control systems, signal processing & Simulink modeling.", icon: Cpu, badge: "Simulation" },
-              { title: "3D CAD Modeling", desc: "SolidWorks, AutoCAD & mechanical component blueprints.", icon: Box, badge: "Drafting" },
-              { title: "Custom Programming", desc: "Python, C++, Web automation & full-stack development.", icon: Code, badge: "Development" },
-              { title: "Academic Tutoring", desc: "1-on-1 technical mentorship for engineering & university subjects.", icon: Users, badge: "Mentoring" }
-            ].map((srv, idx) => {
-              const SIcon = srv.icon;
-              return (
-                <div key={idx} className="bg-slate-50 border border-gray-200 hover:border-[#B8212E] p-6 rounded-2xl transition-all hover:bg-white flex flex-col justify-between group shadow-xs hover:shadow-lg hover:-translate-y-0.5">
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-[10px] uppercase font-black text-[#0A192F] bg-white px-2.5 py-1 rounded-full border border-gray-200 shadow-2xs">
-                        {srv.badge}
-                      </span>
-                      <SIcon className="w-6 h-6 text-[#0A192F] group-hover:text-[#B8212E] transition-colors" />
-                    </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#B8212E] transition-colors">
-                      {srv.title}
-                    </h3>
-                    <p className="text-xs text-gray-600 leading-relaxed mb-6 font-medium">
-                      {srv.desc}
-                    </p>
-                  </div>
-                  <a
-                    href={`https://wa.me/923116826552?text=Hello%20Engineer%20Yasin,%20I%20want%20to%20hire%20your%20services%20for%20${encodeURIComponent(srv.title)}.`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-2.5 px-4 rounded-xl bg-[#0A192F] hover:bg-[#B8212E] text-white font-extrabold text-[11px] flex items-center justify-center gap-2 transition-all uppercase tracking-wider shadow-md"
-                  >
-                    💬 Hire on WhatsApp ➔
-                  </a>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
       {/* ── COMMUNITY JOIN CTA BANNER ────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-3xl p-8 sm:p-12 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-8 text-center sm:text-left">
@@ -756,7 +647,7 @@ export default async function Home() {
               Stay Connected With Daily Past Papers &amp; Alerts!
             </h2>
             <p className="text-emerald-100 text-xs sm:text-sm font-medium leading-relaxed">
-              Don&apos;t miss any job openings, ISSB test schedules, or free APK releases. Join our verified student &amp; candidate group today!
+              Don&apos;t miss any job openings, ISSB test schedules, or free PDF test notes. Join our verified student &amp; candidate group today!
             </p>
           </div>
           <a

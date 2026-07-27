@@ -7,8 +7,7 @@ import { useCart } from '@/lib/context/CartContext'
 import { createClient } from '@/lib/supabase/client'
 import { 
   BookOpen, ShoppingCart, User, ShieldAlert, LogOut, Search, Menu, X, 
-  ChevronDown, GraduationCap, Briefcase, Download, Hammer, FileText, 
-  Clock, Newspaper, Bell, Sun, Moon, Sparkles, BookMarked, Globe, Award
+  ChevronDown, FileText, Clock, Newspaper, Sparkles, BookMarked, Globe, Award
 } from 'lucide-react'
 
 export default function Navbar() {
@@ -28,15 +27,6 @@ export default function Navbar() {
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [loadingSuggestions, setLoadingSuggestions] = useState(false)
   const suggestionsRef = useRef<HTMLDivElement>(null)
-
-  // Dark Mode States
-  const [darkMode, setDarkMode] = useState(false)
-
-  // Notification States
-  const [notifications, setNotifications] = useState<any[]>([])
-  const [showNotifications, setShowNotifications] = useState(false)
-  const [unreadCount, setUnreadCount] = useState(0)
-  const notificationsRef = useRef<HTMLDivElement>(null)
 
   // Dropdown States
   const [activeDropdown, setActiveDropdown] = useState<'prep' | 'resources' | 'books' | 'blog' | 'army' | 'navy' | 'paf' | 'issb' | null>(null)
@@ -66,34 +56,12 @@ export default function Navbar() {
       setCustomPages(data || [])
     }
 
-    // 3. Fetch Notifications count
-    const fetchNotifications = async () => {
-      const { data } = await supabase
-        .from('notifications')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(10)
-      
-      const dismissed = JSON.parse(localStorage.getItem('dismissed_notifications') || '[]')
-      const activeNotifications = (data || []).filter(n => !dismissed.includes(n.id))
-      
-      setNotifications(activeNotifications)
-      setUnreadCount(activeNotifications.length)
-    }
-
-    // 4. Initialize Dark Mode Theme Settings
-    const isDark = localStorage.getItem('theme') === 'dark' || 
-      (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
-    setDarkMode(isDark)
-    if (isDark) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
+    // Ensure clean light mode
+    document.documentElement.classList.remove('dark')
+    localStorage.removeItem('theme')
 
     checkAuth()
     fetchCustomPages()
-    fetchNotifications()
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -110,13 +78,10 @@ export default function Navbar() {
       }
     })
 
-    // Outside clicks listener for suggestions & notifications
+    // Outside clicks listener for suggestions
     const handleOutsideClick = (e: MouseEvent) => {
       if (suggestionsRef.current && !suggestionsRef.current.contains(e.target as Node)) {
         setShowSuggestions(false)
-      }
-      if (notificationsRef.current && !notificationsRef.current.contains(e.target as Node)) {
-        setShowNotifications(false)
       }
     }
     document.addEventListener('mousedown', handleOutsideClick)
@@ -126,19 +91,6 @@ export default function Navbar() {
       document.removeEventListener('mousedown', handleOutsideClick)
     }
   }, [])
-
-  // Dark Mode Trigger
-  const toggleDarkMode = () => {
-    const isDark = !darkMode
-    setDarkMode(isDark)
-    if (isDark) {
-      document.documentElement.classList.add('dark')
-      localStorage.setItem('theme', 'dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-      localStorage.setItem('theme', 'light')
-    }
-  }
 
   // Instant Search Autocomplete Suggestion Fetcher (with basic debounce)
   useEffect(() => {
@@ -171,7 +123,7 @@ export default function Navbar() {
     e.preventDefault()
     setShowSuggestions(false)
     if (searchQuery.trim()) {
-      router.push(`/software?q=${encodeURIComponent(searchQuery.trim())}`)
+      router.push(`/quizzes?q=${encodeURIComponent(searchQuery.trim())}`)
     }
   }
 
@@ -342,80 +294,6 @@ export default function Navbar() {
           {/* User Controls and Widgets (Right) */}
           <div className="flex items-center gap-3">
             
-            {/* Dark Mode Switcher */}
-            <button
-              onClick={toggleDarkMode}
-              className="hidden sm:block p-2 rounded-md border border-gray-200 text-gray-500 hover:text-[#B8212E] hover:border-[#B8212E]/30 transition-all cursor-pointer bg-white"
-              title="Toggle Theme"
-            >
-              {darkMode ? <Sun className="w-4 h-4 text-amber-500" /> : <Moon className="w-4 h-4 text-slate-700" />}
-            </button>
-
-            {/* Live Notifications Bell Dropdown */}
-            <div ref={notificationsRef} className="hidden sm:block relative">
-              <button
-                onClick={() => {
-                  setShowNotifications(!showNotifications)
-                }}
-                className="p-2 rounded-md border border-gray-200 text-gray-500 hover:text-[#B8212E] hover:border-[#B8212E]/30 relative transition-all cursor-pointer bg-white"
-                title="Notifications Alerts"
-              >
-                <Bell className="w-4 h-4" />
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-[#B8212E] text-white text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white animate-pulse">
-                    {unreadCount}
-                  </span>
-                )}
-              </button>
-
-              {showNotifications && (
-                <div className="absolute right-0 mt-2.5 w-64 bg-white border border-gray-200 shadow-xl rounded-none py-2.5 z-50 text-xs animate-scale-in">
-                  <div className="px-4 pb-2 border-b border-gray-100 flex justify-between items-center text-[10px] uppercase tracking-wider font-extrabold text-gray-450">
-                    <span>Recent Updates</span>
-                    <Sparkles className="w-3.5 h-3.5 text-[#B8212E]" />
-                  </div>
-                  {notifications.length === 0 ? (
-                    <div className="px-4 py-4 text-center text-gray-400 font-semibold">No new alerts</div>
-                  ) : (
-                    <>
-                      <div className="divide-y divide-gray-150 max-h-[300px] overflow-y-auto">
-                        {notifications.map((notif) => (
-                          <div key={notif.id} className="p-3 hover:bg-gray-50 space-y-1 font-semibold text-gray-600 transition-colors">
-                            <h4 className="font-bold text-gray-800">{notif.title}</h4>
-                            <p className="text-[10px] text-gray-400 leading-normal">{notif.message}</p>
-                            {notif.link && (
-                              <Link
-                                href={notif.link}
-                                onClick={() => setShowNotifications(false)}
-                                className="text-[9px] font-bold text-[#B8212E] hover:underline flex items-center gap-0.5 mt-1"
-                              >
-                                Check Details &rarr;
-                              </Link>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                      <div className="p-2 border-t border-gray-100 bg-gray-50">
-                        <button 
-                          onClick={() => {
-                            const dismissed = JSON.parse(localStorage.getItem('dismissed_notifications') || '[]')
-                            const newDismissed = [...dismissed, ...notifications.map(n => n.id)]
-                            localStorage.setItem('dismissed_notifications', JSON.stringify(newDismissed))
-                            setNotifications([])
-                            setUnreadCount(0)
-                            setShowNotifications(false)
-                          }}
-                          className="w-full py-1.5 text-center text-[10px] font-bold text-gray-500 hover:text-gray-800 transition-colors cursor-pointer"
-                        >
-                          Mark all as read
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
-
             {/* Cart Widget */}
             <Link href="/cart" className="relative p-2 rounded-md border border-gray-200 text-gray-500 hover:text-[#B8212E] hover:border-[#B8212E]/30 transition-all flex items-center bg-white">
               <ShoppingCart className="w-4 h-4" />
@@ -485,30 +363,13 @@ export default function Navbar() {
 
           {/* Quick settings row at the top of the menu */}
           <div className="flex items-center justify-between gap-3 border-b border-gray-150 pb-4">
-            <button
-              onClick={toggleDarkMode}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-md border border-gray-200 text-xs font-bold text-gray-700 hover:text-[#B8212E] cursor-pointer bg-white"
-            >
-              {darkMode ? (
-                <>
-                  <Sun className="w-4 h-4 text-amber-500" />
-                  <span>Light</span>
-                </>
-              ) : (
-                <>
-                  <Moon className="w-4 h-4 text-slate-500" />
-                  <span>Dark</span>
-                </>
-              )}
-            </button>
-
             {session ? (
-              <div className="flex gap-2">
+              <div className="flex gap-2 w-full justify-between">
                 <Link
                   href="/account"
                   onClick={() => setMobileMenuOpen(false)}
                   prefetch={false}
-                  className="px-4 py-2 rounded-md border border-gray-200 text-xs font-bold text-gray-700 bg-white"
+                  className="px-4 py-2 rounded-md border border-gray-200 text-xs font-bold text-gray-700 bg-white text-center flex-grow"
                 >
                   Dashboard
                 </Link>
@@ -517,7 +378,7 @@ export default function Navbar() {
                     handleSignOut()
                     setMobileMenuOpen(false)
                   }}
-                  className="px-4 py-2 rounded-md border border-gray-200 text-xs font-bold text-gray-500 cursor-pointer bg-white"
+                  className="px-4 py-2 rounded-md border border-gray-200 text-xs font-bold text-gray-500 cursor-pointer bg-white text-center flex-grow"
                 >
                   Logout
                 </button>
@@ -527,7 +388,7 @@ export default function Navbar() {
                 href="/login"
                 onClick={() => setMobileMenuOpen(false)}
                 prefetch={false}
-                className="px-6 py-2 bg-[#B8212E] text-white text-xs font-bold rounded-md uppercase tracking-wider text-center flex-grow"
+                className="px-6 py-2 bg-[#B8212E] text-white text-xs font-bold rounded-md uppercase tracking-wider text-center w-full"
               >
                 Sign In
               </Link>

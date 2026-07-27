@@ -39,39 +39,42 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-xs text-gray-400 leading-relaxed">
-              Your comprehensive portal for academic, technical, and exam preparation resources. Download software, prepare for forces and public service, or order digital coding services.
+              Your comprehensive digital portal for Pakistan Armed Forces (Army, Navy, PAF) initial tests, ISSB evaluations, and Cadet Colleges entrance exam preparation.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
             <h3 className="text-xs font-bold text-gray-800 uppercase tracking-widest mb-4">Explore Portal</h3>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2 text-sm font-semibold">
               <li>
-                <Link href="/prep/armed-forces" className="hover:text-[#B8212E] transition-colors">
-                  Armed Forces
-                </Link>
-              </li>
-              {/* TEMPORARILY HIDDEN BY USER REQUEST
-              <li>
-                <Link href="/prep/public-service" className="hover:text-[#B8212E] transition-colors">
-                  Public Service
+                <Link href="/prep/army" className="hover:text-[#B8212E] transition-colors">
+                  Join Pak Army
                 </Link>
               </li>
               <li>
-                <Link href="/prep/entry-tests" className="hover:text-[#B8212E] transition-colors">
-                  Entry Tests
-                </Link>
-              </li>
-              */}
-              <li>
-                <Link href="/software" className="hover:text-[#B8212E] transition-colors">
-                  Apps & Software
+                <Link href="/prep/navy" className="hover:text-[#B8212E] transition-colors">
+                  Join Pak Navy
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="hover:text-[#B8212E] transition-colors">
-                  Engineering Services
+                <Link href="/prep/paf" className="hover:text-[#B8212E] transition-colors">
+                  Join Pak Air Force
+                </Link>
+              </li>
+              <li>
+                <Link href="/issb" className="hover:text-[#B8212E] transition-colors">
+                  ISSB Preparation
+                </Link>
+              </li>
+              <li>
+                <Link href="/colleges" className="hover:text-[#B8212E] transition-colors">
+                  Cadet Colleges
+                </Link>
+              </li>
+              <li>
+                <Link href="/quizzes" className="hover:text-[#B8212E] transition-colors">
+                  Mock Quizzes
                 </Link>
               </li>
             </ul>

@@ -383,55 +383,67 @@ export default async function Home() {
         {/* Row 2: Ranks & Quizzes */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12 justify-items-center">
           {[
-            { title: "Ranks In Pak Army", desc: "Lieutenant to General", href: "/issb/ranks", icon: ShieldCheck, color: "text-emerald-700 bg-emerald-50 border-emerald-300" },
-            { title: "Ranks In Pak Navy", desc: "Sub Lieut to Admiral", href: "/issb/ranks", icon: Award, color: "text-indigo-700 bg-indigo-50 border-indigo-300" },
-            { title: "Ranks In PAF", desc: "Pilot Officer to Air Chief", href: "/issb/ranks", icon: Compass, color: "text-sky-700 bg-sky-50 border-sky-300" },
-            { title: "Online Quizzes", desc: "Timed Intelligence Mocks", href: "/quizzes", icon: Flame, color: "text-rose-700 bg-rose-50 border-rose-300" }
-          ].map((item) => {
-            const IIcon = item.icon
-            return (
-              <Link
-                key={item.title}
-                href={item.href}
-                className="flex flex-col items-center text-center group w-full max-w-[200px]"
-              >
-                <div className={`w-32 h-32 sm:w-40 sm:h-40 rounded-full border-2 ${item.color} shadow-lg group-hover:shadow-2xl group-hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center p-4`}>
-                  <IIcon className="w-12 h-12 mb-2 group-hover:scale-110 transition-transform" />
-                  <span className="text-[11px] font-extrabold uppercase tracking-tight">{item.desc}</span>
+            { title: "Ranks In Pak Army", desc: "Lieutenant to General", href: "/issb/ranks", img: "/images/army-rank.jpg", ring: "border-emerald-600/60" },
+            { title: "Ranks In Pak Navy", desc: "Sub Lieut to Admiral", href: "/issb/ranks", img: "/images/navy-rank.jpg", ring: "border-indigo-600/60" },
+            { title: "Ranks In PAF", desc: "Pilot Officer to Air Chief", href: "/issb/ranks", img: "/images/paf-rank.jpg", ring: "border-sky-500/60" },
+            { title: "Online Quizzes", desc: "Timed Intelligence Mocks", href: "/quizzes", img: "/images/online-quiz.jpg", ring: "border-rose-600/60" }
+          ].map((item) => (
+            <Link
+              key={item.title}
+              href={item.href}
+              className="flex flex-col items-center text-center group cursor-pointer w-full max-w-[200px]"
+            >
+              <div className={`w-36 h-36 sm:w-44 sm:h-44 rounded-full border-4 ${item.ring} p-2 bg-white shadow-lg group-hover:shadow-2xl group-hover:scale-105 transition-all duration-300 relative overflow-hidden flex items-center justify-center`}>
+                <div className="w-full h-full rounded-full overflow-hidden relative">
+                  <Image
+                    src={item.img}
+                    alt={item.title}
+                    fill
+                    className="object-contain p-1 group-hover:scale-105 transition-transform duration-500"
+                  />
                 </div>
-                <h4 className="mt-4 text-sm sm:text-base font-black text-[#0A192F] group-hover:text-[#B8212E] tracking-tight uppercase transition-colors">
-                  {item.title}
-                </h4>
-              </Link>
-            )
-          })}
+              </div>
+              <h4 className="mt-4 text-sm sm:text-base font-black text-[#0A192F] group-hover:text-[#B8212E] tracking-tight uppercase transition-colors">
+                {item.title}
+              </h4>
+              <span className="text-[11px] font-extrabold text-gray-500 group-hover:text-[#B8212E] uppercase transition-colors">
+                {item.desc} &rarr;
+              </span>
+            </Link>
+          ))}
         </div>
 
-        {/* Row 3: Selection Centers & Free PDFs */}
+        {/* Row 3: Selection Centers & Free E-Books */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 justify-items-center">
           {[
-            { title: "Army Selection Centers", desc: "AS&RC Regional Addresses", href: "#selection-centers", icon: MapPin, color: "text-emerald-700 bg-emerald-100 border-emerald-400" },
-            { title: "Navy Selection Centers", desc: "PNSC Recruitment Hubs", href: "#selection-centers", icon: MapPin, color: "text-indigo-700 bg-indigo-100 border-indigo-400" },
-            { title: "PAF Selection Centers", desc: "PAF Information Centers", href: "#selection-centers", icon: MapPin, color: "text-sky-700 bg-sky-100 border-sky-400" },
-            { title: "Free PDF Downloads", desc: "Verified E-Books & Notes", href: "/pdfs", icon: Download, color: "text-purple-700 bg-purple-100 border-purple-400" }
-          ].map((item) => {
-            const IIcon = item.icon
-            return (
-              <Link
-                key={item.title}
-                href={item.href}
-                className="flex flex-col items-center text-center group w-full max-w-[200px]"
-              >
-                <div className={`w-32 h-32 sm:w-40 sm:h-40 rounded-full border-2 ${item.color} shadow-lg group-hover:shadow-2xl group-hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center p-4`}>
-                  <IIcon className="w-12 h-12 mb-2 group-hover:scale-110 transition-transform" />
-                  <span className="text-[11px] font-extrabold uppercase tracking-tight">{item.desc}</span>
+            { title: "Army Selection Centers", desc: "AS&RC Regional Addresses", href: "#selection-centers", img: "/images/army-circle-logo.jpg", ring: "border-emerald-600/60" },
+            { title: "Navy Selection Centers", desc: "PNSC Recruitment Hubs", href: "#selection-centers", img: "/images/navy-logo.jpg", ring: "border-indigo-600/60" },
+            { title: "PAF Selection Centers", desc: "PAF Information Centers", href: "#selection-centers", img: "/images/paf-logo.jpg", ring: "border-sky-500/60" },
+            { title: "Free E-Books & Notes", desc: "Verified PDF Downloads", href: "/pdfs", img: "/images/download-pdf.jpg", ring: "border-purple-600/60" }
+          ].map((item) => (
+            <Link
+              key={item.title}
+              href={item.href}
+              className="flex flex-col items-center text-center group cursor-pointer w-full max-w-[200px]"
+            >
+              <div className={`w-36 h-36 sm:w-44 sm:h-44 rounded-full border-4 ${item.ring} p-2 bg-white shadow-lg group-hover:shadow-2xl group-hover:scale-105 transition-all duration-300 relative overflow-hidden flex items-center justify-center`}>
+                <div className="w-full h-full rounded-full overflow-hidden relative">
+                  <Image
+                    src={item.img}
+                    alt={item.title}
+                    fill
+                    className="object-contain p-1 group-hover:scale-105 transition-transform duration-500"
+                  />
                 </div>
-                <h4 className="mt-4 text-sm sm:text-base font-black text-[#0A192F] group-hover:text-[#B8212E] tracking-tight uppercase transition-colors">
-                  {item.title}
-                </h4>
-              </Link>
-            )
-          })}
+              </div>
+              <h4 className="mt-4 text-sm sm:text-base font-black text-[#0A192F] group-hover:text-[#B8212E] tracking-tight uppercase transition-colors">
+                {item.title}
+              </h4>
+              <span className="text-[11px] font-extrabold text-gray-500 group-hover:text-[#B8212E] uppercase transition-colors">
+                {item.desc} &rarr;
+              </span>
+            </Link>
+          ))}
         </div>
       </section>
 

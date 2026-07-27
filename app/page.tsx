@@ -132,27 +132,27 @@ export default async function Home() {
       {/* ── LIVE CANDIDATE TICKER & TRUST AUTHORITY BANNER ─────────────────── */}
       <LiveTrustTicker />
 
-      {/* ── HERO SECTION (Ultra Premium Military Suite) ────────────────────── */}
-      <section className="relative overflow-hidden bg-[#0A192F] py-20 sm:py-28 text-white border-b border-[#112240] shadow-2xl">
-        <div className="absolute top-0 -left-40 w-96 h-96 bg-[#B8212E]/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
-        <div className="absolute bottom-0 right-0 w-[32rem] h-[32rem] bg-[#D4AF37]/15 rounded-full blur-3xl pointer-events-none"></div>
+      {/* ── HERO SECTION (Ultra Premium Military Suite - Light Theme) ──────── */}
+      <section className="relative overflow-hidden bg-white py-16 sm:py-24 text-[#0A192F] border-b border-gray-200 shadow-sm">
+        <div className="absolute top-0 -left-40 w-96 h-96 bg-rose-50 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
+        <div className="absolute bottom-0 right-0 w-[32rem] h-[32rem] bg-amber-50 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-14">
             
             {/* Left Content */}
             <div className="flex-1 text-center lg:text-left space-y-7">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 text-[#D4AF37] text-[11px] uppercase tracking-widest font-extrabold shadow-inner backdrop-blur-md">
-                <Sparkles className="w-4 h-4 animate-spin-slow text-[#D4AF37]" />
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-[#0A192F] text-[11px] uppercase tracking-widest font-extrabold shadow-xs">
+                <Sparkles className="w-4 h-4 animate-spin-slow text-[#B8212E]" />
                 Pakistan&apos;s Premier Armed Forces &amp; Cadet Portal
               </div>
           
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white max-w-2xl mx-auto lg:mx-0 leading-[1.15] drop-shadow-md uppercase">
-                Free Online Preparation for <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-amber-300 to-[#D4AF37]">Pak Army, Navy</span> &amp; PAF Tests 2026
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#0A192F] max-w-2xl mx-auto lg:mx-0 leading-[1.15] uppercase">
+                Free Online Preparation for <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B8212E] via-[#0A192F] to-[#B8212E]">Pak Army, Navy</span> &amp; PAF Tests 2026
               </h1>
               
-              <p className="text-sm sm:text-base lg:text-lg text-gray-300 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                Whether you aim to serve in the Pakistani Armed Forces, Civil Services, Cadet Colleges or pursue a career in engineering &amp; leadership, <span className="text-white font-bold">Engineer Yasin Forces Academy</span> is the definitive first step towards achieving your goals.
+              <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                Whether you aim to serve in the Pakistani Armed Forces, Civil Services, Cadet Colleges or pursue a career in engineering &amp; leadership, <span className="text-[#0A192F] font-extrabold">Engineer Yasin Forces Academy</span> is the definitive first step towards achieving your goals.
               </p>
 
               {/* Primary Call to Action Buttons */}
@@ -165,35 +165,35 @@ export default async function Home() {
                 </Link>
                 <Link
                   href="/issb"
-                  className="px-7 py-4 rounded-2xl bg-white/10 hover:bg-white/15 border-2 border-[#D4AF37]/60 text-[#D4AF37] font-black text-xs sm:text-sm uppercase tracking-wider shadow-md transition-all hover:scale-[1.02] backdrop-blur-md flex items-center gap-2"
+                  className="px-7 py-4 rounded-2xl bg-slate-100 hover:bg-slate-200 border-2 border-slate-300 text-[#0A192F] font-black text-xs sm:text-sm uppercase tracking-wider shadow-sm transition-all hover:scale-[1.02] flex items-center gap-2"
                 >
-                  <Shield className="w-4 h-4" /> Enter ISSB Hub
+                  <Shield className="w-4 h-4 text-[#B8212E]" /> Enter ISSB Hub
                 </Link>
               </div>
 
               {/* Quick Navigation Hub Grid */}
               <div className="pt-6">
-                <p className="text-[11px] uppercase tracking-widest text-gray-400 font-extrabold mb-3 text-center lg:text-left">
+                <p className="text-[11px] uppercase tracking-widest text-gray-500 font-extrabold mb-3 text-center lg:text-left">
                   ⚡ Quick Direct access Hub
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto lg:mx-0">
                   {[
-                    { title: "Armed Forces", icon: ShieldCheck, href: "/prep/armed-forces", color: "text-emerald-400" },
-                    { title: "ISSB Portal", icon: Award, href: "/issb", color: "text-amber-400" },
-                    { title: "Tech Software", icon: Download, href: "/software", color: "text-blue-400" },
-                    { title: "Eng Services", icon: Hammer, href: "/services", color: "text-rose-400" },
+                    { title: "Armed Forces", icon: ShieldCheck, href: "/prep/armed-forces", color: "text-emerald-700" },
+                    { title: "ISSB Portal", icon: Award, href: "/issb", color: "text-amber-700" },
+                    { title: "Tech Software", icon: Download, href: "/software", color: "text-blue-700" },
+                    { title: "Eng Services", icon: Hammer, href: "/services", color: "text-rose-700" },
                   ].map((tab) => {
                     const TIcon = tab.icon;
                     return (
                       <Link
                         key={tab.title}
                         href={tab.href}
-                        className="p-3.5 bg-white/5 border border-white/10 hover:border-[#D4AF37]/80 hover:bg-white/10 rounded-2xl text-center flex flex-col items-center gap-2 group transition-all duration-300 backdrop-blur-sm hover:shadow-lg hover:-translate-y-0.5"
+                        className="p-3.5 bg-slate-50 border border-gray-200 hover:border-[#B8212E] hover:bg-white rounded-2xl text-center flex flex-col items-center gap-2 group transition-all duration-300 shadow-xs hover:shadow-md hover:-translate-y-0.5"
                       >
-                        <div className="w-10 h-10 rounded-xl bg-black/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div className="w-10 h-10 rounded-xl bg-white border border-gray-100 shadow-xs flex items-center justify-center group-hover:scale-110 transition-transform">
                           <TIcon className={`w-5 h-5 ${tab.color}`} />
                         </div>
-                        <span className="text-xs font-black text-gray-200 tracking-wider uppercase">{tab.title}</span>
+                        <span className="text-xs font-black text-[#0A192F] tracking-wider uppercase">{tab.title}</span>
                       </Link>
                     );
                   })}
@@ -204,9 +204,9 @@ export default async function Home() {
             {/* Right Content - Interactive Hero Showcase */}
             <div className="flex-1 w-full max-w-md lg:max-w-none relative">
               <div className="relative aspect-square sm:aspect-[4/3] lg:aspect-square w-full sm:w-4/5 lg:w-full mx-auto">
-                <div className="absolute inset-0 bg-gradient-to-tr from-[#D4AF37]/30 to-[#B8212E]/30 rounded-3xl blur-2xl opacity-70"></div>
+                <div className="absolute inset-0 bg-gradient-to-tr from-amber-100 to-rose-100 rounded-3xl blur-2xl opacity-70"></div>
                 
-                <div className="relative z-10 w-full h-full rounded-3xl overflow-hidden border-2 border-white/20 shadow-2xl bg-black/40 group">
+                <div className="relative z-10 w-full h-full rounded-3xl overflow-hidden border-2 border-gray-200 shadow-xl bg-white group">
                   <Image 
                     src="/images/real-forces-illustration.jpg" 
                     alt="Official Armed Forces and Engineering Excellence" 
@@ -214,29 +214,29 @@ export default async function Home() {
                     priority
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F] via-transparent to-transparent opacity-90"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-90"></div>
 
-                  <div className="absolute top-6 right-6 bg-[#0A192F]/90 border border-white/20 p-3.5 rounded-2xl shadow-xl backdrop-blur-md flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-extrabold text-xs">
+                  <div className="absolute top-6 right-6 bg-white/95 border border-gray-200 p-3.5 rounded-2xl shadow-lg backdrop-blur-md flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-100 border border-emerald-300 flex items-center justify-center text-emerald-700 font-extrabold text-xs">
                       ✔
                     </div>
                     <div>
-                      <p className="text-[10px] uppercase tracking-wider text-gray-400 font-extrabold">Status</p>
-                      <p className="text-xs font-black text-white">100% Free Online Quizzes</p>
+                      <p className="text-[10px] uppercase tracking-wider text-gray-500 font-extrabold">Status</p>
+                      <p className="text-xs font-black text-[#0A192F]">100% Free Online Quizzes</p>
                     </div>
                   </div>
 
-                  <div className="absolute bottom-6 left-6 right-6 bg-[#112240]/95 border border-white/20 p-4 rounded-2xl shadow-2xl backdrop-blur-md flex items-center justify-between">
+                  <div className="absolute bottom-6 left-6 right-6 bg-white/95 border border-gray-200 p-4 rounded-2xl shadow-xl backdrop-blur-md flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-2xl bg-[#B8212E] flex items-center justify-center text-white shrink-0 shadow-md">
-                        <Star className="w-6 h-6 fill-current text-[#D4AF37]" />
+                      <div className="w-12 h-12 rounded-2xl bg-[#B8212E] flex items-center justify-center text-white shrink-0 shadow-sm">
+                        <Star className="w-6 h-6 fill-current text-amber-300" />
                       </div>
                       <div>
-                        <h4 className="text-sm font-black text-white">ISSB Complete Guidance</h4>
-                        <p className="text-xs text-gray-300 font-medium">Psychology, GTO &amp; Interview Batches</p>
+                        <h4 className="text-sm font-black text-[#0A192F]">ISSB Complete Guidance</h4>
+                        <p className="text-xs text-gray-600 font-medium">Psychology, GTO &amp; Interview Batches</p>
                       </div>
                     </div>
-                    <Link href="/issb" className="px-3 py-1.5 rounded-xl bg-[#D4AF37] text-slate-950 text-xs font-black uppercase tracking-wider hover:bg-amber-400 transition-colors shrink-0">
+                    <Link href="/issb" className="px-3.5 py-2 rounded-xl bg-[#0A192F] text-white text-xs font-black uppercase tracking-wider hover:bg-[#B8212E] transition-colors shrink-0">
                       Explore ➔
                     </Link>
                   </div>
@@ -291,16 +291,16 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* Bottom Navy/Blue WhatsApp Announcement Bar */}
+          {/* Bottom WhatsApp Announcement Bar */}
           <a
             href="https://chat.whatsapp.com/IzPd4vwXbrjGhAkanhYvTp?s=cl&p=a&ilr=0"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-[#0A192F] hover:bg-[#112749] text-white py-4 px-6 text-center flex items-center justify-center gap-3 transition-colors group cursor-pointer block"
+            className="bg-slate-50 hover:bg-slate-100 border-t border-gray-200 text-[#0A192F] py-4 px-6 text-center flex items-center justify-center gap-3 transition-colors group cursor-pointer block"
           >
-            <MessageCircle className="w-5 h-5 text-[#25D366] fill-current group-hover:scale-110 transition-transform" />
-            <p className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-gray-200 group-hover:text-[#D4AF37] transition-colors">
-              📢 Free Updates of Armed Forces &amp; Cadet Colleges: <span className="underline text-[#D4AF37]">Click Here To Join Official WhatsApp Channel</span> &rarr;
+            <MessageCircle className="w-5 h-5 text-emerald-600 fill-current group-hover:scale-110 transition-transform" />
+            <p className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-gray-700 group-hover:text-[#B8212E] transition-colors">
+              📢 Free Updates of Armed Forces &amp; Cadet Colleges: <span className="underline text-[#B8212E] font-black">Click Here To Join Official WhatsApp Channel</span> &rarr;
             </p>
           </a>
 
@@ -323,24 +323,24 @@ export default async function Home() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8 justify-items-center">
           {[
-            { title: "Join Pak Army", img: "/images/pak_army_emblem.jpg", href: "/prep/army", ring: "border-emerald-600/60" },
-            { title: "Join Pak Navy", img: "/images/pak_navy_emblem.jpg", href: "/prep/navy", ring: "border-indigo-600/60" },
+            { title: "Join Pak Army", img: "/images/army-circle-logo.jpg", href: "/prep/army", ring: "border-emerald-600/60" },
+            { title: "Join Pak Navy", img: "/images/navy-logo.jpg", href: "/prep/navy", ring: "border-indigo-600/60" },
             { title: "Join Pak Air Force", img: "/images/paf-logo.jpg", href: "/prep/paf", ring: "border-sky-500/60" },
             { title: "ISSB Tests", img: "/images/issb-header.jpg", href: "/issb", ring: "border-rose-600/60" },
-            { title: "Cadet Colleges", img: "/images/card-pma.jpg", href: "/colleges", ring: "border-amber-500/60" }
+            { title: "Cadet Colleges", img: "/images/cadet-colleges-logo.jpg", href: "/colleges", ring: "border-amber-500/60" }
           ].map((hub) => (
             <Link
               key={hub.title}
               href={hub.href}
               className="flex flex-col items-center text-center group cursor-pointer w-full max-w-[180px]"
             >
-              <div className={`w-36 h-36 sm:w-44 sm:h-44 rounded-full border-4 ${hub.ring} p-2.5 bg-white shadow-xl group-hover:shadow-2xl group-hover:scale-105 transition-all duration-300 relative overflow-hidden flex items-center justify-center`}>
+              <div className={`w-36 h-36 sm:w-44 sm:h-44 rounded-full border-4 ${hub.ring} p-2 bg-white shadow-lg group-hover:shadow-2xl group-hover:scale-105 transition-all duration-300 relative overflow-hidden flex items-center justify-center`}>
                 <div className="w-full h-full rounded-full overflow-hidden relative">
                   <Image
                     src={hub.img}
                     alt={hub.title}
                     fill
-                    className="object-contain p-2 group-hover:scale-110 transition-transform duration-500"
+                    className="object-contain p-1 group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
               </div>
@@ -431,21 +431,21 @@ export default async function Home() {
 
       {/* ── OUR MISSION EXECUTIVE BOX ──────────────────────────────────────── */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="bg-gradient-to-r from-slate-900 via-[#0A192F] to-slate-900 rounded-3xl p-8 sm:p-14 text-white shadow-2xl border-4 border-[#D4AF37]/50 relative overflow-hidden text-center">
-          <div className="absolute top-0 left-0 w-32 h-32 bg-[#D4AF37]/10 rounded-full blur-2xl pointer-events-none" />
-          <div className="absolute bottom-0 right-0 w-32 h-32 bg-[#B8212E]/20 rounded-full blur-2xl pointer-events-none" />
+        <div className="bg-white rounded-3xl p-8 sm:p-14 text-gray-800 shadow-xl border-2 border-gray-200 relative overflow-hidden text-center">
+          <div className="absolute top-0 left-0 w-32 h-32 bg-amber-50 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute bottom-0 right-0 w-32 h-32 bg-rose-50 rounded-full blur-2xl pointer-events-none" />
           
           <div className="relative z-10 max-w-4xl mx-auto space-y-6">
-            <span className="px-4 py-1.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-black uppercase tracking-widest inline-block">
+            <span className="px-4 py-1.5 rounded-full bg-rose-50 border border-rose-200 text-[#B8212E] text-xs font-black uppercase tracking-widest inline-block shadow-2xs">
               🎖️ ENGINEER YASIN FORCES ACADEMY
             </span>
-            <h2 className="text-2xl sm:text-4xl font-black uppercase tracking-tight text-white">
+            <h2 className="text-2xl sm:text-4xl font-black uppercase tracking-tight text-[#0A192F]">
               OUR MISSION
             </h2>
-            <p className="text-sm sm:text-base md:text-lg text-gray-200 leading-relaxed font-medium text-justify sm:text-center">
+            <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed font-medium text-justify sm:text-center">
               &ldquo;Engineer Yasin Forces Academy is dedicated to shaping the defenders and leaders of tomorrow. With a firm commitment to excellence in guidance, preparation, and motivation, we provide an unparalleled online learning experience for candidates preparing for careers in the Pakistan Army, Navy, and Air Force. We integrate authentic military testing standards, realistic timed simulations, and world-class technical engineering consulting under one unified digital roof.&rdquo;
             </p>
-            <div className="pt-4 flex items-center justify-center gap-6 text-xs sm:text-sm font-bold text-[#D4AF37]">
+            <div className="pt-4 flex items-center justify-center gap-6 text-xs sm:text-sm font-black text-[#0A192F]">
               <span>⚔️ Courage</span> &bull; <span>🛡️ Honour</span> &bull; <span>🇵🇰 Dedication</span>
             </div>
           </div>
@@ -600,32 +600,32 @@ export default async function Home() {
 
       {/* ── ISSB SPECIAL FEATURE SHOWCASE (High-Impact Banner) ───────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#0A192F] via-[#112240] to-[#0A192F] text-white p-8 sm:p-14 border border-[#1d335a] shadow-2xl">
-          <div className="absolute top-0 right-0 w-1/2 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-amber-500/20 via-transparent to-transparent pointer-events-none" />
+        <div className="relative rounded-3xl overflow-hidden bg-white text-[#0A192F] p-8 sm:p-14 border-2 border-gray-200 shadow-xl">
+          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-amber-50/60 via-transparent to-transparent pointer-events-none" />
           
           <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10">
             <div className="space-y-4 text-center lg:text-left max-w-2xl">
-              <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-black uppercase tracking-widest">
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 text-amber-900 border border-amber-300 text-xs font-black uppercase tracking-widest shadow-2xs">
                 🎖️ Complete ISSB Selection Suite
               </span>
-              <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+              <h2 className="text-3xl sm:text-5xl font-black text-[#0A192F] tracking-tight leading-tight">
                 Recommended by Assessor Specialists!
               </h2>
-              <p className="text-sm sm:text-base text-gray-300 leading-relaxed font-medium">
-                Our newly integrated ISSB Hub combines general testing intelligence, <span className="text-[#D4AF37] font-bold">FREE WAT &amp; GTO study libraries</span>, and personal 1-on-1 coaching slots to guarantee your success.
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed font-medium">
+                Our newly integrated ISSB Hub combines general testing intelligence, <span className="text-[#B8212E] font-bold">FREE WAT &amp; GTO study libraries</span>, and personal 1-on-1 coaching slots to guarantee your success.
               </p>
 
               <div className="flex flex-wrap gap-2 justify-center lg:justify-start pt-2">
-                <span className="px-3 py-1 rounded-lg bg-white/10 text-white text-xs font-extrabold border border-white/15">🧠 Psychological WAT &amp; TAT</span>
-                <span className="px-3 py-1 rounded-lg bg-white/10 text-white text-xs font-extrabold border border-white/15">🏃‍♂️ Outdoor GTO Tasks</span>
-                <span className="px-3 py-1 rounded-lg bg-white/10 text-white text-xs font-extrabold border border-white/15">🎙️ Deputy President Interview</span>
+                <span className="px-3 py-1.5 rounded-lg bg-slate-100 text-gray-800 text-xs font-extrabold border border-slate-200">🧠 Psychological WAT &amp; TAT</span>
+                <span className="px-3 py-1.5 rounded-lg bg-slate-100 text-gray-800 text-xs font-extrabold border border-slate-200">🏃‍♂️ Outdoor GTO Tasks</span>
+                <span className="px-3 py-1.5 rounded-lg bg-slate-100 text-gray-800 text-xs font-extrabold border border-slate-200">🎙️ Deputy President Interview</span>
               </div>
             </div>
 
             <div className="shrink-0 flex flex-col sm:flex-row lg:flex-col gap-3 w-full sm:w-auto">
               <Link
                 href="/issb"
-                className="px-8 py-4 bg-[#D4AF37] hover:bg-amber-400 text-slate-950 font-black rounded-2xl shadow-xl transition-all text-center uppercase tracking-wider text-xs sm:text-sm flex items-center justify-center gap-2"
+                className="px-8 py-4 bg-[#0A192F] hover:bg-[#B8212E] text-white font-black rounded-2xl shadow-lg transition-all text-center uppercase tracking-wider text-xs sm:text-sm flex items-center justify-center gap-2"
               >
                 🚀 Explore ISSB 3-Tab Hub
               </Link>
@@ -633,7 +633,7 @@ export default async function Home() {
                 href="https://wa.me/923116826552?text=Hello%20Sir,%20I%20want%20information%20about%20ISSB%20Preparation%20&%20Coaching%20Batches."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-8 py-4 bg-[#25D366] hover:bg-[#1faf53] text-white font-black rounded-2xl shadow-xl transition-all text-center uppercase tracking-wider text-xs sm:text-sm flex items-center justify-center gap-2"
+                className="px-8 py-4 bg-[#25D366] hover:bg-[#1faf53] text-white font-black rounded-2xl shadow-lg transition-all text-center uppercase tracking-wider text-xs sm:text-sm flex items-center justify-center gap-2"
               >
                 <MessageCircle className="w-4 h-4 fill-current" /> Chat for Coaching Slot
               </a>
@@ -685,24 +685,24 @@ export default async function Home() {
 
       {/* ── ENGINEERING & PROGRAMMING SERVICES ───────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-[#0A192F] rounded-3xl p-8 sm:p-12 text-white border border-[#112240] shadow-2xl relative overflow-hidden">
-          <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="bg-white rounded-3xl p-8 sm:p-12 text-[#0A192F] border-2 border-gray-200 shadow-xl relative overflow-hidden">
+          <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-blue-50 rounded-full blur-3xl pointer-events-none"></div>
 
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4 border-b border-white/10 pb-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4 border-b border-gray-200 pb-6">
             <div className="space-y-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-xs font-black uppercase tracking-wider">
-                <Hammer className="w-3.5 h-3.5" /> Expert Technical Consultancy
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-50 text-blue-900 border border-blue-200 text-xs font-black uppercase tracking-wider shadow-2xs">
+                <Hammer className="w-3.5 h-3.5 text-blue-600" /> Expert Technical Consultancy
               </span>
-              <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
+              <h2 className="text-2xl sm:text-4xl font-black text-[#0A192F] tracking-tight">
                 Engineering &amp; Programming Services
               </h2>
-              <p className="text-gray-400 text-xs sm:text-sm font-medium">
+              <p className="text-gray-600 text-xs sm:text-sm font-medium">
                 Need customized technical help? Hire Engineer Yasin &amp; team for your complex simulations and digital tasks.
               </p>
             </div>
             <Link
               href="/services"
-              className="px-5 py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-white text-xs font-black uppercase tracking-wider transition-all shrink-0 self-start md:self-auto flex items-center gap-1.5"
+              className="px-5 py-3 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-[#0A192F] text-xs font-black uppercase tracking-wider transition-all shrink-0 self-start md:self-auto flex items-center gap-1.5 shadow-xs"
             >
               View All Services <ArrowRight className="w-4 h-4" />
             </Link>
@@ -717,18 +717,18 @@ export default async function Home() {
             ].map((srv, idx) => {
               const SIcon = srv.icon;
               return (
-                <div key={idx} className="bg-white/5 border border-white/10 hover:border-[#D4AF37]/60 p-6 rounded-2xl transition-all hover:bg-white/10 flex flex-col justify-between group">
+                <div key={idx} className="bg-slate-50 border border-gray-200 hover:border-[#B8212E] p-6 rounded-2xl transition-all hover:bg-white flex flex-col justify-between group shadow-xs hover:shadow-lg hover:-translate-y-0.5">
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-[10px] uppercase font-black text-[#D4AF37] bg-white/10 px-2.5 py-0.5 rounded-full border border-white/10">
+                      <span className="text-[10px] uppercase font-black text-[#0A192F] bg-white px-2.5 py-1 rounded-full border border-gray-200 shadow-2xs">
                         {srv.badge}
                       </span>
-                      <SIcon className="w-6 h-6 text-gray-300 group-hover:text-[#D4AF37] transition-colors" />
+                      <SIcon className="w-6 h-6 text-[#0A192F] group-hover:text-[#B8212E] transition-colors" />
                     </div>
-                    <h3 className="text-lg font-bold text-white mb-2 group-hover:text-[#D4AF37] transition-colors">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#B8212E] transition-colors">
                       {srv.title}
                     </h3>
-                    <p className="text-xs text-gray-400 leading-relaxed mb-6 font-medium">
+                    <p className="text-xs text-gray-600 leading-relaxed mb-6 font-medium">
                       {srv.desc}
                     </p>
                   </div>
@@ -736,7 +736,7 @@ export default async function Home() {
                     href={`https://wa.me/923116826552?text=Hello%20Engineer%20Yasin,%20I%20want%20to%20hire%20your%20services%20for%20${encodeURIComponent(srv.title)}.`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full py-2.5 px-4 rounded-xl bg-[#B8212E] hover:bg-[#961a25] text-white font-extrabold text-[11px] flex items-center justify-center gap-2 transition-all uppercase tracking-wider shadow-md"
+                    className="w-full py-2.5 px-4 rounded-xl bg-[#0A192F] hover:bg-[#B8212E] text-white font-extrabold text-[11px] flex items-center justify-center gap-2 transition-all uppercase tracking-wider shadow-md"
                   >
                     💬 Hire on WhatsApp ➔
                   </a>

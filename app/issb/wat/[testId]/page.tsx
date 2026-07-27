@@ -56,7 +56,7 @@ export default function WatTestExecutionPage() {
     }
   }, [])
 
-  // ── Official Recorded Air Horn Sound ONLY (Plays your uploaded AIR HORN FOR ISSB.mpeg file) ──
+  // ── Official Recorded Air Horn Sound ONLY (Plays with automatic 1.4s clean cutoff to remove tail noise) ──
   const playAirHorn = useCallback(() => {
     try {
       if (audioRef.current) {
@@ -64,6 +64,14 @@ export default function WatTestExecutionPage() {
         audioRef.current.play().catch(e => {
           console.log('MPEG audio playback notice:', e)
         })
+
+        // Automatically silence any strange tail audio or outro noise remaining at the end of the file
+        setTimeout(() => {
+          if (audioRef.current) {
+            audioRef.current.pause()
+            audioRef.current.currentTime = 0
+          }
+        }, 1400) // Pure 1.4-second military horn burst!
       }
     } catch (err) {
       console.error('Air horn playing error:', err)

@@ -170,7 +170,7 @@ export default function SctUrduPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3 text-xs font-black uppercase tracking-wider text-gray-300">
-            <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-amber-400">⏱️ 6 Minutes / 25 Sentences</span>
+            <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-amber-400">⏱️ 6 Minutes / 26 Sentences</span>
             <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-emerald-400">📢 2.8s Air Horn Buzzer</span>
             <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-white">🇵🇰 Urdu Nastaleeq Presentation</span>
           </div>

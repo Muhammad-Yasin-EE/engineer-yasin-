@@ -123,7 +123,7 @@ export default function WatIndexPage() {
                     </div>
 
                     <p className="text-xs sm:text-sm text-gray-300 font-medium leading-relaxed">
-                      Standard ISSB Word Association Test containing 100 official stimulus words for regular candidate practice under simulated testing center conditions.
+                      Standard ISSB Word Association Test containing 100 official stimulus words for regular candidate practice under official testing center conditions.
                     </p>
 
                     {/* Simple Clean Indicators */}

@@ -269,7 +269,7 @@ export default function WatTestExecutionPage() {
                   🟢 Step 1: Candidate Verification Required
                 </span>
                 <p className="text-xs text-gray-300 font-medium">
-                  Join Engineer Yasin&apos;s official WhatsApp learning community once to unlock full-screen simulated military testing.
+                  Join Engineer Yasin&apos;s official WhatsApp learning community once to unlock full-screen official military testing.
                 </p>
                 <button
                   onClick={handleWhatsAppJoin}

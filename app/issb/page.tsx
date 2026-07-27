@@ -659,10 +659,10 @@ export default function ISSBPage() {
           {/* ── PREMIUM RESPONSIVE CARD GRID (For all mobile, tablet, and desktop viewports) ── */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {[
-              // ── Psychology Assessment Battery ──
-              { title: "Word Association Test (WAT)", category: "Psychology Test", desc: "Attempt all 15 official tests (1,500 words) in simulated testing center projector mode with standard 10s slide intervals and air horn sound.", icon: Brain, isReady: true, href: "/issb/wat" },
+              // ── Psychology Assessment Tests ──
+              { title: "Word Association Test (WAT)", category: "Psychology Test", desc: "Attempt all 15 official tests (1,500 words) in official testing center projector format with standard 10s slide intervals and air horn sound.", icon: Brain, isReady: true, href: "/issb/wat" },
               { title: "Sentence Completion Test (Urdu)", category: "Psychology Test", desc: "Attempt 4 complete sets (104 Urdu incomplete sentences, 26 per test) in timed projector mode with 2.8s audio hooter.", icon: Brain, isReady: true, href: "/issb/sct-urdu" },
-              { title: "Sentence Completion Test (Eng)", category: "Psychology Test", desc: "Attempt 4 complete sets (104 English sentence starters, 26 per test) in simulated testing mode with 2.8s air horn.", icon: Brain, isReady: true, href: "/issb/sct-eng" },
+              { title: "Sentence Completion Test (Eng)", category: "Psychology Test", desc: "Attempt 4 complete sets (104 English sentence starters, 26 per test) in official timed format with 2.8s air horn.", icon: Brain, isReady: true, href: "/issb/sct-eng" },
               { title: "Situation Reaction Test (SRT)", category: "Psychology Test", desc: "Complete official repository of solved situations, 55+ practice dilemmas from past experiences, and female candidate guidelines.", icon: Target, isReady: true, href: "/issb/srt" },
               { title: "Picture Story Writing (TAT)", category: "Psychology Test", desc: "Thematic Apperception Test picture prompts for developing constructive hero-oriented action narratives.", icon: BookOpen, isReady: false },
               { title: "Pointer Story Writing", category: "Psychology Test", desc: "Merit-Demerit assessment and open-ended scenario writing to evaluate candidates' moral resolution.", icon: BookOpen, isReady: false },

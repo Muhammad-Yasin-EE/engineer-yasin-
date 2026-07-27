@@ -9,35 +9,75 @@ export default function WhatsappPopup() {
   const [isOpen, setIsOpen] = useState(false)
   const whatsappUrl = 'https://chat.whatsapp.com/IzPd4vwXbrjGhAkanhYvTp?s=cl&p=a&ilr=0'
 
+  // Check if current route is ANY test or practice module
+  const isTestOrPractice = 
+    pathname?.startsWith('/prep/quiz') || 
+    pathname?.includes('/wat') ||
+    pathname?.includes('/sct-') ||
+    pathname?.includes('/srt') ||
+    pathname?.includes('/gd-topics') ||
+    pathname?.includes('/ranks')
+
   useEffect(() => {
-    // If user is attempting a quiz or WAT practice battery, never set up or trigger the popup
-    const isTestOrWat = pathname?.startsWith('/prep/quiz') || pathname?.includes('/wat');
-    if (isTestOrWat) {
+    // Immediately suppress popup during any test or assessment module
+    if (isTestOrPractice) {
       setIsOpen(false)
       return
     }
 
-    // Trigger every 90 seconds (1.5 minutes) across the website
-    const initialTimeout = setTimeout(() => {
-      setIsOpen(true)
-    }, 45000)
+    // Check session status
+    const hasShownTwice = sessionStorage.getItem('wp_popup_shown_twice') === 'true'
+    const hasClickedJoin = sessionStorage.getItem('wp_popup_joined') === 'true'
 
-    const interval = setInterval(() => {
-      setIsOpen(true)
-    }, 90000) // 90 seconds = 1.5 minutes
-
-    return () => {
-      clearTimeout(initialTimeout)
-      clearInterval(interval)
+    if (hasShownTwice) {
+      // Already showed the 2nd time after the 3-minute post-join interval in this session
+      return
     }
-  }, [pathname])
 
-  // Immediately hide if user navigated to a quiz or WAT page while modal was open
-  if (pathname?.startsWith('/prep/quiz') || pathname?.includes('/wat')) {
+    if (hasClickedJoin) {
+      // User clicked join; schedule exact 3-minute (180,000 ms) one-time reminder
+      const threeMinuteTimer = setTimeout(() => {
+        if (!isTestOrPractice && sessionStorage.getItem('wp_popup_shown_twice') !== 'true') {
+          setIsOpen(true)
+          sessionStorage.setItem('wp_popup_shown_twice', 'true')
+        }
+      }, 180000) // Exactly 3 minutes later
+
+      return () => clearTimeout(threeMinuteTimer)
+    } else {
+      // Initial appearance after 45 seconds on standard non-test pages
+      const initialTimer = setTimeout(() => {
+        if (!isTestOrPractice && sessionStorage.getItem('wp_popup_joined') !== 'true' && sessionStorage.getItem('wp_popup_shown_twice') !== 'true') {
+          setIsOpen(true)
+        }
+      }, 45000)
+
+      return () => clearTimeout(initialTimer)
+    }
+  }, [pathname, isTestOrPractice])
+
+  // Absolutely suppress rendering on test pages even if state was previously open
+  if (isTestOrPractice || !isOpen) {
     return null
   }
 
-  if (!isOpen) return null
+  const handleJoinClick = () => {
+    sessionStorage.setItem('wp_popup_joined', 'true')
+    setIsOpen(false)
+    // When clicked, the useEffect will re-evaluate and set the exact 3-minute timer for the one final appearance in this session
+  }
+
+  const handleDismiss = () => {
+    const hasClickedJoin = sessionStorage.getItem('wp_popup_joined') === 'true'
+    if (hasClickedJoin) {
+      // If they dismissed the reminder after joining, never show again in this session
+      sessionStorage.setItem('wp_popup_shown_twice', 'true')
+    } else {
+      // Treat dismissal as acknowledged for now, transition to 3-minute reminder
+      sessionStorage.setItem('wp_popup_joined', 'true')
+    }
+    setIsOpen(false)
+  }
 
   return (
     <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
@@ -45,7 +85,7 @@ export default function WhatsappPopup() {
         
         {/* Close Button */}
         <button
-          onClick={() => setIsOpen(false)}
+          onClick={handleDismiss}
           className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-rose-100 text-gray-500 hover:text-rose-600 flex items-center justify-center transition-colors cursor-pointer"
           title="Close message"
         >
@@ -69,7 +109,7 @@ export default function WhatsappPopup() {
             Join Engineer Yasin Official Group!
           </h3>
           <p className="text-xs sm:text-sm text-gray-600 font-medium leading-relaxed pt-1">
-            Don&apos;t miss out! Get instant updates on <strong>FREE Mock Tests, Solved Past Papers, ISSB Guidance, and Premium Software</strong> directly on your WhatsApp!
+            Don&apos;t miss out! Get instant updates on <strong>FREE Past Papers, ISSB Guidance, Solved Notes, and Preparation Tools</strong> directly on your WhatsApp!
           </p>
         </div>
 
@@ -95,14 +135,14 @@ export default function WhatsappPopup() {
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => setIsOpen(false)}
+            onClick={handleJoinClick}
             className="w-full py-3.5 px-6 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-black text-sm shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider active:scale-[0.98]"
           >
             <MessageCircle className="w-5 h-5 fill-current shrink-0" /> Join WhatsApp Group Now
           </a>
 
           <button
-            onClick={() => setIsOpen(false)}
+            onClick={handleDismiss}
             className="w-full py-2.5 px-4 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 font-extrabold text-xs transition-colors uppercase tracking-wider"
           >
             Maybe Later / Close ✕

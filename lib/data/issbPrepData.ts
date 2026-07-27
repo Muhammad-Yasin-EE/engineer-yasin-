@@ -65,7 +65,7 @@ export const sctEnglishSets: SctSet[] = [
   },
   {
     id: "sct-eng-02",
-    title: "SCT English Set 02 (Psychology Battery)",
+    title: "SCT English Set 02 (Psychology Assessment)",
     timeLimitMinutes: 6,
     sentences: [
       "In this hospital _______",
@@ -168,7 +168,7 @@ export const sctEnglishSets: SctSet[] = [
 export const sctUrduSets: SctSet[] = [
   {
     id: "sct-urdu-01",
-    title: "SCT Urdu Set 01 (افسرانہ صلاحیت اور مثبت کردار)",
+    title: "SCT Urdu Set 01 (Officer Leadership & Positive Resilience)",
     timeLimitMinutes: 6,
     sentences: [
       "میں نے ایک پورا دن _______",
@@ -201,7 +201,7 @@ export const sctUrduSets: SctSet[] = [
   },
   {
     id: "sct-urdu-02",
-    title: "SCT Urdu Set 02 (قوت فیصل اور ثابت قدمی)",
+    title: "SCT Urdu Set 02 (Decision Making & Steadfastness)",
     timeLimitMinutes: 6,
     sentences: [
       "جلدی میں اگر _______",
@@ -234,7 +234,7 @@ export const sctUrduSets: SctSet[] = [
   },
   {
     id: "sct-urdu-03",
-    title: "SCT Urdu Set 03 (اخلاقی جرات اور جذباتی کنٹرول)",
+    title: "SCT Urdu Set 03 (Moral Courage & Emotional Control)",
     timeLimitMinutes: 6,
     sentences: [
       "دھوکہ دینے کے لیے _______",
@@ -267,7 +267,7 @@ export const sctUrduSets: SctSet[] = [
   },
   {
     id: "sct-urdu-04",
-    title: "SCT Urdu Set 04 (ذمہ داری اور قومی جذبہ)",
+    title: "SCT Urdu Set 04 (National Responsibility & Dedication)",
     timeLimitMinutes: 6,
     sentences: [
       "شرم کے مارے _______",

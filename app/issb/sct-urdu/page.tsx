@@ -159,20 +159,20 @@ export default function SctUrduPage() {
               <ArrowLeft className="w-4 h-4" /> Return to ISSB Portal
             </Link>
             <span className="text-xs sm:text-sm font-black uppercase tracking-widest text-[#D4AF37] block">
-              Official ISSB Psychological Selection Battery
+              Official ISSB Psychological Selection Tests
             </span>
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight uppercase">
               Sentence Completion <span className="text-emerald-400">Test (SCT Urdu)</span>
             </h1>
             <p className="text-xs sm:text-sm md:text-base text-gray-300 font-medium leading-relaxed max-w-3xl">
-              Attempt official Urdu incomplete sentences (جملوں کی تکمیل) under actual hall timing. Evaluate your emotional balance, confidence, and positive psychological attitude.
+              Attempt official Urdu incomplete sentences under actual hall timing. Evaluate your emotional balance, confidence, and positive psychological attitude.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 text-xs font-black uppercase tracking-wider text-gray-300">
             <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-amber-400">⏱️ 6 Minutes / 26 Sentences</span>
             <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-emerald-400">📢 2.8s Air Horn Buzzer</span>
-            <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-white">🇵🇰 Urdu Nastaleeq Presentation</span>
+            <span className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-white">🇵🇰 Official Projector Format</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
@@ -181,17 +181,17 @@ export default function SctUrduPage() {
                 <div className="space-y-4 mb-8">
                   <div className="flex items-center justify-between">
                     <span className="px-3 py-1 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[11px] font-black uppercase tracking-widest rounded-full">
-                      SCT Urdu Module
+                      SCT Urdu Test
                     </span>
                     <span className="text-xs text-gray-400 font-extrabold flex items-center gap-1">
                       <Clock className="w-3.5 h-3.5" /> 6 Minutes
                     </span>
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-black text-white group-hover:text-emerald-300 transition-colors">
+                  <h3 className="text-xl sm:text-2xl font-black text-white group-hover:text-emerald-300 transition-colors uppercase">
                     {set.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-gray-300 font-medium leading-relaxed" dir="rtl">
-                    مثبت سوچ، اعلیٰ ظرفی، حب الوطنی اور قائدانہ اصولوں کو ظاہر کرنے کے لیے سرکاری نامکمل جملے حل کریں۔
+                  <p className="text-xs sm:text-sm text-gray-300 font-medium leading-relaxed">
+                    Complete these official incomplete sentences to demonstrate optimistic thinking, emotional maturity, patriotism, and officer-like leadership traits.
                   </p>
                 </div>
 
@@ -199,7 +199,7 @@ export default function SctUrduPage() {
                   onClick={() => launchFullscreenTest(set)}
                   className="w-full py-4 bg-[#B8212E] hover:bg-[#961a25] active:scale-95 text-white font-black text-xs sm:text-sm uppercase tracking-widest rounded-2xl shadow-xl transition-all flex items-center justify-center gap-2 border border-rose-400/20"
                 >
-                  <Play className="w-4 h-4 fill-current" /> Launch Urdu Simulator ➔
+                  <Play className="w-4 h-4 fill-current" /> Start Urdu Test ➔
                 </button>
               </div>
             ))}
@@ -221,16 +221,16 @@ export default function SctUrduPage() {
             </button>
             <span className="px-3 py-1 bg-slate-900 border border-slate-800 text-emerald-400 font-extrabold text-[11px] rounded-full uppercase">Official Urdu Criteria</span>
           </div>
-          <div className="space-y-2 border-b border-slate-800 pb-6 text-right" dir="rtl">
-            <span className="text-xs font-black text-[#D4AF37] block">انٹر سروسز سلیکشن بورڈ (آئی ایس ایس بی)</span>
-            <h1 className="text-2xl sm:text-4xl font-black text-white">{selectedSet.title}</h1>
+          <div className="space-y-2 border-b border-slate-800 pb-6">
+            <span className="text-xs font-black text-[#D4AF37] block uppercase tracking-widest">Inter Services Selection Board (ISSB)</span>
+            <h1 className="text-2xl sm:text-4xl font-black text-white uppercase">{selectedSet.title}</h1>
           </div>
-          <div className="space-y-4 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-inner text-right" dir="rtl">
-            <h2 className="text-sm sm:text-base font-black text-[#D4AF37]">📋 امیداروں کے لیے ضروری ہدایات</h2>
+          <div className="space-y-4 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-inner">
+            <h2 className="text-sm sm:text-base font-black text-[#D4AF37] uppercase tracking-wider">📋 Official Candidate Instructions</h2>
             <ul className="space-y-3 text-xs sm:text-sm text-gray-200 font-medium">
-              <li>۱. سکرین پر یکے بعد دیگرے <strong>نامکمل اردو جملے</strong> ظاہر کیے جائیں گے۔</li>
-              <li>۲. ہر جملہ 12 سیکنڈ کے لیے ظاہر ہوگا۔ سلائیڈ تبدیل ہونے سے 2 سیکنڈ پہلے <strong>2.8 سیکنڈ کا ملٹری بگل / ہوٹر</strong> بجے گا۔</li>
-              <li>۳. جملے دیکھتے ہی سب سے پہلا مثبت اور با معنی فقرہ اپنی جوابی کاپی میں تحریر کریں۔</li>
+              <li>1. A sequence of <strong>26 incomplete Urdu sentence starters</strong> will appear directly on screen.</li>
+              <li>2. Each sentence starter remains displayed for 12 seconds. Exactly 2 seconds prior to transitioning, a <strong>2.8s military air horn</strong> will alert you.</li>
+              <li>3. Upon seeing each sentence, write down your immediate, spontaneous, and realistic completion on your testing pad.</li>
             </ul>
           </div>
           <div className="pt-2">
@@ -258,12 +258,12 @@ export default function SctUrduPage() {
       <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-8 pb-24">
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="bg-[#0A192F] border border-[#1A2E4C] rounded-3xl p-8 text-center space-y-5 shadow-2xl">
-            <h1 className="text-2xl sm:text-4xl font-black text-emerald-400">Urdu Test Completed</h1>
+            <h1 className="text-2xl sm:text-4xl font-black text-emerald-400 uppercase">Urdu Test Completed</h1>
             <button onClick={() => setTestState('hub')} className="px-8 py-3.5 bg-[#B8212E] font-black rounded-xl text-white uppercase text-sm">Return to Hub ➔</button>
           </div>
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl" dir="rtl">
-            <h3 className="text-base font-bold text-white mb-6">مکمل اردو جملے ({selectedSet.sentences.length})</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+            <h3 className="text-base font-bold text-white mb-6 uppercase tracking-wider">Complete Sentence Starters Pool ({selectedSet.sentences.length} Items)</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" dir="rtl">
               {selectedSet.sentences.map((s, idx) => (
                 <div key={idx} className="p-3.5 rounded-xl border border-slate-800 bg-slate-950 flex items-center gap-3 text-right">
                   <span className="text-xs text-[#D4AF37] font-black">#{idx + 1}</span>

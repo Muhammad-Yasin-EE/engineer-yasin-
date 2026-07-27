@@ -183,13 +183,13 @@ export default function SctEnglishPage() {
               <ArrowLeft className="w-4 h-4" /> Return to ISSB Portal
             </Link>
             <span className="text-xs sm:text-sm font-black uppercase tracking-widest text-[#D4AF37] block">
-              Official ISSB Psychological Selection Battery
+              Official ISSB Psychological Selection Tests
             </span>
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight uppercase">
               Sentence Completion <span className="text-emerald-400">Test (SCT English)</span>
             </h1>
             <p className="text-xs sm:text-sm md:text-base text-gray-300 font-medium leading-relaxed max-w-3xl">
-              Complete short stimulus sentences to reflect your optimism, emotional equilibrium, leadership reflexes, and social cooperation. Attempt all official sets under timed projector simulation.
+              Complete short stimulus sentences to reflect your optimism, emotional equilibrium, leadership reflexes, and social cooperation. Attempt all official sets under official timed projector format.
             </p>
           </div>
 
@@ -231,7 +231,7 @@ export default function SctEnglishPage() {
                   onClick={() => startTestSet(set)}
                   className="w-full py-4 bg-[#B8212E] hover:bg-[#961a25] active:scale-95 text-white font-black text-xs sm:text-sm uppercase tracking-widest rounded-2xl shadow-xl transition-all flex items-center justify-center gap-2 border border-rose-400/20"
                 >
-                  <Play className="w-4 h-4 fill-current" /> Launch Simulated Test ➔
+                  <Play className="w-4 h-4 fill-current" /> Start Test ➔
                 </button>
               </div>
             ))}

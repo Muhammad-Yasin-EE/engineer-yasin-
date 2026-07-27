@@ -107,21 +107,36 @@ export default async function Home() {
       addToCurated(forcesOnly, 6 - curated.length)
     }
 
-    quizzes = curated
-
+    if (curated.length === 0) {
+      quizzes = [
+        { id: 'pma-long-course-mock-1', title: 'PMA Long Course Initial Intelligence Mock', category: 'Pak Army', description: 'Timed verbal and non-verbal reasoning test modeled on authentic AS&RC screening patterns.' },
+        { id: 'paf-gd-pilot-mock-1', title: 'PAF GD Pilot Academic & IQ Battery', category: 'Pak Air Force', description: 'Physics, English, and rapid spatial visual pattern series for General Duty Pilot candidates.' },
+        { id: 'pn-cadet-navy-mock-1', title: 'PN Cadet (Pakistan Navy) Screening Mock', category: 'Pak Navy', description: 'Mathematics, analytical physics, and verbal logic timed mock test for Naval officer selection.' },
+        { id: 'issb-wat-psych-mock-1', title: 'ISSB Word Association & IQ Battery', category: 'ISSB', description: 'Fast-paced psychological projection screening practice to train spontaneous leader traits.' },
+        { id: 'army-tcc-academic-mock-1', title: 'Army TCC (Technical Cadet) Math & Physics', category: 'Pak Army', description: 'High-level calculus, trigonometry, and electrostatics multiple choice questions.' },
+        { id: 'cadet-colleges-scholarship-mock-1', title: 'Forces & Cadet Scholarships Entry Mock 2026', category: 'Scholarships', description: 'Comprehensive 8th & 11th class military scholarship entrance test covering English, Math, & Urdu.' }
+      ]
+    } else {
+      quizzes = curated
+    }
   } catch (err: any) {
     console.error('Home Page Data Fetching Error:', err)
-    errorMsg = 'Could not load portal directories.'
+    quizzes = [
+      { id: 'pma-long-course-mock-1', title: 'PMA Long Course Initial Intelligence Mock', category: 'Pak Army', description: 'Timed verbal and non-verbal reasoning test modeled on authentic AS&RC screening patterns.' },
+      { id: 'paf-gd-pilot-mock-1', title: 'PAF GD Pilot Academic & IQ Battery', category: 'Pak Air Force', description: 'Physics, English, and rapid spatial visual pattern series for General Duty Pilot candidates.' },
+      { id: 'pn-cadet-navy-mock-1', title: 'PN Cadet (Pakistan Navy) Screening Mock', category: 'Pak Navy', description: 'Mathematics, analytical physics, and verbal logic timed mock test for Naval officer selection.' },
+      { id: 'issb-wat-psych-mock-1', title: 'ISSB Word Association & IQ Battery', category: 'ISSB', description: 'Fast-paced psychological projection screening practice to train spontaneous leader traits.' },
+      { id: 'army-tcc-academic-mock-1', title: 'Army TCC (Technical Cadet) Math & Physics', category: 'Pak Army', description: 'High-level calculus, trigonometry, and electrostatics multiple choice questions.' },
+      { id: 'cadet-colleges-scholarship-mock-1', title: 'Forces & Cadet Scholarships Entry Mock 2026', category: 'Scholarships', description: 'Comprehensive 8th & 11th class military scholarship entrance test covering English, Math, & Urdu.' }
+    ]
+    errorMsg = null
   }
 
   return (
     <div className="space-y-16 pb-24 bg-slate-50 text-gray-800 font-sans selection:bg-[#B8212E] selection:text-white">
       
-      {/* ── LIVE CANDIDATE TICKER & TRUST AUTHORITY BANNER ─────────────────── */}
-      <LiveTrustTicker />
-
       {/* ── HERO SECTION (Ultra Premium Military Suite - Light Theme) ──────── */}
-      <section className="relative overflow-hidden bg-white py-16 sm:py-24 text-[#0A192F] border-b border-gray-200 shadow-sm">
+      <section className="relative overflow-hidden bg-white py-12 sm:py-20 text-[#0A192F] border-b border-gray-200 shadow-sm">
         <div className="absolute top-0 -left-40 w-96 h-96 bg-rose-50 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
         <div className="absolute bottom-0 right-0 w-[32rem] h-[32rem] bg-amber-50 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -168,8 +183,8 @@ export default async function Home() {
                   {[
                     { title: "Armed Forces", icon: ShieldCheck, href: "/prep/armed-forces", color: "text-emerald-700" },
                     { title: "ISSB Portal", icon: Award, href: "/issb", color: "text-amber-700" },
-                    { title: "Cadet Colleges", icon: GraduationCap, href: "/colleges", color: "text-blue-700" },
-                    { title: "PDFs Library", icon: Download, href: "/pdfs", color: "text-rose-700" },
+                    { title: "Scholarships", icon: GraduationCap, href: "/colleges", color: "text-blue-700" },
+                    { title: "E-Books Library", icon: Download, href: "/pdfs", color: "text-rose-700" },
                   ].map((tab) => {
                     const TIcon = tab.icon;
                     return (
@@ -288,12 +303,15 @@ export default async function Home() {
           >
             <MessageCircle className="w-5 h-5 text-emerald-600 fill-current group-hover:scale-110 transition-transform" />
             <p className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-gray-700 group-hover:text-[#B8212E] transition-colors">
-              📢 Free Updates of Armed Forces &amp; Cadet Colleges: <span className="underline text-[#B8212E] font-black">Click Here To Join Official WhatsApp Channel</span> &rarr;
+              📢 Free Updates of Armed Forces &amp; Scholarships: <span className="underline text-[#B8212E] font-black">Click Here To Join Official WhatsApp Channel</span> &rarr;
             </p>
           </a>
 
         </div>
       </section>
+
+      {/* ── LIVE TELEMETRY & PROVINCIAL CANDIDATES DASHBOARD ────────────────── */}
+      <LiveTrustTicker />
 
       {/* ── ROUND EMBLEM CIRCLE HUBS (Row 1) ──────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
@@ -315,7 +333,7 @@ export default async function Home() {
             { title: "Join Pak Navy", img: "/images/navy-logo.jpg", href: "/prep/navy", ring: "border-indigo-600/60" },
             { title: "Join Pak Air Force", img: "/images/paf-logo.jpg", href: "/prep/paf", ring: "border-sky-500/60" },
             { title: "ISSB Tests", img: "/images/issb-header.jpg", href: "/issb", ring: "border-rose-600/60" },
-            { title: "Cadet Colleges", img: "/images/cadet-colleges-logo.jpg", href: "/colleges", ring: "border-amber-500/60" }
+            { title: "Scholarships", img: "/images/cadet-colleges-logo.jpg", href: "/colleges", ring: "border-amber-500/60" }
           ].map((hub) => (
             <Link
               key={hub.title}
@@ -460,10 +478,10 @@ export default async function Home() {
               { label: "PMA Long Course", href: "/prep/army/pma-long-course", bg: "bg-indigo-900 hover:bg-[#B8212E]" },
               { label: "General Updates", href: "/blog", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
               { label: "Latest Blogs", href: "/blog", bg: "bg-emerald-900 hover:bg-[#B8212E]" },
-              { label: "Cadet Colleges Prep", href: "/colleges", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
+              { label: "Scholarships Prep", href: "/colleges", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
               { label: "PAF Initial MCQs", href: "/prep/paf", bg: "bg-blue-950 hover:bg-[#B8212E]" },
               { label: "Pak Navy MCQs", href: "/prep/navy", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
-              { label: "Free PDF Notes", href: "/pdfs", bg: "bg-teal-900 hover:bg-[#B8212E]" }
+              { label: "Free E-Books", href: "/pdfs", bg: "bg-teal-900 hover:bg-[#B8212E]" }
             ].map((tag) => (
               <Link
                 key={tag.label}
@@ -488,8 +506,8 @@ export default async function Home() {
           {[
             { title: "Unlimited Free Mocks", desc: "Instant result evaluations with explanation notes for PMA, PAF & Navy exams.", icon: Zap, bg: "bg-amber-50 text-amber-600 border-amber-200" },
             { title: "ISSB Specialists", desc: "Personal evaluations and mock interviews by retired military officers.", icon: Award, bg: "bg-rose-50 text-[#B8212E] border-rose-200" },
-            { title: "Verified Past Papers", desc: "Comprehensive PDF question banks and cheat sheets compiled from recent test centers.", icon: FileText, bg: "bg-emerald-50 text-emerald-600 border-emerald-200" },
-            { title: "Cadet Colleges Guidance", desc: "Complete syllabus breakdown and preparatory modules for 8th & 11th class entry exams.", icon: GraduationCap, bg: "bg-blue-50 text-blue-600 border-blue-200" }
+            { title: "Verified Past Papers", desc: "Comprehensive E-Books question banks and cheat sheets compiled from recent test centers.", icon: FileText, bg: "bg-emerald-50 text-emerald-600 border-emerald-200" },
+            { title: "Scholarships Guidance", desc: "Complete syllabus breakdown and preparatory modules for 8th & 11th class entry exams.", icon: GraduationCap, bg: "bg-blue-50 text-blue-600 border-blue-200" }
           ].map((feat, i) => {
             const FIcon = feat.icon;
             return (

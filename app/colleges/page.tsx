@@ -17,13 +17,13 @@ export default function CollegesPage() {
 
         <div className="space-y-2">
           <span className="text-[11px] font-black uppercase tracking-widest text-amber-600">
-            🏛️ Cadet Colleges Entry Test Preparation 2026
+            🏛️ Forces &amp; Cadet Scholarships Preparation 2026
           </span>
           <h1 className="text-2xl sm:text-3xl font-black text-[#0A192F] uppercase tracking-tight">
-            Colleges Portal Opening Soon
+            Scholarships Portal Opening Soon
           </h1>
           <p className="text-xs sm:text-sm text-gray-500 font-medium leading-relaxed max-w-md mx-auto">
-            Dedicated online testing suites for Cadet College Hasan Abdal, Kohat, Petaro, Razmak, and Military College Jhelum (MCJ) are currently under final curation by our assessment faculty.
+            Dedicated scholarship testing suites for Cadet College Hasan Abdal, Kohat, Petaro, Razmak, Military College Jhelum (MCJ) and national merit scholarships are currently under final curation by our assessment faculty.
           </p>
         </div>
 

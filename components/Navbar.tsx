@@ -232,21 +232,18 @@ export default function Navbar() {
                   <Link href="/issb" prefetch={false} className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] font-bold transition-colors">ISSB Information</Link>
                   <Link href="/issb" prefetch={false} className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] font-bold transition-colors">Free ISSB Prep</Link>
                   <Link href="/issb/coaching" prefetch={false} className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] font-bold transition-colors">ISSB Coaching &amp; Training</Link>
-                  <div className="border-t border-gray-100 my-1" />
-                  <Link href="/issb/wat" prefetch={false} className="block px-4 py-2 text-gray-500 hover:bg-rose-50 hover:text-[#B8212E] transition-colors">WAT 2.8s Hooter Practice</Link>
-                  <Link href="/issb/ranks" prefetch={false} className="block px-4 py-2 text-gray-500 hover:bg-rose-50 hover:text-[#B8212E] transition-colors">Forces Ranks &amp; Salary</Link>
                 </div>
               )}
             </div>
 
             <Link href="/colleges" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
-              Colleges
+              Scholarships
             </Link>
             <Link href="/quizzes" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
               Quizzes
             </Link>
             <Link href="/pdfs" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
-              PDFs
+              E-Books
             </Link>
             <Link href="/videos" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
               Videos
@@ -423,19 +420,17 @@ export default function Navbar() {
                 <Link href="/issb" onClick={() => setMobileMenuOpen(false)}>ISSB Information</Link>
                 <Link href="/issb" onClick={() => setMobileMenuOpen(false)}>Free ISSB Prep</Link>
                 <Link href="/issb/coaching" onClick={() => setMobileMenuOpen(false)}>ISSB Coaching &amp; Training</Link>
-                <Link href="/issb/wat" onClick={() => setMobileMenuOpen(false)} className="text-gray-400">WAT 2.8s Audio Hooter</Link>
-                <Link href="/issb/ranks" onClick={() => setMobileMenuOpen(false)} className="text-gray-400">Forces Ranks &amp; Salary</Link>
               </div>
             </details>
 
             <Link href="/colleges" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
-              Colleges
+              Scholarships
             </Link>
             <Link href="/quizzes" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
               Quizzes
             </Link>
             <Link href="/pdfs" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
-              PDFs
+              E-Books
             </Link>
             <Link href="/videos" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
               Videos

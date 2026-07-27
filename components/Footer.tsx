@@ -69,7 +69,12 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/colleges" className="hover:text-[#B8212E] transition-colors">
-                  Cadet Colleges
+                  Scholarships
+                </Link>
+              </li>
+              <li>
+                <Link href="/pdfs" className="hover:text-[#B8212E] transition-colors">
+                  E-Books
                 </Link>
               </li>
               <li>

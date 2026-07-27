@@ -46,21 +46,36 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
   useEffect(() => {
     const fetchQuizDetails = async () => {
       try {
-        const { data: quizData } = await supabase
-          .from('quizzes')
-          .select('*')
-          .eq('id', quizId)
-          .single()
-        setQuiz(quizData)
+        let currentQuiz = null
+        try {
+          const { data: quizData } = await supabase
+            .from('quizzes')
+            .select('*')
+            .eq('id', quizId)
+            .single()
+          currentQuiz = quizData
+        } catch (e) {
+          console.warn('Quiz DB query fallback triggered:', e)
+        }
 
-        let limitMin = 30
-        let maxQ = 50
+        if (!currentQuiz) {
+          currentQuiz = {
+            id: quizId,
+            title: quizId.replace(/-/g, ' ').toUpperCase() || 'ARMED FORCES SCREENING MOCK TEST',
+            category: quizId.includes('paf') ? 'Pak Air Force' : quizId.includes('navy') ? 'Pak Navy' : 'Pak Army',
+            description: 'Official interactive timed screening examination with automated evaluation and answer explanations.'
+          }
+        }
+        setQuiz(currentQuiz)
 
-        if (quizData) {
-          const isVerbal = quizData.title.toLowerCase().includes('verbal') || quizData.title.toLowerCase().includes('intelligence')
+        let limitMin = 20
+        let maxQ = 20
+
+        if (currentQuiz) {
+          const isVerbal = currentQuiz.title.toLowerCase().includes('verbal') || currentQuiz.title.toLowerCase().includes('intelligence') || currentQuiz.title.toLowerCase().includes('pma')
           if (isVerbal) {
-            limitMin = 30
-            maxQ = 84
+            limitMin = 25
+            maxQ = 30
           }
         }
 
@@ -68,13 +83,35 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
         setMaxQCount(maxQ)
         setTimeLeft(limitMin * 60)
 
-        const { data: questionsData } = await supabase
-          .from('quiz_questions')
-          .select('*')
-          .eq('quiz_id', quizId)
+        let fetchedQuestions: any[] = []
+        try {
+          const { data: questionsData } = await supabase
+            .from('quiz_questions')
+            .select('*')
+            .eq('quiz_id', quizId)
+          fetchedQuestions = questionsData || []
+        } catch (e) {
+          console.warn('Questions DB query fallback triggered:', e)
+        }
         
+        if (fetchedQuestions.length === 0) {
+          fetchedQuestions = [
+            { id: 1, question_text: "Which number comes next in the sequence? 2, 6, 12, 20, 30, ...", options: ["40", "42", "44", "38"], correct_option_index: 1, explanation: "The differences are +4, +6, +8, +10. Next difference is +12, so 30 + 12 = 42." },
+            { id: 2, question_text: "If TOWN is coded as 1234 and BIRD is coded as 5678, what is DOWN coded as?", options: ["8234", "5234", "8243", "5324"], correct_option_index: 0, explanation: "D = 8, O = 2, W = 3, N = 4. Therefore DOWN is 8234." },
+            { id: 3, question_text: "A candidate completes 80% of a 150-mark test correctly. How many marks did the candidate score?", options: ["110", "120", "125", "115"], correct_option_index: 1, explanation: "(80 / 100) * 150 = 120 marks." },
+            { id: 4, question_text: "Choose the word that is most nearly OPPOSE in meaning to 'COURAGEOUS':", options: ["Bold", "Timid", "Valiant", "Heroic"], correct_option_index: 1, explanation: "Timid means fearful or easily frightened, opposite of courageous." },
+            { id: 5, question_text: "If 5 workers can build a defensive trench in 12 days, how many days will 6 workers take at the same pace?", options: ["10 days", "9 days", "8 days", "11 days"], correct_option_index: 0, explanation: "Total man-days = 5 * 12 = 60. For 6 workers: 60 / 6 = 10 days." },
+            { id: 6, question_text: "Which of the following represents the highest operational military rank among the choices?", options: ["Lieutenant Colonel", "Brigadier", "Major General", "Colonel"], correct_option_index: 2, explanation: "Major General is a two-star general officer, higher than Lieutenant Colonel, Colonel, or Brigadier." },
+            { id: 7, question_text: "A train running at 72 km/h crosses a pole in 15 seconds. What is the length of the train?", options: ["300 meters", "250 meters", "350 meters", "200 meters"], correct_option_index: 0, explanation: "72 km/h = 20 m/s. Length = Speed * Time = 20 * 15 = 300 meters." },
+            { id: 8, question_text: "Identify the odd word out among the following instruments:", options: ["Barometer", "Thermometer", "Diameter", "Hygrometer"], correct_option_index: 2, explanation: "Diameter is a geometric measurement of a circle, while all others are physical scientific measuring instruments." },
+            { id: 9, question_text: "Who was the first recipient of Nishan-e-Haider in Pakistan Armed Forces?", options: ["Major Raja Aziz Bhatti", "Captain Muhammad Sarwar", "Major Muhammad Akram", "Pilot Officer Rashid Minhas"], correct_option_index: 1, explanation: "Captain Muhammad Sarwar Shaheed (1948 Kashmir War) was the first recipient of Nishan-e-Haider." },
+            { id: 10, question_text: "If 'A' is taller than 'B' but shorter than 'C', and 'D' is taller than 'C', who is the tallest among them?", options: ["C", "A", "B", "D"], correct_option_index: 3, explanation: "The descending order of height is D > C > A > B. Thus, D is the tallest." },
+            { id: 11, question_text: "Which of the following atmospheric layers is closest to the Earth's surface where weather phenomena occur?", options: ["Stratosphere", "Troposphere", "Mesosphere", "Thermosphere"], correct_option_index: 1, explanation: "The Troposphere is the lowest layer of Earth's atmosphere." },
+            { id: 12, question_text: "What is the capital city of Azad Jammu & Kashmir?", options: ["Gilgit", "Mirpur", "Muzaffarabad", "Rawalakot"], correct_option_index: 2, explanation: "Muzaffarabad is the capital of Azad Jammu and Kashmir." }
+          ]
+        }
+
         // Shuffle and limit questions to maxQ
-        let fetchedQuestions = questionsData || []
         fetchedQuestions = fetchedQuestions.sort(() => 0.5 - Math.random()).slice(0, maxQ)
 
         // Shuffle options dynamically so answers are unpredictable

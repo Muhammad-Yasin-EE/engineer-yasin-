@@ -17,13 +17,13 @@ export default function PdfsPage() {
 
         <div className="space-y-2">
           <span className="text-[11px] font-black uppercase tracking-widest text-blue-600">
-            📚 PDF E-Books &amp; Past Papers Vault
+            📚 E-Books &amp; Verified Past Papers Vault
           </span>
           <h1 className="text-2xl sm:text-3xl font-black text-[#0A192F] uppercase tracking-tight">
-            Library Under Upgradation
+            E-Books Repository Under Upgradation
           </h1>
           <p className="text-xs sm:text-sm text-gray-500 font-medium leading-relaxed max-w-md mx-auto">
-            We are currently formatting and categorizing our latest verified PDF notes and preliminary past papers for the 2026 courses. This repository will be live very soon!
+            We are currently formatting and categorizing our latest verified digital E-Books and preliminary past papers for the 2026 induction courses. This repository will be live very soon!
           </p>
         </div>
 
@@ -34,7 +34,7 @@ export default function PdfsPage() {
             rel="noopener noreferrer"
             className="w-full py-4 px-6 rounded-2xl bg-[#25D366] hover:bg-[#1faf53] text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-transform hover:scale-102"
           >
-            <MessageCircle className="w-5 h-5 fill-current" /> Get Free PDFs in WhatsApp Group
+            <MessageCircle className="w-5 h-5 fill-current" /> Get Free E-Books in WhatsApp Group
           </a>
         </div>
       </div>

@@ -62,10 +62,10 @@ export default async function ExamPage({
     return (
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow flex flex-col gap-10 bg-white text-gray-800">
         <Link
-          href={`/prep/${category}`}
+          href={category === 'public-service' ? '/jobs' : `/prep/${category}`}
           className="inline-flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-[#B8212E] w-fit"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to {formatTitle(category)}
+          <ArrowLeft className="w-4 h-4" /> {category === 'public-service' ? 'Back to Public Services & Jobs' : `Back to ${formatTitle(category)}`}
         </Link>
         <div className="relative rounded-xl overflow-hidden shadow-md border border-gray-200 min-h-[240px] flex items-center p-8">
           <div className="absolute inset-0 bg-[#0A192F]/80 z-10" />

@@ -135,8 +135,6 @@ const categoryData: Record<string, any> = {
         name: 'All Commissions',
         iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/State_emblem_of_Pakistan.svg/150px-State_emblem_of_Pakistan.svg.png',
         exams: [
-          { id: 'css', name: 'CSS', cardBgUrl: '/images/card-fpsc.jpg' },
-          { id: 'fia', name: 'FIA', cardBgUrl: '/images/card-fpsc.jpg' },
           { id: 'fpsc', name: 'FPSC', cardBgUrl: '/images/card-fpsc.jpg' },
           { id: 'ppsc', name: 'PPSC', cardBgUrl: '/images/card-ppsc.jpg' },
           { id: 'bpsc', name: 'BPSC', cardBgUrl: '/images/card-bpsc.jpg' },

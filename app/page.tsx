@@ -136,7 +136,7 @@ export default async function Home() {
     <div className="space-y-16 pb-24 bg-slate-50 text-gray-800 font-sans selection:bg-[#B8212E] selection:text-white">
       
       {/* ── HERO SECTION (Ultra Premium Military Suite - Light Theme) ──────── */}
-      <section className="relative overflow-hidden bg-white py-12 sm:py-20 text-[#0A192F] border-b border-gray-200 shadow-sm">
+      <section className="relative overflow-hidden bg-white pt-3 pb-12 sm:pt-5 sm:pb-16 text-[#0A192F] border-b border-gray-200 shadow-sm">
         <div className="absolute top-0 -left-40 w-96 h-96 bg-rose-50 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
         <div className="absolute bottom-0 right-0 w-[32rem] h-[32rem] bg-amber-50 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -155,7 +155,7 @@ export default async function Home() {
               </h1>
               
               <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                Whether you aim to serve in the Pakistani Armed Forces, Civil Services, Cadet Colleges or pursue a career in engineering &amp; leadership, <span className="text-[#0A192F] font-extrabold">Engineer Yasin Forces Academy</span> is the definitive first step towards achieving your goals.
+                Whether you aim to serve in the Pakistani Armed Forces, Civil Services, Cadet Colleges or pursue a career in engineering &amp; leadership, <span className="text-[#0A192F] font-extrabold">Engineer Yasin Digital Prep Portal</span> is the definitive first step towards achieving your goals.
               </p>
 
               {/* Primary Call to Action Buttons */}
@@ -416,9 +416,9 @@ export default async function Home() {
         {/* Row 3: Selection Centers & Free E-Books */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 justify-items-center">
           {[
-            { title: "Army Selection Centers", desc: "AS&RC Regional Addresses", href: "#selection-centers", img: "/images/army-circle-logo.jpg", ring: "border-emerald-600/60" },
-            { title: "Navy Selection Centers", desc: "PNSC Recruitment Hubs", href: "#selection-centers", img: "/images/navy-logo.jpg", ring: "border-indigo-600/60" },
-            { title: "PAF Selection Centers", desc: "PAF Information Centers", href: "#selection-centers", img: "/images/paf-logo.jpg", ring: "border-sky-500/60" },
+            { title: "Army Selection Centers", desc: "AS&RC Regional Addresses", href: "/centers/army", img: "/images/army-circle-logo.jpg", ring: "border-emerald-600/60" },
+            { title: "Navy Selection Centers", desc: "PNSC Recruitment Hubs", href: "/centers/navy", img: "/images/navy-logo.jpg", ring: "border-indigo-600/60" },
+            { title: "PAF Selection Centers", desc: "PAF Information Centers", href: "/centers/paf", img: "/images/paf-logo.jpg", ring: "border-sky-500/60" },
             { title: "Free E-Books & Notes", desc: "Verified PDF Downloads", href: "/pdfs", img: "/images/download-pdf.jpg", ring: "border-purple-600/60" }
           ].map((item) => (
             <Link

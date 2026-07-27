@@ -17,12 +17,12 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "Engineer Yasin | Premier Armed Forces & Cadet Colleges Portal",
-  description: "Official portal of Engineer Yasin Forces Academy. Access premium Pakistan Armed Forces (PMA Long Course, PAF, Navy) initial practice tests, ISSB guidance, and Cadet Colleges preparation.",
-  keywords: ["Engineer Yasin", "Engineer Yasin Forces Academy", "Engineer Yasin Prep Hub", "PMA Long Course Preparation", "ISSB Preparation", "PAF GD Pilot Test", "PN Cadet Test", "Cadet Colleges Entry Test", "Forces MCQs Online"],
+  description: "Official portal of Engineer Yasin Digital Prep Portal. Access premium Pakistan Armed Forces (PMA Long Course, PAF, Navy) initial practice tests, ISSB guidance, and Cadet Colleges preparation.",
+  keywords: ["Engineer Yasin", "Engineer Yasin Forces Portal", "Engineer Yasin Prep Hub", "PMA Long Course Preparation", "ISSB Preparation", "PAF GD Pilot Test", "PN Cadet Test", "Cadet Colleges Entry Test", "Forces MCQs Online"],
   authors: [{ name: "Engineer Yasin" }],
   openGraph: {
     title: "Engineer Yasin | Premier Armed Forces & Cadet Colleges Portal",
-    description: "Official portal of Engineer Yasin Forces Academy. Access premium Pakistan Armed Forces (PMA Long Course, PAF, Navy) initial practice tests, ISSB guidance, and Cadet Colleges preparation.",
+    description: "Official portal of Engineer Yasin Digital Prep Portal. Access premium Pakistan Armed Forces (PMA Long Course, PAF, Navy) initial practice tests, ISSB guidance, and Cadet Colleges preparation.",
     url: "https://www.engineeryasin.xyz",
     siteName: "Engineer Yasin Forces Portal",
     locale: "en_PK",

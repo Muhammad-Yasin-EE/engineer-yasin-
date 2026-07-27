@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Calendar, Scale, CheckCircle2, ShieldCheck, MapPin, Phone, HelpCircle, ChevronDown, ChevronUp, AlertCircle } from 'lucide-react'
+import Link from 'next/link'
+import { Calendar, Scale, CheckCircle2, ShieldCheck, MapPin, Phone, Mail, HelpCircle, ChevronDown, ChevronUp, AlertCircle, ExternalLink } from 'lucide-react'
 
 export function ForcesCalculators() {
   // Age Calculator State
@@ -82,7 +83,7 @@ export function ForcesCalculators() {
                   Calculate Your Age
                 </h3>
                 <p className="text-xs font-extrabold tracking-widest text-[#B8212E] uppercase mt-0.5">
-                  ENGINEER YASIN FORCES ACADEMY
+                  ENGINEER YASIN ONLINE PREP PORTAL
                 </p>
               </div>
               <div className="w-12 h-12 rounded-2xl bg-[#0A192F]/10 flex items-center justify-center text-[#0A192F] group-hover:bg-[#0A192F] group-hover:text-white transition-colors">
@@ -139,7 +140,7 @@ export function ForcesCalculators() {
                   Ideal Weight Finder
                 </h3>
                 <p className="text-xs font-extrabold tracking-widest text-[#B8212E] uppercase mt-0.5">
-                  ENGINEER YASIN FORCES ACADEMY
+                  ENGINEER YASIN ONLINE PREP PORTAL
                 </p>
               </div>
               <div className="w-12 h-12 rounded-2xl bg-[#B8212E]/10 flex items-center justify-center text-[#B8212E] group-hover:bg-[#B8212E] group-hover:text-white transition-colors">
@@ -218,28 +219,28 @@ export function SelectionCentersSection() {
 
   const centersData = {
     army: [
-      { city: "Rawalpindi", address: "Army Selection and Recruitment Center (AS&RC), Roomi Road, near Ordnance Club, Rawalpindi.", phone: "051-9271393" },
-      { city: "Lahore", address: "AS&RC, Fortress Stadium Road, near Polo Ground, Lahore Cantt.", phone: "042-99220320" },
-      { city: "Karachi", address: "AS&RC, Shahrah-e-Faisal, opposite Drig Road Railway Station, Karachi.", phone: "021-99244671" },
-      { city: "Peshawar", address: "AS&RC, Khyber Road, opposite Railway Station, Peshawar Cantt.", phone: "091-9211747" },
-      { city: "Quetta", address: "AS&RC, Zarghoon Road, near Railway Station, Quetta Cantt.", phone: "081-9201506" },
-      { city: "Multan", address: "AS&RC, Tipu Road, near Sher Shah Road, Multan Cantt.", phone: "061-9200424" }
+      { city: "Rawalpindi", address: "Army Selection and Recruitment Center (AS&RC), Roomi Road, near Ordnance Club, Rawalpindi.", phone: "051-9271393", email: "asrc_rwp@joinpakarmy.gov.pk" },
+      { city: "Lahore", address: "AS&RC, Fortress Stadium Road, near Polo Ground, Lahore Cantt.", phone: "042-99220320", email: "asrc_lhr@joinpakarmy.gov.pk" },
+      { city: "Karachi", address: "AS&RC, Shahrah-e-Faisal, opposite Drig Road Railway Station, Karachi.", phone: "021-99244671", email: "asrc_khi@joinpakarmy.gov.pk" },
+      { city: "Peshawar", address: "AS&RC, Khyber Road, opposite Railway Station, Peshawar Cantt.", phone: "091-9211747", email: "asrc_psr@joinpakarmy.gov.pk" },
+      { city: "Quetta", address: "AS&RC, Zarghoon Road, near Railway Station, Quetta Cantt.", phone: "081-9201506", email: "asrc_qta@joinpakarmy.gov.pk" },
+      { city: "Multan", address: "AS&RC, Tipu Road, near Sher Shah Road, Multan Cantt.", phone: "061-9200424", email: "asrc_mtn@joinpakarmy.gov.pk" }
     ],
     navy: [
-      { city: "Karachi", address: "Pakistan Navy Recruitment & Selection Centre, 9-Liaquat Barracks, Rafiqui Shaheed Road, Karachi.", phone: "021-48506704" },
-      { city: "Rawalpindi", address: "PN Recruitment & Selection Centre, House No 102, Gali No 1, Westridge-III, Rawalpindi.", phone: "051-5154378" },
-      { city: "Lahore", address: "PN Recruitment & Selection Centre, 92-A, Model Town, Lahore.", phone: "042-99232230" },
-      { city: "Peshawar", address: "PN Recruitment & Selection Centre, Warsak Road, Peshawar Cantt.", phone: "091-9212316" },
-      { city: "Quetta", address: "PN Recruitment & Selection Centre, Model Town, Quetta.", phone: "081-9201249" },
-      { city: "Multan", address: "PN Recruitment & Selection Centre, Multan Cantt.", phone: "061-9201183" }
+      { city: "Karachi", address: "Pakistan Navy Recruitment & Selection Centre, 9-Liaquat Barracks, Rafiqui Shaheed Road, Karachi.", phone: "021-48506704", email: "pnsrc_karachi@navy.gov.pk" },
+      { city: "Rawalpindi", address: "PN Recruitment & Selection Centre, House No 102, Gali No 1, Westridge-III, Rawalpindi.", phone: "051-5154378", email: "pnsrc_rawalpindi@navy.gov.pk" },
+      { city: "Lahore", address: "PN Recruitment & Selection Centre, 92-A, Model Town, Lahore.", phone: "042-99232230", email: "pnsrc_lahore@navy.gov.pk" },
+      { city: "Peshawar", address: "PN Recruitment & Selection Centre, Warsak Road, Peshawar Cantt.", phone: "091-9212316", email: "pnsrc_peshawar@navy.gov.pk" },
+      { city: "Quetta", address: "PN Recruitment & Selection Centre, Model Town, Quetta.", phone: "081-9201249", email: "pnsrc_quetta@navy.gov.pk" },
+      { city: "Multan", address: "PN Recruitment & Selection Centre, Multan Cantt.", phone: "061-9201183", email: "pnsrc_multan@navy.gov.pk" }
     ],
     paf: [
-      { city: "Rawalpindi", address: "PAF Information & Selection Centre, The Mall, Rawalpindi.", phone: "051-9271183" },
-      { city: "Lahore", address: "PAF Information & Selection Centre, 14-Abbott Road, Lahore.", phone: "042-99201083" },
-      { city: "Karachi", address: "PAF Information & Selection Centre, Main Shahrah-e-Faisal, Karachi.", phone: "021-99240999" },
-      { city: "Peshawar", address: "PAF Information & Selection Centre, 9-The Mall, Peshawar Cantt.", phone: "091-9210829" },
-      { city: "Quetta", address: "PAF Information & Selection Centre, M.A Jinnah Road, Quetta.", phone: "081-9201753" },
-      { city: "Faisalabad", address: "PAF Information & Selection Centre, Main University Road, Faisalabad.", phone: "041-9200779" }
+      { city: "Rawalpindi", address: "PAF Information & Selection Centre, The Mall, Rawalpindi.", phone: "051-9271183", email: "pisc_rwp@paf.gov.pk" },
+      { city: "Lahore", address: "PAF Information & Selection Centre, 14-Abbott Road, Lahore.", phone: "042-99201083", email: "pisc_lhr@paf.gov.pk" },
+      { city: "Karachi", address: "PAF Information & Selection Centre, Main Shahrah-e-Faisal, Karachi.", phone: "021-99240999", email: "pisc_khi@paf.gov.pk" },
+      { city: "Peshawar", address: "PAF Information & Selection Centre, 9-The Mall, Peshawar Cantt.", phone: "091-9210829", email: "pisc_psr@paf.gov.pk" },
+      { city: "Quetta", address: "PAF Information & Selection Centre, M.A Jinnah Road, Quetta.", phone: "081-9201753", email: "pisc_qta@paf.gov.pk" },
+      { city: "Faisalabad", address: "PAF Information & Selection Centre, Main University Road, Faisalabad.", phone: "041-9200779", email: "pisc_fsd@paf.gov.pk" }
     ]
   }
 
@@ -253,10 +254,10 @@ export function SelectionCentersSection() {
             📍 Official Candidate Guidance
           </span>
           <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight uppercase">
-            Official Selection &amp; Recruitment Centers (AS&amp;RC)
+            Official Selection &amp; Recruitment Centers (AS&amp;RC, PNSC, PISC)
           </h2>
           <p className="text-xs sm:text-sm text-gray-300 font-medium">
-            Locate your nearest official Pakistan Armed Forces intake testing center for initial physical, medical, and intelligence registration.
+            Locate your nearest official Pakistan Armed Forces intake testing center with verified phone numbers and contact emails for initial registration.
           </p>
         </div>
 
@@ -288,16 +289,31 @@ export function SelectionCentersSection() {
                   <MapPin className="w-4 h-4 shrink-0 text-amber-400" />
                   <span>{center.city} Center</span>
                 </div>
-                <p className="text-xs text-gray-300 font-medium leading-relaxed">
+                <p className="text-xs text-gray-300 font-medium leading-relaxed mb-3">
                   {center.address}
                 </p>
               </div>
-              <div className="pt-3 border-t border-white/10 flex items-center gap-2 text-xs font-bold text-gray-400">
-                <Phone className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Ph: {center.phone}</span>
+              <div className="pt-3 border-t border-white/10 space-y-1.5">
+                <div className="flex items-center gap-2 text-xs font-bold text-emerald-400">
+                  <Phone className="w-3.5 h-3.5 shrink-0" />
+                  <span>Ph: {center.phone}</span>
+                </div>
+                <div className="flex items-center gap-2 text-[11px] font-medium text-amber-300/90 truncate">
+                  <Mail className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">{center.email}</span>
+                </div>
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="pt-4 text-center sm:text-left">
+          <Link
+            href={`/centers/${activeTab}`}
+            className="inline-flex items-center gap-2 px-6 py-4 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm uppercase tracking-wider shadow-xl hover:scale-102 transition-all"
+          >
+            <ExternalLink className="w-4 h-4" /> View All 12+ Official {activeTab.toUpperCase()} Centers &amp; Email Contacts &rarr;
+          </Link>
         </div>
       </div>
     </div>
@@ -309,8 +325,8 @@ export function FaqSection() {
 
   const faqs = [
     {
-      q: "How can I join the Pakistan Army, Navy, and Air Force through Engineer Yasin Academy?",
-      a: "Our portal provides complete initial assessment preparatory quizzes, intelligence (verbal/non-verbal) tests, academic series, and live ISSB guidance. Simply select your desired branch from our top navigation tabs and attempt the timed mock exams for instant evaluation!"
+      q: "How can I prepare for Pakistan Army, Navy, and Air Force tests through Engineer Yasin Digital Portal?",
+      a: "Our online portal provides complete initial assessment preparatory quizzes, intelligence (verbal/non-verbal) tests, academic series, and live ISSB guidance. Simply select your desired branch from our top navigation tabs and attempt the timed mock exams for instant automatic evaluation!"
     },
     {
       q: "What are the age limits for PMA Long Course, PAF GD Pilot, and PN Cadet in 2026?",
@@ -321,12 +337,12 @@ export function FaqSection() {
       a: "Our portal features Pakistan's most advanced online ISSB simulator without any artificial buffers. In our WAT practice module, words advance automatically every 8 seconds, accompanied by an authentic 2.8-second military-grade audio hooter buzzer to condition your rapid nervous responses!"
     },
     {
-      q: "Are the study materials, past papers, and software APK downloads free?",
-      a: "Yes! 100% of our online mock quizzes, PDF books, past papers, and desktop software resources in the Secure 2-Step Vault are free for all aspiring candidates across Pakistan."
+      q: "Are all online practice tests, E-Books, and preparation resources free?",
+      a: "Yes! 100% of our online timed mock quizzes, PDF E-Books library, verified past papers, and ISSB audio simulators in our portal are completely free for all aspiring candidates across Pakistan."
     },
     {
-      q: "How can I hire Engineer Yasin for engineering consulting, MATLAB, or 3D CAD modeling?",
-      a: "You can reach out directly via our official WhatsApp channel or by clicking on the 'Services' tab in our navigation header. Engineer Yasin provides professional technical tutoring and commercial simulation drafting with guaranteed precision."
+      q: "How can I contact Engineer Yasin or join the official candidate WhatsApp group?",
+      a: "You can reach out and connect directly via our official WhatsApp community link available anywhere on the portal. Engineer Yasin provides verified digital guidance and online mentorship with guaranteed precision for all military induction tests."
     }
   ]
 

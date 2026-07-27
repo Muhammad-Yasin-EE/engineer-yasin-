@@ -2,14 +2,14 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import BookCard from '@/components/BookCard'
-import CategoryCard from '@/components/CategoryCard'
 import LiveTrustTicker from '@/components/LiveTrustTicker'
 import EligibilityCalculator from '@/components/EligibilityCalculator'
+import { ForcesCalculators, SelectionCentersSection, FaqSection } from '@/components/ForcesCalculators'
 import { 
   GraduationCap, Briefcase, Download, Hammer, BookOpen, 
   Sparkles, Layers, ArrowRight, ShieldCheck, FileText,
   CheckCircle2, Award, Users, Cpu, Laptop, ChevronRight,
-  Star, Zap, MessageCircle, Flame, Shield, Compass, Code, Box
+  Star, Zap, MessageCircle, Flame, Shield, Compass, Code, Box, MapPin, HelpCircle
 } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
@@ -38,64 +38,65 @@ function formatQuizDisplay(title: string = '', cat: string = '') {
 
   if (tLower.includes('pma') || tLower.includes('army') || tLower.includes('tcc') || tLower.includes('lcc') || tLower.includes('afns') || tLower.includes('soldier') || tLower.includes('amc') || cLower.includes('pma')) {
     badge = '🛡️ PAK ARMY'
-    colorClass = 'bg-emerald-50 text-emerald-800 border-emerald-200'
-  } else if (tLower.includes('paf') || tLower.includes('pilot') || tLower.includes('aeronautical') || tLower.includes('airmen') || tLower.includes('air defence') || tLower.includes('admin') || tLower.includes('air')) {
+    colorClass = 'bg-emerald-50 text-emerald-700 border-emerald-300'
+  } else if (tLower.includes('paf') || tLower.includes('gd-pilot') || tLower.includes('aeronautical') || tLower.includes('airmen') || tLower.includes('icto') || cLower.includes('paf')) {
     badge = '✈️ PAK AIR FORCE'
-    colorClass = 'bg-blue-50 text-blue-800 border-blue-200'
-  } else if (tLower.includes('pn') || tLower.includes('navy') || tLower.includes('sailor') || tLower.includes('marines') || tLower.includes('ssc')) {
+    colorClass = 'bg-sky-50 text-sky-700 border-sky-300'
+  } else if (tLower.includes('navy') || tLower.includes('pn-cadet') || tLower.includes('marines') || tLower.includes('sailor') || tLower.includes('ssc') || cLower.includes('navy')) {
     badge = '⚓ PAK NAVY'
-    colorClass = 'bg-indigo-50 text-indigo-800 border-indigo-200'
+    colorClass = 'bg-indigo-50 text-indigo-700 border-indigo-300'
   }
 
   return { displayTitle, badge, colorClass }
 }
 
-export default async function HomePage() {
-  let quizzes: any[] = []
+export default async function Home() {
+  const supabase = createClient()
+  
   let software: any[] = []
-  let errorMsg = null
+  let quizzes: any[] = []
+  let errorMsg: string | null = null
 
   try {
-    const supabase = await createClient()
+    // 1. Fetch recent software items for the Software Vault Showcase
+    const { data: softData, error: softError } = await supabase
+      .from('items')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(6)
+    if (softError) throw softError
+    software = softData || []
 
-    // Fetch a large pool of quizzes to filter out non-Armed-Forces and pick a rich PMA/PAF/PN mix
-    const [
-      quizRes,
-      softRes
-    ] = await Promise.all([
-      supabase.from('quizzes').select('*').limit(300),
-      supabase.from('items').select('*').eq('resource_type', 'software').order('created_at', { ascending: false }).limit(3)
-    ])
+    // 2. Fetch quizzes for our Featured Mock Tests Showcase
+    const { data: quizData, error: quizError } = await supabase
+      .from('quizzes')
+      .select('id, title, description, category, created_at')
+      .order('created_at', { ascending: false })
+    if (quizError) throw quizError
 
-    const rawQuizzes = quizRes.data || []
-    software = softRes.data || []
-
-    // 1. Filter out FIA, Public Service, and Entry Tests
-    const forcesOnly = rawQuizzes.filter((q: any) => {
+    const allQuizzes = quizData || []
+    
+    // Curate specifically to highlight Pak Army, PAF & Navy equally
+    const forcesOnly = allQuizzes.filter((q: any) => {
       const t = (q.title || '').toLowerCase()
-      const c = (q.category || '').toLowerCase()
-      if (c === 'public-service' || c === 'entry-tests') return false
-      if (t.includes('fia') || t.includes('css') || t.includes('fpsc') || t.includes('ppsc') || t.includes('bpsc') || t.includes('spsc') || t.includes('kppsc') || t.includes('ajkpsc') || t.includes('gbpsc')) return false
-      if (t.includes('nums') || t.includes('mdcat') || t.includes('ecat') || t.includes('nust') || t.includes('uet') || t.includes('giki') || t.includes('pieas') || t.includes('nts')) return false
-      return true
+      return !t.includes('fpsc') && !t.includes('ppsc') && !t.includes('nts') && !t.includes('mcat') && !t.includes('ecat') && !t.includes('css') && !t.includes('general')
     })
 
-    // 2. Separate into branches to guarantee a balanced mix on HomePage
-    const armyList = forcesOnly.filter(q => {
-      const t = (q.title || '').toLowerCase()
-      const c = (q.category || '').toLowerCase()
-      return t.includes('pma') || t.includes('army') || t.includes('tcc') || t.includes('lcc') || t.includes('afns') || t.includes('soldier') || c.includes('pma')
+    const armyList = forcesOnly.filter((q: any) => {
+      const t = (q.title || '').toLowerCase() + ' ' + (q.category || '').toLowerCase()
+      return t.includes('pma') || t.includes('army') || t.includes('tcc') || t.includes('lcc') || t.includes('afns') || t.includes('soldier') || t.includes('amc')
     })
-    const pafList = forcesOnly.filter(q => {
-      const t = (q.title || '').toLowerCase()
-      return t.includes('pilot') || t.includes('paf') || t.includes('aeronautical') || t.includes('airmen') || t.includes('air defence') || t.includes('admin') || t.includes('air')
+    
+    const pafList = forcesOnly.filter((q: any) => {
+      const t = (q.title || '').toLowerCase() + ' ' + (q.category || '').toLowerCase()
+      return t.includes('paf') || t.includes('gd') || t.includes('pilot') || t.includes('aero') || t.includes('airmen') || t.includes('icto') || t.includes('air')
     })
-    const navyList = forcesOnly.filter(q => {
-      const t = (q.title || '').toLowerCase()
-      return t.includes('pn-cadet') || t.includes('navy') || t.includes('sailor') || t.includes('marines') || t.includes('ssc')
+    
+    const navyList = forcesOnly.filter((q: any) => {
+      const t = (q.title || '').toLowerCase() + ' ' + (q.category || '').toLowerCase()
+      return t.includes('navy') || t.includes('pn') || t.includes('cadet') || t.includes('marine') || t.includes('sailor') || t.includes('ssc')
     })
 
-    // Pick 2 Army, 2 PAF, 2 Navy (or fill from rest if needed)
     const curated: any[] = []
     const usedIds = new Set<string>()
 
@@ -114,7 +115,6 @@ export default async function HomePage() {
     addToCurated(pafList, 2)
     addToCurated(navyList, 2)
     
-    // If still less than 6, fill with any remaining forces quizzes
     if (curated.length < 6) {
       addToCurated(forcesOnly, 6 - curated.length)
     }
@@ -127,12 +127,12 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="space-y-20 pb-24 bg-slate-50 text-gray-800 font-sans selection:bg-[#B8212E] selection:text-white">
+    <div className="space-y-16 pb-24 bg-slate-50 text-gray-800 font-sans selection:bg-[#B8212E] selection:text-white">
       
       {/* ── LIVE CANDIDATE TICKER & TRUST AUTHORITY BANNER ─────────────────── */}
       <LiveTrustTicker />
 
-      {/* ── HERO SECTION (Ultra Premium Dark Suite) ───────────────────────── */}
+      {/* ── HERO SECTION (Ultra Premium Military Suite) ────────────────────── */}
       <section className="relative overflow-hidden bg-[#0A192F] py-20 sm:py-28 text-white border-b border-[#112240] shadow-2xl">
         <div className="absolute top-0 -left-40 w-96 h-96 bg-[#B8212E]/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
         <div className="absolute bottom-0 right-0 w-[32rem] h-[32rem] bg-[#D4AF37]/15 rounded-full blur-3xl pointer-events-none"></div>
@@ -144,15 +144,15 @@ export default async function HomePage() {
             <div className="flex-1 text-center lg:text-left space-y-7">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 text-[#D4AF37] text-[11px] uppercase tracking-widest font-extrabold shadow-inner backdrop-blur-md">
                 <Sparkles className="w-4 h-4 animate-spin-slow text-[#D4AF37]" />
-                Pakistan&apos;s #1 Forces &amp; Tech Learning Portal
+                Pakistan&apos;s Premier Armed Forces &amp; Cadet Portal
               </div>
           
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white max-w-2xl mx-auto lg:mx-0 leading-[1.12] drop-shadow-md">
-                Master Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-amber-400 to-[#D4AF37]">Destiny</span> &amp; Career
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white max-w-2xl mx-auto lg:mx-0 leading-[1.15] drop-shadow-md uppercase">
+                Free Online Preparation for <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-amber-300 to-[#D4AF37]">Pak Army, Navy</span> &amp; PAF Tests 2026
               </h1>
               
-              <p className="text-base sm:text-lg text-gray-300 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                Premier online mock testing for Pak Army, Navy &amp; PAF. Empowering candidates with complete ISSB guidance, FREE verified software repository, and world-class engineering consulting.
+              <p className="text-sm sm:text-base lg:text-lg text-gray-300 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                Whether you aim to serve in the Pakistani Armed Forces, Civil Services, Cadet Colleges or pursue a career in engineering &amp; leadership, <span className="text-white font-bold">Engineer Yasin Forces Academy</span> is the definitive first step towards achieving your goals.
               </p>
 
               {/* Primary Call to Action Buttons */}
@@ -248,8 +248,254 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ── ADMISSIONS OPEN & CORE SUBJECTS PORTAL CARD ────────────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
+        <div className="bg-white rounded-3xl shadow-2xl border-2 border-gray-100 overflow-hidden">
+          
+          {/* Top Red Alert Banner */}
+          <div className="bg-[#B8212E] text-white py-4 px-6 text-center shadow-md flex items-center justify-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping shrink-0" />
+            <p className="text-xs sm:text-sm md:text-base font-black uppercase tracking-wider">
+              🚨 ADMISSIONS OPEN : JOIN US FOR ARMED FORCES &amp; CADET COLLEGES TEST PREPARATION 2026 🚨
+            </p>
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping shrink-0" />
+          </div>
+
+          {/* Center Content: Core Subjects Grid */}
+          <div className="p-6 sm:p-10 space-y-6 text-center bg-gradient-to-b from-white to-slate-50">
+            <h2 className="text-lg sm:text-2xl font-black text-[#0A192F] uppercase tracking-tight inline-block pb-1 border-b-4 border-[#B8212E]/80">
+              CORE SUBJECTS
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-500 font-medium max-w-2xl mx-auto">
+              Select any core subject below to begin interactive timed practice quizzes with explanation notes.
+            </p>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4 max-w-6xl mx-auto">
+              {[
+                { title: "Intelligence", icon: "🧠", href: "/prep/armed-forces", bg: "hover:bg-emerald-50 hover:border-emerald-500 text-emerald-900" },
+                { title: "English", icon: "📚", href: "/prep/armed-forces", bg: "hover:bg-blue-50 hover:border-blue-500 text-blue-900" },
+                { title: "Mathematics", icon: "➗", href: "/prep/armed-forces", bg: "hover:bg-amber-50 hover:border-amber-500 text-amber-900" },
+                { title: "Science / Physics", icon: "🔬", href: "/prep/armed-forces", bg: "hover:bg-purple-50 hover:border-purple-500 text-purple-900" },
+                { title: "Urdu", icon: "✍️", href: "/issb/sct-urdu", bg: "hover:bg-rose-50 hover:border-rose-500 text-rose-900" },
+                { title: "Interview & ISSB", icon: "🎤", href: "/issb/dp-interview", bg: "hover:bg-indigo-50 hover:border-indigo-500 text-indigo-900" }
+              ].map((subj) => (
+                <Link
+                  key={subj.title}
+                  href={subj.href}
+                  className={`p-4 rounded-2xl bg-white border-2 border-gray-200 shadow-sm transition-all duration-200 hover:shadow-lg hover:-translate-y-1 flex flex-col items-center justify-center gap-2 group ${subj.bg}`}
+                >
+                  <span className="text-2xl sm:text-3xl group-hover:scale-110 transition-transform">{subj.icon}</span>
+                  <span className="text-xs font-extrabold tracking-tight uppercase">{subj.title}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Bottom Navy/Blue WhatsApp Announcement Bar */}
+          <a
+            href="https://chat.whatsapp.com/IzPd4vwXbrjGhAkanhYvTp?s=cl&p=a&ilr=0"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-[#0A192F] hover:bg-[#112749] text-white py-4 px-6 text-center flex items-center justify-center gap-3 transition-colors group cursor-pointer block"
+          >
+            <MessageCircle className="w-5 h-5 text-[#25D366] fill-current group-hover:scale-110 transition-transform" />
+            <p className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-gray-200 group-hover:text-[#D4AF37] transition-colors">
+              📢 Free Updates of Armed Forces &amp; Cadet Colleges: <span className="underline text-[#D4AF37]">Click Here To Join Official WhatsApp Channel</span> &rarr;
+            </p>
+          </a>
+
+        </div>
+      </section>
+
+      {/* ── ROUND EMBLEM CIRCLE HUBS (Row 1) ──────────────────────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
+          <span className="text-xs font-black text-[#B8212E] uppercase tracking-widest">
+            🛡️ Choose Your Service Branch
+          </span>
+          <h2 className="text-2xl sm:text-4xl font-black text-[#0A192F] tracking-tight uppercase">
+            Official Career Portals
+          </h2>
+          <p className="text-xs sm:text-sm text-gray-500 font-medium">
+            Select your target institution below to access dedicated initial testing banks and syllabus guides.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8 justify-items-center">
+          {[
+            { title: "Join Pak Army", img: "/images/pak_army_emblem.jpg", href: "/prep/armed-forces", ring: "border-emerald-600/60" },
+            { title: "Join Pak Navy", img: "/images/pak_navy_emblem.jpg", href: "/prep/armed-forces", ring: "border-indigo-600/60" },
+            { title: "Join Pak Air Force", img: "/images/paf-logo.jpg", href: "/prep/armed-forces", ring: "border-sky-500/60" },
+            { title: "ISSB Tests", img: "/images/issb-header.jpg", href: "/issb", ring: "border-rose-600/60" },
+            { title: "Cadet Colleges", img: "/images/card-pma.jpg", href: "/prep/armed-forces", ring: "border-amber-500/60" }
+          ].map((hub) => (
+            <Link
+              key={hub.title}
+              href={hub.href}
+              className="flex flex-col items-center text-center group cursor-pointer w-full max-w-[180px]"
+            >
+              <div className={`w-36 h-36 sm:w-44 sm:h-44 rounded-full border-4 ${hub.ring} p-2.5 bg-white shadow-xl group-hover:shadow-2xl group-hover:scale-105 transition-all duration-300 relative overflow-hidden flex items-center justify-center`}>
+                <div className="w-full h-full rounded-full overflow-hidden relative">
+                  <Image
+                    src={hub.img}
+                    alt={hub.title}
+                    fill
+                    className="object-contain p-2 group-hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
+              </div>
+              <span className="mt-4 text-sm sm:text-base font-black text-[#0A192F] group-hover:text-[#B8212E] tracking-tight uppercase transition-colors">
+                {hub.title}
+              </span>
+              <span className="text-[11px] font-extrabold text-gray-400 group-hover:text-[#0A192F] transition-colors">
+                Enter Portal &rarr;
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ── INTERACTIVE FORCES CALCULATORS (Age & Weight) ───────────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ForcesCalculators />
+      </section>
+
+      {/* ── FORCES RANKS, SALARY, SELECTION CENTERS & RESOURCES (Rows 2 & 3) ── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="text-center max-w-3xl mx-auto mb-12 space-y-2">
+          <span className="text-xs font-black text-[#B8212E] uppercase tracking-widest">
+            📚 Essential Knowledge Vault
+          </span>
+          <h2 className="text-2xl sm:text-4xl font-black text-[#0A192F] tracking-tight uppercase">
+            Forces Ranks, Salary, Selection Centers &amp; Practice Resources
+          </h2>
+          <p className="text-xs sm:text-sm text-gray-500 font-medium">
+            Everything you need to know about military pay scales, insignia hierarchy, and regional test venues.
+          </p>
+        </div>
+
+        {/* Row 2: Ranks & Quizzes */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12 justify-items-center">
+          {[
+            { title: "Ranks In Pak Army", desc: "Lieutenant to General", href: "/issb/ranks", icon: ShieldCheck, color: "text-emerald-700 bg-emerald-50 border-emerald-300" },
+            { title: "Ranks In Pak Navy", desc: "Sub Lieut to Admiral", href: "/issb/ranks", icon: Award, color: "text-indigo-700 bg-indigo-50 border-indigo-300" },
+            { title: "Ranks In PAF", desc: "Pilot Officer to Air Chief", href: "/issb/ranks", icon: Compass, color: "text-sky-700 bg-sky-50 border-sky-300" },
+            { title: "Online Quizzes", desc: "Timed Intelligence Mocks", href: "/prep/armed-forces", icon: Flame, color: "text-rose-700 bg-rose-50 border-rose-300" }
+          ].map((item) => {
+            const IIcon = item.icon
+            return (
+              <Link
+                key={item.title}
+                href={item.href}
+                className="flex flex-col items-center text-center group w-full max-w-[200px]"
+              >
+                <div className={`w-32 h-32 sm:w-40 sm:h-40 rounded-full border-2 ${item.color} shadow-lg group-hover:shadow-2xl group-hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center p-4`}>
+                  <IIcon className="w-12 h-12 mb-2 group-hover:scale-110 transition-transform" />
+                  <span className="text-[11px] font-extrabold uppercase tracking-tight">{item.desc}</span>
+                </div>
+                <h4 className="mt-4 text-sm sm:text-base font-black text-[#0A192F] group-hover:text-[#B8212E] tracking-tight uppercase transition-colors">
+                  {item.title}
+                </h4>
+              </Link>
+            )
+          })}
+        </div>
+
+        {/* Row 3: Selection Centers & Free PDFs */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 justify-items-center">
+          {[
+            { title: "Army Selection Centers", desc: "AS&RC Regional Addresses", href: "#selection-centers", icon: MapPin, color: "text-emerald-700 bg-emerald-100 border-emerald-400" },
+            { title: "Navy Selection Centers", desc: "PNSC Recruitment Hubs", href: "#selection-centers", icon: MapPin, color: "text-indigo-700 bg-indigo-100 border-indigo-400" },
+            { title: "PAF Selection Centers", desc: "PAF Information Centers", href: "#selection-centers", icon: MapPin, color: "text-sky-700 bg-sky-100 border-sky-400" },
+            { title: "Free PDF Downloads", desc: "Verified E-Books & Notes", href: "/software", icon: Download, color: "text-purple-700 bg-purple-100 border-purple-400" }
+          ].map((item) => {
+            const IIcon = item.icon
+            return (
+              <Link
+                key={item.title}
+                href={item.href}
+                className="flex flex-col items-center text-center group w-full max-w-[200px]"
+              >
+                <div className={`w-32 h-32 sm:w-40 sm:h-40 rounded-full border-2 ${item.color} shadow-lg group-hover:shadow-2xl group-hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center p-4`}>
+                  <IIcon className="w-12 h-12 mb-2 group-hover:scale-110 transition-transform" />
+                  <span className="text-[11px] font-extrabold uppercase tracking-tight">{item.desc}</span>
+                </div>
+                <h4 className="mt-4 text-sm sm:text-base font-black text-[#0A192F] group-hover:text-[#B8212E] tracking-tight uppercase transition-colors">
+                  {item.title}
+                </h4>
+              </Link>
+            )
+          })}
+        </div>
+      </section>
+
+      {/* ── OUR MISSION EXECUTIVE BOX ──────────────────────────────────────── */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="bg-gradient-to-r from-slate-900 via-[#0A192F] to-slate-900 rounded-3xl p-8 sm:p-14 text-white shadow-2xl border-4 border-[#D4AF37]/50 relative overflow-hidden text-center">
+          <div className="absolute top-0 left-0 w-32 h-32 bg-[#D4AF37]/10 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute bottom-0 right-0 w-32 h-32 bg-[#B8212E]/20 rounded-full blur-2xl pointer-events-none" />
+          
+          <div className="relative z-10 max-w-4xl mx-auto space-y-6">
+            <span className="px-4 py-1.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-black uppercase tracking-widest inline-block">
+              🎖️ ENGINEER YASIN FORCES ACADEMY
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-black uppercase tracking-tight text-white">
+              OUR MISSION
+            </h2>
+            <p className="text-sm sm:text-base md:text-lg text-gray-200 leading-relaxed font-medium text-justify sm:text-center">
+              &ldquo;Engineer Yasin Forces Academy is dedicated to shaping the defenders and leaders of tomorrow. With a firm commitment to excellence in guidance, preparation, and motivation, we provide an unparalleled online learning experience for candidates preparing for careers in the Pakistan Army, Navy, and Air Force. We integrate authentic military testing standards, realistic timed simulations, and world-class technical engineering consulting under one unified digital roof.&rdquo;
+            </p>
+            <div className="pt-4 flex items-center justify-center gap-6 text-xs sm:text-sm font-bold text-[#D4AF37]">
+              <span>⚔️ Courage</span> &bull; <span>🛡️ Honour</span> &bull; <span>🇵🇰 Dedication</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── EXPLORE OUR TOP STUDY RESOURCES PILL GRID ──────────────────────── */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="bg-white rounded-3xl p-6 sm:p-10 border-2 border-gray-100 shadow-xl text-center space-y-8">
+          <div className="space-y-2">
+            <h2 className="text-2xl sm:text-3xl font-black text-[#0A192F] tracking-tight uppercase inline-block pb-2 border-b-4 border-emerald-600">
+              EXPLORE OUR TOP STUDY RESOURCES
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-500 font-medium">
+              Click any subject tag below to jump directly to dedicated study materials and preparation modules.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3.5 max-w-5xl mx-auto">
+            {[
+              { label: "Online Quizzes", href: "/prep/armed-forces", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
+              { label: "ISSB Preparation", href: "/issb", bg: "bg-emerald-800 hover:bg-[#B8212E]" },
+              { label: "Personality Tests", href: "/issb/wat", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
+              { label: "PMA Long Course", href: "/prep/armed-forces", bg: "bg-indigo-900 hover:bg-[#B8212E]" },
+              { label: "General Updates", href: "/blog", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
+              { label: "Latest Blogs", href: "/blog", bg: "bg-emerald-900 hover:bg-[#B8212E]" },
+              { label: "Our Tutorials", href: "/services", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
+              { label: "ICTO Test Prep", href: "/prep/armed-forces", bg: "bg-blue-950 hover:bg-[#B8212E]" },
+              { label: "Pak Navy MCQs", href: "/prep/armed-forces", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
+              { label: "Physics Material", href: "/software", bg: "bg-teal-900 hover:bg-[#B8212E]" }
+            ].map((tag) => (
+              <Link
+                key={tag.label}
+                href={tag.href}
+                className={`py-3.5 px-4 rounded-2xl text-white font-black text-xs sm:text-sm shadow-md transition-all duration-300 uppercase tracking-wider hover:shadow-xl hover:-translate-y-0.5 flex items-center justify-center text-center ${tag.bg}`}
+              >
+                {tag.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── OFFICIAL SELECTION CENTERS DIRECTORY (Interactive Suite) ────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SelectionCentersSection />
+      </section>
+
       {/* ── WHY CHOOSE US (Trust & Stats Banner) ─────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
         <div className="bg-white rounded-3xl shadow-xl border border-gray-200/80 p-6 sm:p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
           {[
             { title: "Unlimited Free Mocks", desc: "Instant result evaluations with explanation notes for PMA, PAF & Navy exams.", icon: Zap, bg: "bg-amber-50 text-amber-600 border-amber-200" },
@@ -398,6 +644,11 @@ export default async function HomePage() {
 
       {/* ── INTERACTIVE ARMED FORCES ELIGIBILITY & AGE CHECKER ───────────── */}
       <EligibilityCalculator />
+
+      {/* ── FREQUENTLY ASKED QUESTIONS ACCORDION ─────────────────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <FaqSection />
+      </section>
 
       {/* ── FEATURED APPS & SOFTWARE (Secure 2-Step Vault) ───────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

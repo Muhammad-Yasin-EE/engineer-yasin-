@@ -2,6 +2,6 @@ import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-static'
 
-export default function PdfsRedirectPage() {
-  redirect('/ebooks')
+export default function ScholarshipRedirectPage() {
+  redirect('/scholarships')
 }

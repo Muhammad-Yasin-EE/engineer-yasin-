@@ -419,7 +419,7 @@ export default async function Home() {
             { title: "Army Selection Centers", desc: "AS&RC Regional Addresses", href: "/centers/army", img: "/images/army-circle-logo.jpg", ring: "border-emerald-600/60" },
             { title: "Navy Selection Centers", desc: "PNSC Recruitment Hubs", href: "/centers/navy", img: "/images/navy-logo.jpg", ring: "border-indigo-600/60" },
             { title: "PAF Selection Centers", desc: "PAF Information Centers", href: "/centers/paf", img: "/images/paf-logo.jpg", ring: "border-sky-500/60" },
-            { title: "Free E-Books & Notes", desc: "Verified PDF Downloads", href: "/pdfs", img: "/images/download-pdf.jpg", ring: "border-purple-600/60" }
+            { title: "Free E-Books & Notes", desc: "Verified PDF Downloads", href: "/ebooks", img: "/images/download-pdf.jpg", ring: "border-purple-600/60" }
           ].map((item) => (
             <Link
               key={item.title}
@@ -490,10 +490,10 @@ export default async function Home() {
               { label: "PMA Long Course", href: "/prep/army/pma-long-course", bg: "bg-indigo-900 hover:bg-[#B8212E]" },
               { label: "General Updates", href: "/blog", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
               { label: "Latest Blogs", href: "/blog", bg: "bg-emerald-900 hover:bg-[#B8212E]" },
-              { label: "Scholarships Prep", href: "/colleges", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
+              { label: "Scholarships Prep", href: "/scholarships", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
               { label: "PAF Initial MCQs", href: "/prep/paf", bg: "bg-blue-950 hover:bg-[#B8212E]" },
               { label: "Pak Navy MCQs", href: "/prep/navy", bg: "bg-[#0A192F] hover:bg-[#B8212E]" },
-              { label: "Free E-Books", href: "/pdfs", bg: "bg-teal-900 hover:bg-[#B8212E]" }
+              { label: "Free E-Books", href: "/ebooks", bg: "bg-teal-900 hover:bg-[#B8212E]" }
             ].map((tag) => (
               <Link
                 key={tag.label}

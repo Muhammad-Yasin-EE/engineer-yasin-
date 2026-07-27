@@ -68,12 +68,12 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/colleges" className="hover:text-[#B8212E] transition-colors">
+                <Link href="/scholarships" className="hover:text-[#B8212E] transition-colors">
                   Scholarships
                 </Link>
               </li>
               <li>
-                <Link href="/pdfs" className="hover:text-[#B8212E] transition-colors">
+                <Link href="/ebooks" className="hover:text-[#B8212E] transition-colors">
                   E-Books
                 </Link>
               </li>

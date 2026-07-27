@@ -236,13 +236,13 @@ export default function Navbar() {
               )}
             </div>
 
-            <Link href="/colleges" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
+            <Link href="/scholarships" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
               Scholarships
             </Link>
             <Link href="/quizzes" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
               Quizzes
             </Link>
-            <Link href="/pdfs" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
+            <Link href="/ebooks" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
               E-Books
             </Link>
             <Link href="/videos" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
@@ -423,13 +423,13 @@ export default function Navbar() {
               </div>
             </details>
 
-            <Link href="/colleges" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
+            <Link href="/scholarships" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
               Scholarships
             </Link>
             <Link href="/quizzes" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
               Quizzes
             </Link>
-            <Link href="/pdfs" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
+            <Link href="/ebooks" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
               E-Books
             </Link>
             <Link href="/videos" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">

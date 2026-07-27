@@ -6,13 +6,13 @@ export const dynamic = 'force-static'
 
 export default function JobsPage() {
   const commissions = [
-    { id: 'fpsc', name: 'Federal Public Service Commission', shortName: 'FPSC Islamabad', desc: 'Federal Civil Services, Executive & Ministry Competitions', cardBgUrl: '/images/card-fpsc.jpg', href: '/prep/public-service/fpsc', officialUrl: 'https://www.fpsc.gov.pk' },
-    { id: 'ppsc', name: 'Punjab Public Service Commission', shortName: 'PPSC Punjab', desc: 'PMS Punjab, Provincial Administration & Departmental Posts', cardBgUrl: '/images/card-ppsc.jpg', href: '/prep/public-service/ppsc', officialUrl: 'https://www.ppsc.gop.pk' },
-    { id: 'spsc', name: 'Sindh Public Service Commission', shortName: 'SPSC Sindh', desc: 'Combined Competitive Examination & Provincial Civil Services', cardBgUrl: '/images/card-spsc.jpg', href: '/prep/public-service/spsc', officialUrl: 'https://spsc.gov.pk' },
-    { id: 'kppsc', name: 'Khyber Pakhtunkhwa PSC', shortName: 'KPPSC Peshawar', desc: 'PMS KP, Civil Executive Cadre & Administrative Services', cardBgUrl: '/images/card-kppsc.jpg', href: '/prep/public-service/kppsc', officialUrl: 'https://www.kppsc.gov.pk' },
-    { id: 'bpsc', name: 'Balochistan Public Service Commission', shortName: 'BPSC Quetta', desc: 'PMS Balochistan, Section Officers & Assistant Commissioners', cardBgUrl: '/images/card-bpsc.jpg', href: '/bpsc', officialUrl: 'http://www.bpsc.gob.pk' },
-    { id: 'ajkpsc', name: 'Azad Jammu & Kashmir PSC', shortName: 'AJKPSC Muzaffarabad', desc: 'AJK State Civil Service & Regional Administrative Exams', cardBgUrl: '/images/card-ajkpsc.jpg', href: '/prep/public-service/ajkpsc', officialUrl: 'https://www.ajkpsc.gov.pk' },
-    { id: 'gbpsc', name: 'Gilgit-Baltistan PSC', shortName: 'GBPSC Gilgit', desc: 'Gilgit-Baltistan Executive Services & Tehsildar Competitions', cardBgUrl: '/images/card-gbpsc.jpg', href: '/prep/public-service/gbpsc', officialUrl: 'https://gb.gov.pk' },
+    { id: 'fpsc', name: 'Federal Public Service Commission', shortName: 'FPSC ISLAMABAD', desc: 'Federal Civil Services, Executive & Ministry Competitions', cardBgUrl: '/images/card-fpsc.jpg', href: '/prep/public-service/fpsc', officialUrl: 'https://www.fpsc.gov.pk' },
+    { id: 'ppsc', name: 'Punjab Public Service Commission', shortName: 'PPSC PUNJAB', desc: 'PMS Punjab, Provincial Administration & Departmental Posts', cardBgUrl: '/images/card-ppsc.jpg', href: '/prep/public-service/ppsc', officialUrl: 'https://www.ppsc.gop.pk' },
+    { id: 'spsc', name: 'Sindh Public Service Commission', shortName: 'SPSC SINDH', desc: 'Combined Competitive Examination & Provincial Civil Services', cardBgUrl: '/images/card-spsc.jpg', href: '/prep/public-service/spsc', officialUrl: 'https://spsc.gov.pk' },
+    { id: 'kppsc', name: 'Khyber Pakhtunkhwa PSC', shortName: 'KPPSC PESHAWAR', desc: 'PMS KP, Civil Executive Cadre & Administrative Services', cardBgUrl: '/images/card-kppsc.jpg', href: '/prep/public-service/kppsc', officialUrl: 'https://www.kppsc.gov.pk' },
+    { id: 'bpsc', name: 'Balochistan Public Service Commission', shortName: 'BPSC QUETTA', desc: 'PMS Balochistan, Section Officers & Assistant Commissioners', cardBgUrl: '/images/card-bpsc.jpg', href: '/bpsc', officialUrl: 'http://www.bpsc.gob.pk' },
+    { id: 'ajkpsc', name: 'Azad Jammu & Kashmir PSC', shortName: 'AJKPSC MUZAFFARABAD', desc: 'AJK State Civil Service & Regional Administrative Exams', cardBgUrl: '/images/card-ajkpsc.jpg', href: '/prep/public-service/ajkpsc', officialUrl: 'https://www.ajkpsc.gov.pk' },
+    { id: 'gbpsc', name: 'Gilgit-Baltistan PSC', shortName: 'GBPSC GILGIT', desc: 'Gilgit-Baltistan Executive Services & Tehsildar Competitions', cardBgUrl: '/images/card-gbpsc.jpg', href: '/prep/public-service/gbpsc', officialUrl: 'https://gb.gov.pk' },
   ]
 
   return (
@@ -108,7 +108,7 @@ export default function JobsPage() {
                 </div>
 
                 <div>
-                  <h3 className="font-black text-lg sm:text-xl text-white group-hover:text-amber-300 transition-colors drop-shadow-md leading-tight mb-1">
+                  <h3 className="font-black text-lg sm:text-xl text-white group-hover:text-amber-300 transition-colors drop-shadow-md leading-tight mb-1 uppercase tracking-wide">
                     {item.shortName}
                   </h3>
                   <p className="text-xs text-gray-200 font-semibold drop-shadow-sm line-clamp-2">
@@ -117,7 +117,7 @@ export default function JobsPage() {
 
                   <div className="mt-5 pt-3 border-t border-white/20 flex items-center justify-between text-xs font-black uppercase tracking-wider text-amber-400 group-hover:text-white transition-colors">
                     <Link href={item.href} className="flex items-center gap-1 hover:underline w-full justify-between">
-                      <span>Explore Quizzes</span>
+                      <span>View Jobs &amp; Announcements</span>
                       <ArrowRight className="w-4 h-4" />
                     </Link>
                   </div>

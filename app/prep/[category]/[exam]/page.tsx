@@ -40,9 +40,23 @@ export default async function ExamPage({
   const info = armedForcesData[exam]
   const supabase = await createClient()
 
+  const pscTitles: Record<string, { full: string; short: string }> = {
+    bpsc: { full: 'BALOCHISTAN PUBLIC SERVICE COMMISSION (BPSC QUETTA)', short: 'BPSC QUETTA' },
+    fpsc: { full: 'FEDERAL PUBLIC SERVICE COMMISSION (FPSC ISLAMABAD)', short: 'FPSC ISLAMABAD' },
+    ppsc: { full: 'PUNJAB PUBLIC SERVICE COMMISSION (PPSC PUNJAB)', short: 'PPSC PUNJAB' },
+    spsc: { full: 'SINDH PUBLIC SERVICE COMMISSION (SPSC SINDH)', short: 'SPSC SINDH' },
+    kppsc: { full: 'KHYBER PAKHTUNKHWA PUBLIC SERVICE COMMISSION (KPPSC PESHAWAR)', short: 'KPPSC PESHAWAR' },
+    ajkpsc: { full: 'AZAD JAMMU & KASHMIR PUBLIC SERVICE COMMISSION (AJKPSC MUZAFFARABAD)', short: 'AJKPSC MUZAFFARABAD' },
+    gbpsc: { full: 'GILGIT-BALTISTAN PUBLIC SERVICE COMMISSION (GBPSC GILGIT)', short: 'GBPSC GILGIT' },
+  }
+
   // ── Fallback for non-armed-forces or unknown exams ─────────────────────────
   if (!['armed-forces', 'army', 'navy', 'paf'].includes(category) || !info) {
-    const title = formatTitle(exam)
+    const pscInfo = pscTitles[exam.toLowerCase()]
+    const displayTitle = pscInfo ? pscInfo.full : formatTitle(exam).toUpperCase()
+    const shortTitle = pscInfo ? pscInfo.short : formatTitle(exam).toUpperCase()
+    const searchPrefix = pscInfo ? exam : formatTitle(exam)
+
     let headerBg = '/images/exam-army-bg.jpg'
     if (['pma-long-course', 'lcc', 'dssc', 'tcc', 'afns', 'soldier', 'm-cadet', 'amc'].includes(exam))
       headerBg = '/images/exam-army-bg.jpg'
@@ -50,13 +64,13 @@ export default async function ExamPage({
       headerBg = '/images/exam-paf-bg.jpg'
     else if (['pn-cadet', 'ssc', 'marines', 'sailor', 'civilian', 'm-cadet-navy', 'pnec'].includes(exam))
       headerBg = '/images/exam-navy-bg.jpg'
-    else if (category === 'public-service') headerBg = '/images/public-service-header.jpg'
+    else if (category === 'public-service' || pscInfo) headerBg = '/images/public-service-header.jpg'
     else if (category === 'entry-tests') headerBg = '/images/entry-tests-header.jpg'
 
     const { data: quizzes } = await supabase
       .from('quizzes')
       .select('*')
-      .ilike('title', `${title}%`)
+      .ilike('title', `%${searchPrefix}%`)
       .order('created_at', { ascending: true })
 
     return (
@@ -68,12 +82,14 @@ export default async function ExamPage({
           <ArrowLeft className="w-4 h-4" /> {category === 'public-service' ? 'Back to Public Services & Jobs' : `Back to ${formatTitle(category)}`}
         </Link>
         <div className="relative rounded-xl overflow-hidden shadow-md border border-gray-200 min-h-[240px] flex items-center p-8">
-          <div className="absolute inset-0 bg-[#0A192F]/80 z-10" />
-          <Image src={headerBg} alt={title} fill priority className="absolute inset-0 object-cover object-center" />
+          <div className="absolute inset-0 bg-[#0A192F]/85 z-10" />
+          <Image src={headerBg} alt={displayTitle} fill priority className="absolute inset-0 object-cover object-center" />
           <div className="relative z-20">
-            <h1 className="text-4xl font-extrabold text-white tracking-tight">{title}</h1>
-            <p className="text-gray-200 mt-2 text-sm font-medium">
-              Practice with real mock tests designed for {title}.
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight uppercase drop-shadow-md">{displayTitle}</h1>
+            <p className="text-gray-200 mt-2.5 text-sm sm:text-base font-semibold drop-shadow-sm max-w-3xl">
+              {category === 'public-service' || pscInfo
+                ? `Official real-time job announcements, advertisement instructions, syllabus downloads, interview rosters and online mock test preparation for ${shortTitle}.`
+                : `Practice with real mock tests designed for ${displayTitle}.`}
             </p>
           </div>
         </div>
@@ -223,7 +239,7 @@ export default async function ExamPage({
 
         <div className="mt-4">
           <h2 className="text-xl sm:text-2xl font-black text-[#0A192F] uppercase tracking-wide mb-6">
-            Online Practice Mock Quizzes for {title}
+            Online Practice Mock Quizzes for {shortTitle}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {quizzes && quizzes.length > 0 ? (
@@ -245,7 +261,7 @@ export default async function ExamPage({
           ) : (
             <div className="col-span-3 py-16 text-center text-gray-400 bg-gray-50 rounded-xl border border-dashed border-gray-200">
               <BookOpen className="w-10 h-10 mx-auto mb-3 text-gray-300" />
-              <p className="font-semibold">Practice tests coming soon for {title}.</p>
+              <p className="font-semibold">Practice tests coming soon for {shortTitle}.</p>
             </div>
           )}
         </div>

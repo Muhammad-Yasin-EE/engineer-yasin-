@@ -48,17 +48,17 @@ export default function Footer() {
             <h3 className="text-xs font-bold text-gray-800 uppercase tracking-widest mb-4">Explore Portal</h3>
             <ul className="space-y-2 text-sm font-semibold">
               <li>
-                <Link href="/prep/army" className="hover:text-[#B8212E] transition-colors">
+                <Link href="/army" className="hover:text-[#B8212E] transition-colors">
                   Join Pak Army
                 </Link>
               </li>
               <li>
-                <Link href="/prep/navy" className="hover:text-[#B8212E] transition-colors">
+                <Link href="/navy" className="hover:text-[#B8212E] transition-colors">
                   Join Pak Navy
                 </Link>
               </li>
               <li>
-                <Link href="/prep/paf" className="hover:text-[#B8212E] transition-colors">
+                <Link href="/paf" className="hover:text-[#B8212E] transition-colors">
                   Join Pak Air Force
                 </Link>
               </li>

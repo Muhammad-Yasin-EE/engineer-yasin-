@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { ArrowRight, ShieldCheck, BookOpen, GraduationCap, ArrowLeft, Target } from 'lucide-react'
 
 // Enhanced Data for Categories matching exactly what user provided
-const categoryData: Record<string, any> = {
+export const categoryData: Record<string, any> = {
   'armed-forces': {
     title: 'Armed Forces Preparation',
     description: 'Join Pak Army, Navy, or PAF. Select your specific commission exam below.',
@@ -244,7 +244,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
               {subgroup.exams.map((exam: any) => (
                 <Link 
                   key={exam.id}
-                  href={`/prep/${category}/${exam.id}`}
+                  href={['army', 'navy', 'paf'].includes(category) ? `/${category}/${exam.id}` : `/prep/${category}/${exam.id}`}
                   className={`group border border-gray-200 rounded-md hover:border-[#B8212E] hover:shadow-lg transition-all duration-300 flex flex-col justify-between h-full min-h-[160px] relative overflow-hidden ${exam.cardBgUrl ? '' : 'p-5 bg-white'}`}
                 >
                   {exam.cardBgUrl && (

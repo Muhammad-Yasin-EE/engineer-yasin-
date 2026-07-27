@@ -207,13 +207,13 @@ export default function Navbar() {
             </Link>
 
             {/* Direct Links without dropdowns as requested */}
-            <Link href="/prep/army" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
+            <Link href="/army" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
               Join Army
             </Link>
-            <Link href="/prep/navy" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
+            <Link href="/navy" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
               Join Navy
             </Link>
-            <Link href="/prep/paf" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
+            <Link href="/paf" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
               Join PAF
             </Link>
 
@@ -223,7 +223,7 @@ export default function Navbar() {
               onMouseEnter={() => setActiveDropdown('issb')}
               onMouseLeave={() => setActiveDropdown(null)}
             >
-              <Link href="/issb" prefetch={false} className="text-[#B8212E] hover:text-[#961a25] flex items-center gap-0.5 uppercase tracking-wider transition-colors font-extrabold">
+              <Link href="/issb" prefetch={false} className="text-gray-700 hover:text-[#B8212E] flex items-center gap-0.5 uppercase tracking-wider transition-colors font-extrabold">
                 ISSB
                 <ChevronDown className="w-3 h-3" />
               </Link>
@@ -399,22 +399,22 @@ export default function Navbar() {
               Home
             </Link>
             
-            <Link href="/prep/army" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block font-black">
+            <Link href="/army" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block font-black">
               Join Army
             </Link>
 
-            <Link href="/prep/navy" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block font-black">
+            <Link href="/navy" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block font-black">
               Join Navy
             </Link>
 
-            <Link href="/prep/paf" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block font-black">
+            <Link href="/paf" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block font-black">
               Join PAF
             </Link>
 
             <details className="group border-b border-gray-100 pb-2">
-              <summary className="flex items-center justify-between py-1.5 cursor-pointer text-[#B8212E] select-none list-none [&::-webkit-details-marker]:hidden font-black">
+              <summary className="flex items-center justify-between py-1.5 cursor-pointer text-gray-700 hover:text-[#B8212E] select-none list-none [&::-webkit-details-marker]:hidden font-black">
                 <span>ISSB</span>
-                <ChevronDown className="w-3.5 h-3.5 text-[#B8212E] group-open:rotate-180 transition-transform" />
+                <ChevronDown className="w-3.5 h-3.5 text-gray-500 group-hover:text-[#B8212E] group-open:rotate-180 transition-transform" />
               </summary>
               <div className="pl-4 flex flex-col gap-2 mt-1 pb-1 font-bold text-gray-500 capitalize">
                 <Link href="/issb" onClick={() => setMobileMenuOpen(false)}>ISSB Information</Link>

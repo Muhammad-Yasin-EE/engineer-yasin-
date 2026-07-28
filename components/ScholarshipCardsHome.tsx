@@ -11,7 +11,7 @@ export default function ScholarshipCardsHome() {
       title: 'INTERNATIONAL SCHOLARSHIPS (STUDY ABROAD)',
       badge: '🌐 80+ FULLY FUNDED ABROAD',
       desc: 'Complete authentic details of Chevening UK, Fulbright USA, DAAD Germany EPOS, Turkiye Burslari, MEXT Japan, Erasmus Mundus, HEC Foreign nominations and women study grants.',
-      cardBgUrl: '/images/card-paf-education.jpg',
+      cardBgUrl: '/images/scholarship-portal-international.jpg',
       href: '/scholarship/international',
       icon: Globe,
       tagColor: 'bg-cyan-600 text-white'
@@ -21,7 +21,7 @@ export default function ScholarshipCardsHome() {
       title: 'NATIONAL SCHOLARSHIPS (MERIT & UNIVERSITY AID)',
       badge: '🇵🇰 PAKISTANI UNIVERSITIES AID',
       desc: 'Explore comprehensive financial assistance, up to 100% merit tuition waivers at LUMS, NUST, IBA, UMT, UCP, FAST, religious minority grants and required hardship documents checklist.',
-      cardBgUrl: '/images/card-tcc.jpg',
+      cardBgUrl: '/images/scholarship-portal-national.jpg',
       href: '/scholarship/national',
       icon: MapPin,
       tagColor: 'bg-amber-600 text-white'
@@ -31,7 +31,7 @@ export default function ScholarshipCardsHome() {
       title: 'INTERMEDIATE & FSC SCHOLARSHIPS (COLLEGES)',
       badge: '🎓 MATRIC & FSC MERIT SCHEMES',
       desc: 'Dedicated educational scholarships, talent awards and fee waivers for Matric, FA, FSc, Intermediate students, Cadet Colleges and national pre-university merit programs.',
-      cardBgUrl: '/images/card-scholarship-prep.jpg',
+      cardBgUrl: '/images/scholarship-portal-intermediate.jpg',
       href: '/scholarship/intermediate',
       icon: Award,
       tagColor: 'bg-emerald-600 text-white'
@@ -118,6 +118,9 @@ export default function ScholarshipCardsHome() {
                     <div className="w-10 h-10 rounded-xl bg-white/90 backdrop-blur-md text-[#0A192F] flex items-center justify-center shadow-lg font-bold">
                       <IconComponent className="w-5 h-5" />
                     </div>
+                    <span className="text-[10px] font-mono text-white bg-black/70 px-2 py-1 rounded shadow">
+                      FILE: {card.cardBgUrl.split('/').pop()}
+                    </span>
                   </div>
                 </div>
                 

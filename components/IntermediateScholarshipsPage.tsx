@@ -13,7 +13,7 @@ export default function IntermediateScholarshipsPage() {
       desc: 'Full fee waiver, boarding, and monthly stipend for high achievers (minimum 60% in Matric / SSC) belonging to deserving households across Punjab and AJK.',
       deadline: 'Announced after BISE SSC / Matric Annual Results',
       applyUrl: 'https://www.peef.org.pk/peef-scholarships',
-      image: '/images/card-scholarship-prep.jpg'
+      image: '/images/inter-peef-talent.jpg'
     },
     {
       id: 'fauji-inter',
@@ -22,7 +22,7 @@ export default function IntermediateScholarshipsPage() {
       desc: 'Annual financial academic awards for children of retired Armed Forces personnel and civilian students with extraordinary performance in Intermediate and FSc examinations.',
       deadline: 'November to December annually',
       applyUrl: 'https://www.fauji.org.pk/welfare/education',
-      image: '/images/card-civilian.jpg'
+      image: '/images/inter-fauji-foundation.jpg'
     },
     {
       id: 'wwb-fsc',
@@ -31,7 +31,7 @@ export default function IntermediateScholarshipsPage() {
       desc: '100% full financial sponsorship including college fee, textbooks, uniforms, transport, and hostel facilities for children of registered industrial factory employees.',
       deadline: 'July to September annually',
       applyUrl: 'https://wwf.gov.pk/',
-      image: '/images/card-ots.jpg'
+      image: '/images/inter-wwb-grant.jpg'
     },
     {
       id: 'benevolent',
@@ -40,7 +40,7 @@ export default function IntermediateScholarshipsPage() {
       desc: 'Annual scholarship grants up to PKR 50,000 for children of serving, retired, or deceased government employees scoring distinction in Matric and FSc Part 1 & 2.',
       deadline: 'March to May annually',
       applyUrl: 'https://www.febgbf.gov.pk/',
-      image: '/images/card-fpsc.jpg'
+      image: '/images/inter-benevolent-fund.jpg'
     },
     {
       id: 'cadet-merit',
@@ -49,7 +49,7 @@ export default function IntermediateScholarshipsPage() {
       desc: 'Special merit financial aid and half-boarding scholarships for top competitive candidates clearing Cadet College entrance exams and medical fitness procedures.',
       deadline: 'August to October annually',
       applyUrl: 'https://ccha.edu.pk/',
-      image: '/images/card-pn-cadet.jpg'
+      image: '/images/inter-cadet-colleges.jpg'
     },
     {
       id: 'diya-pak',
@@ -58,7 +58,7 @@ export default function IntermediateScholarshipsPage() {
       desc: 'Direct bank stipends and quarterly educational funding for regular FSc, ICS, I.Com, and FA students across government and registered colleges in Pakistan.',
       deadline: 'Open throughout the academic year (Online review)',
       applyUrl: 'https://diyapak.org/',
-      image: '/images/card-tcc.jpg'
+      image: '/images/inter-diya-pakistan.jpg'
     }
   ]
 

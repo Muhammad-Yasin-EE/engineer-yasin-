@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, ArrowRight, ExternalLink, Globe, Calendar, Search, Sparkles, MessageCircle, Award, CheckCircle } from 'lucide-react'
+import { ArrowLeft, ExternalLink, Globe, Search, Sparkles, MessageCircle, Award, CheckCircle } from 'lucide-react'
 import { internationalScholarships, hecSpecialSchemes, germanEposCourses, internationalWomenScholarships } from '@/lib/data/scholarshipData'
 
 export default function InternationalScholarshipsPage() {
@@ -18,7 +18,7 @@ export default function InternationalScholarshipsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow flex flex-col gap-10 bg-white text-gray-800">
-      <Link href="/scholarship" className="inline-flex items-center gap-2 text-xs font-extrabold text-gray-500 hover:text-[#0A192F] w-fit transition-colors uppercase tracking-wider">
+      <Link href="/scholarship" className="inline-flex items-center gap-2 text-xs font-extrabold text-gray-500 hover:text-[#B8212E] w-fit transition-colors uppercase tracking-wider">
         <ArrowLeft className="w-4 h-4" /> Back to Scholarship Categories
       </Link>
 
@@ -40,7 +40,7 @@ export default function InternationalScholarshipsPage() {
             INTERNATIONAL SCHOLARSHIPS
           </h1>
           <p className="text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-medium text-gray-200 drop-shadow-md leading-relaxed">
-            Every scholarship is presented in its own verified card below with exact typical opening windows, application closing deadlines, required documents, HEC nomination rules, and official apply portals.
+            Every scholarship is presented in a verified light card below with an authentic image, exact opening windows, closing deadlines, required documents, HEC nomination rules, and official apply portals.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 mt-6">
             <a
@@ -115,83 +115,109 @@ export default function InternationalScholarshipsPage() {
       </div>
 
       {/* ===============================================================
-          VIEW 1: EVERY SCHOLARSHIP AS AN INDIVIDUAL CARD (GLOBAL)
+          VIEW 1: EVERY SCHOLARSHIP AS A LIGHT-THEMED CARD WITH PICTURE
           =============================================================== */}
       {activeTab === 'global' && (
         <div className="space-y-8 animate-in fade-in duration-300">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl sm:text-2xl font-black uppercase text-[#0A192F] tracking-tight">
-              WORLDWIDE FULLY FUNDED SCHOLARSHIP CARDS
-            </h2>
-            <span className="text-xs font-black px-3 py-1 bg-amber-100 text-[#0A192F] rounded-lg border border-amber-300">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-black uppercase text-[#0A192F] tracking-tight">
+                WORLDWIDE FULLY FUNDED SCHOLARSHIP CARDS
+              </h2>
+              <p className="text-xs font-extrabold text-gray-500 uppercase tracking-widest">
+                Each Card Contains Verified Picture, Eligibility Criteria &amp; Direct Official Apply Portal
+              </p>
+            </div>
+            <span className="px-3.5 py-1.5 bg-slate-100 text-[#0A192F] font-black text-xs rounded-xl border border-slate-300 self-start sm:self-auto">
               {filteredGlobal.length} Active Scholarships
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredGlobal.map((item) => (
               <div
                 key={item.id}
-                className="bg-slate-900 text-white rounded-3xl p-6 shadow-xl border-2 border-slate-800 hover:border-cyan-400 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5 group relative overflow-hidden"
+                className="bg-white text-gray-800 rounded-3xl shadow-xl border-2 border-gray-200 hover:border-[#B8212E] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5 group relative overflow-hidden"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-950/20 via-slate-900 to-slate-900 z-0 pointer-events-none" />
-                
-                <div className="relative z-10 space-y-4">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-black uppercase tracking-widest text-cyan-300 bg-slate-800 px-3 py-1 rounded-full border border-cyan-700/50">
+                {/* Top Clear Picture Header */}
+                <div className="relative h-[220px] w-full bg-slate-100 overflow-hidden border-b-2 border-gray-150">
+                  <Image
+                    src={item.image || '/images/card-paf-education.jpg'}
+                    alt={item.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 400px"
+                    className="object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10 pointer-events-none" />
+                  
+                  {/* Floating Badges over Image */}
+                  <div className="absolute top-3 left-3 z-20">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-white bg-[#0A192F]/90 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 shadow">
                       {item.country}
                     </span>
-                    <span className="text-[10px] font-black text-amber-300 bg-amber-950 px-2.5 py-0.5 rounded border border-amber-500/30">
-                      Verified
+                  </div>
+                  <div className="absolute top-3 right-3 z-20">
+                    <span className="text-[10px] font-black text-[#0A192F] bg-amber-400 px-2.5 py-1 rounded-full shadow font-bold">
+                      Verified 2026
                     </span>
                   </div>
-
-                  <h3 className="text-lg font-black text-white uppercase tracking-tight group-hover:text-cyan-300 transition-colors leading-snug">
-                    {item.name}
-                  </h3>
-
-                  <div className="text-xs font-extrabold text-emerald-400 bg-emerald-950/60 p-2.5 rounded-xl border border-emerald-800/40">
-                    {item.funding}
+                  <div className="absolute bottom-2 right-3 z-20">
+                    <span className="text-[10px] font-mono text-gray-200 bg-black/60 px-2 py-0.5 rounded">
+                      FILE: {item.image.split('/').pop()}
+                    </span>
                   </div>
-
-                  <div className="grid grid-cols-2 gap-2 text-[11px] pt-1 border-t border-slate-800">
-                    <div className="bg-slate-800/80 p-2.5 rounded-xl border border-white/5">
-                      <span className="text-gray-400 block font-medium">Opening Date:</span>
-                      <strong className="text-white font-extrabold block mt-0.5">{item.openingDate}</strong>
-                    </div>
-                    <div className="bg-slate-800/80 p-2.5 rounded-xl border border-white/5">
-                      <span className="text-gray-400 block font-medium">Typical Deadline:</span>
-                      <strong className="text-amber-300 font-extrabold block mt-0.5">{item.closingDate}</strong>
-                    </div>
-                  </div>
-
-                  <div className="text-xs text-gray-300 leading-relaxed font-normal">
-                    <span className="text-white font-bold block mb-1">🎓 Eligible Fields of Study:</span>
-                    {item.fields}
-                  </div>
-
-                  {item.notes && (
-                    <div className="text-[11px] text-gray-300 bg-black/40 p-3 rounded-xl border-l-2 border-cyan-400 font-medium">
-                      📌 <strong>Required Documents &amp; Note:</strong> {item.notes}
-                    </div>
-                  )}
                 </div>
+                
+                {/* Light Card Body */}
+                <div className="p-6 flex flex-col flex-grow justify-between space-y-4">
+                  <div className="space-y-3">
+                    <h3 className="text-lg font-black text-[#0A192F] uppercase tracking-tight group-hover:text-[#B8212E] transition-colors leading-snug">
+                      {item.name}
+                    </h3>
 
-                <div className="relative z-10 pt-6 mt-6 border-t border-slate-800 flex flex-col gap-3">
-                  <a
-                    href={item.applyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-3 px-4 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-[#0A192F] font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-all group-hover:scale-102"
-                  >
-                    APPLY ON OFFICIAL PORTAL <ExternalLink className="w-4 h-4 text-[#0A192F]" />
-                  </a>
-                  <Link
-                    href="/quizzes"
-                    className="text-center text-[11px] font-black text-amber-400 hover:underline transition-colors"
-                  >
-                    Attempt Free GRE / HEC Practice Quizzes &rarr;
-                  </Link>
+                    <div className="text-xs font-extrabold text-emerald-800 bg-emerald-50 p-2.5 rounded-xl border border-emerald-300/70 shadow-sm">
+                      {item.funding}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-[11px] pt-1 border-t border-gray-200">
+                      <div className="bg-slate-50 p-2.5 rounded-xl border border-gray-200">
+                        <span className="text-gray-500 block font-medium">Opening Date:</span>
+                        <strong className="text-slate-900 font-extrabold block mt-0.5">{item.openingDate}</strong>
+                      </div>
+                      <div className="bg-slate-50 p-2.5 rounded-xl border border-gray-200">
+                        <span className="text-gray-500 block font-medium">Typical Deadline:</span>
+                        <strong className="text-[#B8212E] font-extrabold block mt-0.5">{item.closingDate}</strong>
+                      </div>
+                    </div>
+
+                    <div className="text-xs text-gray-600 leading-relaxed font-normal">
+                      <span className="text-[#0A192F] font-bold block mb-1">🎓 Eligible Fields of Study:</span>
+                      {item.fields}
+                    </div>
+
+                    {item.notes && (
+                      <div className="text-[11px] text-slate-700 bg-amber-50 p-3 rounded-xl border-l-4 border-amber-500 font-medium">
+                        📌 <strong>Required Documents &amp; Note:</strong> {item.notes}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="pt-4 mt-4 border-t border-gray-200 flex flex-col gap-3">
+                    <a
+                      href={item.applyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-3.5 px-4 rounded-xl bg-[#0A192F] hover:bg-slate-800 text-white font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-all group-hover:bg-[#B8212E]"
+                    >
+                      APPLY ON OFFICIAL PORTAL <ExternalLink className="w-4 h-4 text-amber-400" />
+                    </a>
+                    <Link
+                      href="/quizzes"
+                      className="text-center text-[11px] font-black text-slate-600 hover:text-[#B8212E] transition-colors"
+                    >
+                      Attempt Free GRE / HEC Practice Quizzes &rarr;
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))}
@@ -273,45 +299,58 @@ export default function InternationalScholarshipsPage() {
             </div>
           </div>
 
-          {/* HEC SPECIAL SCHEME CARDS */}
+          {/* HEC SPECIAL SCHEME LIGHT CARDS WITH PICTURES */}
           <div className="space-y-6">
             <h3 className="text-xl sm:text-2xl font-black uppercase text-[#0A192F] tracking-tight">
               OFFICIAL HEC BILATERAL SCHOLARSHIP CARDS
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {hecSpecialSchemes.map((hec) => (
-                <div key={hec.id} className="bg-slate-900 text-white rounded-3xl p-6 border-2 border-slate-800 hover:border-amber-400 shadow-xl flex flex-col justify-between transition-all duration-200">
-                  <div className="space-y-3">
-                    <span className="text-xs font-black uppercase text-amber-400 bg-amber-950 px-3 py-1 rounded-full border border-amber-800">
-                      {hec.country} &bull; HEC Nomination Route
-                    </span>
-                    <h4 className="text-xl font-black text-white uppercase leading-snug">{hec.name}</h4>
-                    <p className="text-xs text-emerald-400 font-extrabold">{hec.funding}</p>
-                    <p className="text-xs text-gray-300"><strong>Eligibility Requirement:</strong> {hec.eligible}</p>
-                    
-                    <div className="grid grid-cols-2 gap-2 text-xs pt-2">
-                      <div className="bg-slate-800 p-2.5 rounded-lg">Opening: <span className="text-white font-bold">{hec.openingDate}</span></div>
-                      <div className="bg-slate-800 p-2.5 rounded-lg">Deadline: <span className="text-amber-300 font-bold">{hec.closingDate}</span></div>
+                <div key={hec.id} className="bg-white text-gray-800 rounded-3xl border-2 border-gray-200 hover:border-[#0A192F] shadow-xl flex flex-col justify-between overflow-hidden transition-all duration-200 group">
+                  <div className="relative h-[200px] w-full bg-slate-100 overflow-hidden border-b border-gray-200">
+                    <Image src={hec.image || '/images/card-fpsc.jpg'} alt={hec.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                    <div className="absolute top-3 left-3 z-10">
+                      <span className="text-xs font-black uppercase text-white bg-[#0A192F] px-3 py-1 rounded-full shadow">
+                        {hec.country} &bull; HEC Route
+                      </span>
                     </div>
-                    
-                    <p className="text-xs text-gray-300 italic bg-black/30 p-3 rounded-xl border-l-2 border-amber-400">
-                      💡 <strong>Workflow Note:</strong> {hec.notes}
-                    </p>
+                    <div className="absolute bottom-2 right-3 z-20">
+                      <span className="text-[10px] font-mono text-white bg-black/70 px-2 py-0.5 rounded">
+                        FILE: {hec.image.split('/').pop()}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="pt-6 mt-6 border-t border-slate-800 flex justify-between items-center">
-                    <Link href="/quizzes" className="text-xs font-extrabold text-amber-400 hover:underline">
-                      Practice HEC HAT MCQs &rarr;
-                    </Link>
-                    <a
-                      href={hec.applyUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-amber-500 hover:bg-amber-400 text-[#0A192F] font-black text-xs uppercase px-5 py-2.5 rounded-xl shadow inline-flex items-center gap-1.5 transition-transform hover:-translate-y-0.5"
-                    >
-                      HEC Apply Portal <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
+                  <div className="p-6 space-y-4 flex-grow flex flex-col justify-between">
+                    <div className="space-y-3">
+                      <h4 className="text-xl font-black text-[#0A192F] uppercase leading-snug">{hec.name}</h4>
+                      <p className="text-xs text-emerald-800 font-extrabold bg-emerald-50 p-2.5 rounded-xl border border-emerald-300">{hec.funding}</p>
+                      <p className="text-xs text-gray-600"><strong>Eligibility Requirement:</strong> {hec.eligible}</p>
+                      
+                      <div className="grid grid-cols-2 gap-2 text-xs pt-2">
+                        <div className="bg-slate-50 p-2.5 rounded-lg border border-gray-200">Opening: <strong className="text-slate-900 block">{hec.openingDate}</strong></div>
+                        <div className="bg-slate-50 p-2.5 rounded-lg border border-gray-200">Deadline: <strong className="text-[#B8212E] block">{hec.closingDate}</strong></div>
+                      </div>
+                      
+                      <p className="text-xs text-slate-700 font-medium italic bg-amber-50 p-3 rounded-xl border-l-4 border-amber-500">
+                        💡 <strong>Workflow Note:</strong> {hec.notes}
+                      </p>
+                    </div>
+
+                    <div className="pt-6 mt-4 border-t border-gray-200 flex justify-between items-center gap-2">
+                      <Link href="/quizzes" className="text-xs font-extrabold text-[#0A192F] hover:underline">
+                        Practice HEC HAT &rarr;
+                      </Link>
+                      <a
+                        href={hec.applyUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-amber-500 hover:bg-amber-400 text-[#0A192F] font-black text-xs uppercase px-5 py-3 rounded-xl shadow inline-flex items-center gap-1.5 transition-transform hover:-translate-y-0.5"
+                      >
+                        HEC Apply Portal <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -339,28 +378,41 @@ export default function InternationalScholarshipsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {germanEposCourses.map((c) => (
-              <div key={c.id} className="bg-slate-900 text-white rounded-3xl p-6 border-2 border-slate-800 hover:border-emerald-400 shadow-lg flex flex-col justify-between transition-all duration-200">
-                <div className="space-y-3">
-                  <span className="text-[11px] font-black text-emerald-300 bg-emerald-950 px-2.5 py-1 rounded-md border border-emerald-800 w-fit">
-                    Course #{c.id}.0 &bull; {c.field}
-                  </span>
-                  <h4 className="text-lg font-black uppercase text-white leading-snug">{c.program}</h4>
-                  <p className="text-xs text-cyan-300 font-bold">🏫 {c.university}</p>
-                  <p className="text-xs font-extrabold text-emerald-400 bg-emerald-950/60 p-2 rounded-lg border border-emerald-800/40">{c.funding}</p>
-                  <div className="bg-slate-800 p-2.5 rounded-lg text-xs text-gray-300">
-                    <div>Opening: <strong className="text-white">{c.opening}</strong></div>
-                    <div>Closing Deadline: <strong className="text-amber-300">{c.closing}</strong></div>
+              <div key={c.id} className="bg-white text-gray-800 rounded-3xl border-2 border-gray-200 hover:border-emerald-600 shadow-lg flex flex-col justify-between overflow-hidden transition-all duration-200 group">
+                <div className="relative h-40 w-full bg-slate-100 overflow-hidden border-b border-gray-200">
+                  <Image src={c.image || '/images/card-nust.jpg'} alt={c.program} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <div className="absolute top-2 left-2 z-10">
+                    <span className="text-[11px] font-black text-emerald-900 bg-emerald-200 px-2.5 py-0.5 rounded shadow">
+                      Course #{c.id}.0 &bull; {c.field}
+                    </span>
+                  </div>
+                  <div className="absolute bottom-2 right-2 z-20">
+                    <span className="text-[10px] font-mono text-white bg-black/70 px-2 py-0.5 rounded">
+                      FILE: {c.image.split('/').pop()}
+                    </span>
                   </div>
                 </div>
-                <div className="pt-4 mt-4 border-t border-slate-800 flex justify-end">
-                  <a
-                    href={c.applyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full bg-emerald-500 hover:bg-emerald-400 text-[#0A192F] font-black text-xs uppercase py-3 px-4 rounded-xl text-center shadow flex items-center justify-center gap-1.5 transition-transform hover:scale-102"
-                  >
-                    Apply Direct University <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
+
+                <div className="p-5 space-y-4 flex flex-col justify-between flex-grow">
+                  <div className="space-y-2">
+                    <h4 className="text-base font-black uppercase text-[#0A192F] leading-snug">{c.program}</h4>
+                    <p className="text-xs text-slate-600 font-bold">🏫 {c.university}</p>
+                    <p className="text-xs font-extrabold text-emerald-800 bg-emerald-50 p-2 rounded-lg border border-emerald-300">{c.funding}</p>
+                    <div className="bg-slate-50 p-2.5 rounded-lg text-xs text-gray-600 border border-gray-200">
+                      <div>Opening: <strong className="text-slate-900">{c.opening}</strong></div>
+                      <div>Closing Deadline: <strong className="text-[#B8212E]">{c.closing}</strong></div>
+                    </div>
+                  </div>
+                  <div className="pt-3 border-t border-gray-150">
+                    <a
+                      href={c.applyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase py-3 px-4 rounded-xl text-center shadow flex items-center justify-center gap-1.5 transition-transform"
+                    >
+                      Apply Direct University <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
                 </div>
               </div>
             ))}
@@ -369,11 +421,11 @@ export default function InternationalScholarshipsPage() {
       )}
 
       {/* ===============================================================
-          VIEW 4: WOMEN-ONLY INTERNATIONAL FELLOWSHIPS
+          VIEW 4: WOMEN-ONLY INTERNATIONAL FELLOWSHIPS (LIGHT CARDS)
           =============================================================== */}
       {activeTab === 'women' && (
         <div className="space-y-6 animate-in fade-in duration-300">
-          <div className="bg-gradient-to-r from-[#0A192F] via-slate-900 to-[#0A192F] p-8 rounded-3xl border-2 border-pink-500 shadow-xl space-y-2 text-white">
+          <div className="bg-[#0A192F] p-8 rounded-3xl border-2 border-pink-500 shadow-xl space-y-2 text-white">
             <h3 className="text-2xl sm:text-3xl font-black uppercase text-pink-400 flex items-center gap-2">
               👩 Women-In-Science &amp; Global Fellowship Cards
             </h3>
@@ -382,33 +434,46 @@ export default function InternationalScholarshipsPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {internationalWomenScholarships.map((w) => (
-              <div key={w.id} className="bg-slate-900 text-white rounded-3xl p-6 border-2 border-slate-800 hover:border-pink-500 shadow-xl flex flex-col justify-between transition-all duration-200">
-                <div className="space-y-3">
-                  <span className="text-xs font-black uppercase text-pink-300 bg-pink-950 px-3 py-1 rounded-full border border-pink-800 w-fit">
-                    {w.country} &bull; Women Grant
-                  </span>
-                  <h4 className="text-xl font-black text-white uppercase leading-snug">{w.name}</h4>
-                  <div className="text-xs font-black text-emerald-400 bg-emerald-950/60 p-2 rounded-lg border border-emerald-800/40">{w.funding}</div>
-                  <p className="text-xs text-gray-300"><strong>Eligible Fields:</strong> {w.fields}</p>
-                  <div className="bg-slate-800 p-3 rounded-xl text-xs text-gray-300">
-                    <span className="block font-medium">Typical Opening: <strong className="text-white">{w.openingDate}</strong></span>
-                    <span className="block mt-1 font-medium">Closing Deadline: <strong className="text-amber-300">{w.closingDate}</strong></span>
+              <div key={w.id} className="bg-white text-gray-800 rounded-3xl border-2 border-gray-200 hover:border-pink-500 shadow-xl flex flex-col justify-between overflow-hidden transition-all duration-200 group">
+                <div className="relative h-48 w-full bg-slate-100 overflow-hidden border-b border-gray-200">
+                  <Image src={w.image || '/images/card-afns.jpg'} alt={w.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <div className="absolute top-3 left-3 z-10">
+                    <span className="text-xs font-black uppercase text-white bg-pink-600 px-3 py-1 rounded-full shadow">
+                      {w.country} &bull; Women Grant
+                    </span>
                   </div>
-                  <p className="text-xs text-gray-300 italic bg-black/40 p-3 rounded-xl border-l-2 border-pink-400">
-                    ✨ <strong>Requirement Details:</strong> {w.notes}
-                  </p>
+                  <div className="absolute bottom-2 right-3 z-20">
+                    <span className="text-[10px] font-mono text-white bg-black/70 px-2 py-0.5 rounded">
+                      FILE: {w.image.split('/').pop()}
+                    </span>
+                  </div>
                 </div>
-                <div className="pt-6 mt-6 border-t border-slate-800 flex justify-end">
-                  <a
-                    href={w.applyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full bg-pink-500 hover:bg-pink-400 text-white font-black text-xs uppercase py-3 px-4 rounded-xl text-center shadow flex items-center justify-center gap-1.5 transition-transform hover:scale-102"
-                  >
-                    Official Foundation Application <ExternalLink className="w-4 h-4" />
-                  </a>
+
+                <div className="p-6 space-y-4 flex flex-col justify-between flex-grow">
+                  <div className="space-y-3">
+                    <h4 className="text-xl font-black text-[#0A192F] uppercase leading-snug">{w.name}</h4>
+                    <div className="text-xs font-extrabold text-emerald-800 bg-emerald-50 p-2.5 rounded-xl border border-emerald-300">{w.funding}</div>
+                    <p className="text-xs text-gray-600"><strong>Eligible Fields:</strong> {w.fields}</p>
+                    <div className="bg-slate-50 border border-gray-200 p-3 rounded-xl text-xs text-gray-600">
+                      <span className="block font-medium">Typical Opening: <strong className="text-slate-900">{w.openingDate}</strong></span>
+                      <span className="block mt-1 font-medium">Closing Deadline: <strong className="text-[#B8212E]">{w.closingDate}</strong></span>
+                    </div>
+                    <p className="text-xs text-slate-700 font-medium italic bg-amber-50 p-3 rounded-xl border-l-4 border-pink-500">
+                      ✨ <strong>Requirement Details:</strong> {w.notes}
+                    </p>
+                  </div>
+                  <div className="pt-4 mt-4 border-t border-gray-200 flex justify-end">
+                    <a
+                      href={w.applyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full bg-pink-600 hover:bg-pink-500 text-white font-black text-xs uppercase py-3.5 px-4 rounded-xl text-center shadow-lg flex items-center justify-center gap-1.5 transition-all"
+                    >
+                      Official Foundation Application <ExternalLink className="w-4 h-4" />
+                    </a>
+                  </div>
                 </div>
               </div>
             ))}

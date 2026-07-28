@@ -18,7 +18,7 @@ export default function NationalScholarshipsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow flex flex-col gap-10 bg-white text-gray-800">
-      <Link href="/scholarship" className="inline-flex items-center gap-2 text-xs font-extrabold text-gray-500 hover:text-[#0A192F] w-fit transition-colors uppercase tracking-wider">
+      <Link href="/scholarship" className="inline-flex items-center gap-2 text-xs font-extrabold text-gray-500 hover:text-[#B8212E] w-fit transition-colors uppercase tracking-wider">
         <ArrowLeft className="w-4 h-4" /> Back to Scholarship Categories
       </Link>
 
@@ -107,7 +107,7 @@ export default function NationalScholarshipsPage() {
       </div>
 
       {/* ===============================================================
-          VIEW 1: UNIVERSITY FINANCIAL AID CARDS
+          VIEW 1: UNIVERSITY FINANCIAL AID LIGHT CARDS WITH PICTURES
           =============================================================== */}
       {activeTab === 'universities' && (
         <div className="space-y-6 animate-in fade-in duration-300">
@@ -120,62 +120,69 @@ export default function NationalScholarshipsPage() {
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredUnis.map((u) => (
               <div
                 key={u.id}
-                className="bg-slate-900 text-white rounded-3xl p-6 shadow-xl border-2 border-slate-800 hover:border-amber-400 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5"
+                className="bg-white text-gray-800 rounded-3xl shadow-xl border-2 border-gray-200 hover:border-[#B8212E] flex flex-col justify-between overflow-hidden transition-all duration-300 hover:-translate-y-1.5 group"
               >
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-black uppercase text-amber-400 bg-amber-950 px-3 py-1 rounded-full border border-amber-700/50">
+                <div className="relative h-48 w-full bg-slate-100 overflow-hidden border-b border-gray-200">
+                  <Image src={u.image || '/images/card-nust.jpg'} alt={u.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <div className="absolute top-3 left-3 z-10">
+                    <span className="text-xs font-black uppercase text-[#0A192F] bg-amber-400 px-3 py-1 rounded-full shadow">
                       {u.city}
                     </span>
-                    <span className="text-[10px] font-black text-emerald-400 bg-emerald-950 px-2.5 py-0.5 rounded border border-emerald-800">
-                      Active Portal
+                  </div>
+                  <div className="absolute bottom-2 right-3 z-20">
+                    <span className="text-[10px] font-mono text-white bg-black/70 px-2 py-0.5 rounded">
+                      FILE: {u.image.split('/').pop()}
                     </span>
-                  </div>
-
-                  <h3 className="text-lg font-black text-white uppercase tracking-tight leading-snug">
-                    {u.name}
-                  </h3>
-
-                  <div className="space-y-2 bg-slate-800/80 p-3 rounded-xl border border-white/5 text-xs">
-                    <div>
-                      <span className="text-gray-400 font-medium block">Merit Scholarship Support:</span>
-                      <strong className="text-emerald-400 font-extrabold">{u.meritAid}</strong>
-                    </div>
-                    <div className="pt-2 border-t border-slate-700">
-                      <span className="text-gray-400 font-medium block">Financial Hardship Aid:</span>
-                      <strong className="text-amber-300 font-extrabold">{u.needAid}</strong>
-                    </div>
-                  </div>
-
-                  <div className="text-xs text-gray-300 leading-relaxed font-normal">
-                    <span className="text-white font-bold block mb-1">🎓 Offered Fields of Study:</span>
-                    {u.fields}
-                  </div>
-
-                  <div className="text-[11px] text-gray-300 bg-black/40 p-2.5 rounded-xl border-l-2 border-amber-400">
-                    📅 <strong>Admission Window:</strong> Opens {u.opening} &bull; Deadline: <strong className="text-amber-300">{u.closing}</strong>
                   </div>
                 </div>
 
-                <div className="pt-6 mt-6 border-t border-slate-800 flex flex-col gap-3">
-                  <a
-                    href={u.applyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-[#0A192F] font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-all group-hover:scale-102 text-center"
-                  >
-                    UNIVERSITY ADMISSION PORTAL <ExternalLink className="w-4 h-4 text-[#0A192F]" />
-                  </a>
-                  <Link
-                    href="/quizzes"
-                    className="text-center text-[11px] font-black text-cyan-400 hover:underline transition-colors"
-                  >
-                    Practice Entry Test MCQs &rarr;
-                  </Link>
+                <div className="p-6 space-y-4 flex flex-col flex-grow justify-between">
+                  <div className="space-y-3">
+                    <h3 className="text-lg font-black text-[#0A192F] uppercase tracking-tight leading-snug group-hover:text-[#B8212E] transition-colors">
+                      {u.name}
+                    </h3>
+
+                    <div className="space-y-2 bg-slate-50 p-3 rounded-xl border border-gray-200 text-xs">
+                      <div>
+                        <span className="text-gray-500 font-medium block">Merit Scholarship Support:</span>
+                        <strong className="text-emerald-700 font-extrabold">{u.meritAid}</strong>
+                      </div>
+                      <div className="pt-2 border-t border-gray-200">
+                        <span className="text-gray-500 font-medium block">Financial Hardship Aid:</span>
+                        <strong className="text-amber-700 font-extrabold">{u.needAid}</strong>
+                      </div>
+                    </div>
+
+                    <div className="text-xs text-gray-600 leading-relaxed font-normal">
+                      <span className="text-[#0A192F] font-bold block mb-1">🎓 Offered Fields of Study:</span>
+                      {u.fields}
+                    </div>
+
+                    <div className="text-[11px] text-slate-700 bg-amber-50 p-2.5 rounded-xl border-l-4 border-amber-500 font-medium">
+                      📅 <strong>Admission Window:</strong> Opens {u.opening} &bull; Deadline: <strong className="text-[#B8212E]">{u.closing}</strong>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 mt-4 border-t border-gray-200 flex flex-col gap-3">
+                    <a
+                      href={u.applyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-3.5 px-4 rounded-xl bg-[#0A192F] hover:bg-slate-800 text-white font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-all text-center group-hover:bg-[#B8212E]"
+                    >
+                      UNIVERSITY ADMISSION PORTAL <ExternalLink className="w-4 h-4 text-amber-400" />
+                    </a>
+                    <Link
+                      href="/quizzes"
+                      className="text-center text-[11px] font-black text-slate-600 hover:text-[#B8212E] transition-colors"
+                    >
+                      Practice Entry Test MCQs &rarr;
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))}
@@ -184,11 +191,11 @@ export default function NationalScholarshipsPage() {
       )}
 
       {/* ===============================================================
-          VIEW 2: RELIGIOUS MINORITIES SCHOLARSHIP CARDS
+          VIEW 2: RELIGIOUS MINORITIES SCHOLARSHIP LIGHT CARDS
           =============================================================== */}
       {activeTab === 'minorities' && (
         <div className="space-y-6 animate-in fade-in duration-300">
-          <div className="bg-gradient-to-r from-[#0A192F] via-slate-900 to-[#0A192F] p-8 rounded-3xl border-2 border-cyan-400 shadow-xl space-y-2 text-white">
+          <div className="bg-[#0A192F] p-8 rounded-3xl border-2 border-cyan-400 shadow-xl space-y-2 text-white">
             <h3 className="text-2xl sm:text-3xl font-black uppercase text-cyan-300">
               🕊️ Dedicated Religious Minority Educational Scholarships
             </h3>
@@ -197,32 +204,45 @@ export default function NationalScholarshipsPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {pakistaniMinorityScholarships.map((m, idx) => (
-              <div key={idx} className="bg-slate-900 text-white rounded-3xl p-6 border-2 border-slate-800 hover:border-cyan-400 shadow-xl flex flex-col justify-between">
-                <div className="space-y-3">
-                  <span className="text-xs font-black uppercase text-cyan-300 bg-cyan-950 px-3 py-1 rounded-full border border-cyan-800 w-fit">
-                    Minority Scheme &bull; {m.level}
-                  </span>
-                  <h4 className="text-xl font-black uppercase text-white leading-snug">{m.title}</h4>
-                  <p className="text-xs text-amber-300 font-extrabold"><strong>Target Group:</strong> {m.target}</p>
-                  <div className="text-xs font-extrabold text-emerald-400 bg-emerald-950/60 p-3 rounded-xl border border-emerald-800/40">
-                    {m.funding}
+              <div key={idx} className="bg-white text-gray-800 rounded-3xl border-2 border-gray-200 hover:border-cyan-600 shadow-xl flex flex-col justify-between overflow-hidden group">
+                <div className="relative h-48 w-full bg-slate-100 overflow-hidden border-b border-gray-200">
+                  <Image src={m.image || '/images/card-ppsc.jpg'} alt={m.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <div className="absolute top-3 left-3 z-10">
+                    <span className="text-xs font-black uppercase text-white bg-cyan-700 px-3 py-1 rounded-full shadow">
+                      Minority Scheme &bull; {m.level}
+                    </span>
                   </div>
-                  <p className="text-xs text-gray-300"><strong>Eligibility Requirements:</strong> {m.eligibility}</p>
-                  <div className="bg-slate-800 p-2.5 rounded-lg text-xs text-gray-300">
-                    Opens: <strong className="text-white">{m.opening}</strong> &bull; Deadline: <strong className="text-amber-300">{m.closing}</strong>
+                  <div className="absolute bottom-2 right-3 z-20">
+                    <span className="text-[10px] font-mono text-white bg-black/70 px-2 py-0.5 rounded">
+                      FILE: {m.image.split('/').pop()}
+                    </span>
                   </div>
                 </div>
-                <div className="pt-6 mt-6 border-t border-slate-800 flex justify-end">
-                  <a
-                    href={m.applyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full bg-cyan-500 hover:bg-cyan-400 text-[#0A192F] font-black text-xs uppercase py-3 px-4 rounded-xl text-center shadow flex items-center justify-center gap-1.5 transition-all"
-                  >
-                    Official Government Apply Portal <ExternalLink className="w-4 h-4" />
-                  </a>
+
+                <div className="p-6 space-y-4 flex flex-col flex-grow justify-between">
+                  <div className="space-y-3">
+                    <h4 className="text-xl font-black uppercase text-[#0A192F] leading-snug">{m.title}</h4>
+                    <p className="text-xs text-[#B8212E] font-extrabold"><strong>Target Group:</strong> {m.target}</p>
+                    <div className="text-xs font-extrabold text-emerald-800 bg-emerald-50 p-3 rounded-xl border border-emerald-300">
+                      {m.funding}
+                    </div>
+                    <p className="text-xs text-gray-600"><strong>Eligibility Requirements:</strong> {m.eligibility}</p>
+                    <div className="bg-slate-50 p-3 rounded-xl border border-gray-200 text-xs text-gray-700">
+                      Opens: <strong className="text-slate-900">{m.opening}</strong> &bull; Deadline: <strong className="text-[#B8212E]">{m.closing}</strong>
+                    </div>
+                  </div>
+                  <div className="pt-4 mt-4 border-t border-gray-200 flex justify-end">
+                    <a
+                      href={m.applyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-black text-xs uppercase py-3.5 px-4 rounded-xl text-center shadow-lg flex items-center justify-center gap-1.5 transition-all"
+                    >
+                      Official Government Apply Portal <ExternalLink className="w-4 h-4" />
+                    </a>
+                  </div>
                 </div>
               </div>
             ))}

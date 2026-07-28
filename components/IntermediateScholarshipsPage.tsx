@@ -12,7 +12,8 @@ export default function IntermediateScholarshipsPage() {
       board: 'Punjab Educational Endowment Fund',
       desc: 'Full fee waiver, boarding, and monthly stipend for high achievers (minimum 60% in Matric / SSC) belonging to deserving households across Punjab and AJK.',
       deadline: 'Announced after BISE SSC / Matric Annual Results',
-      applyUrl: 'https://www.peef.org.pk/peef-scholarships'
+      applyUrl: 'https://www.peef.org.pk/peef-scholarships',
+      image: '/images/card-scholarship-prep.jpg'
     },
     {
       id: 'fauji-inter',
@@ -20,7 +21,8 @@ export default function IntermediateScholarshipsPage() {
       board: 'Fauji Foundation Pakistan',
       desc: 'Annual financial academic awards for children of retired Armed Forces personnel and civilian students with extraordinary performance in Intermediate and FSc examinations.',
       deadline: 'November to December annually',
-      applyUrl: 'https://www.fauji.org.pk/welfare/education'
+      applyUrl: 'https://www.fauji.org.pk/welfare/education',
+      image: '/images/card-civilian.jpg'
     },
     {
       id: 'wwb-fsc',
@@ -28,7 +30,8 @@ export default function IntermediateScholarshipsPage() {
       board: 'Ministry of Overseas & Human Resource Development',
       desc: '100% full financial sponsorship including college fee, textbooks, uniforms, transport, and hostel facilities for children of registered industrial factory employees.',
       deadline: 'July to September annually',
-      applyUrl: 'https://wwf.gov.pk/'
+      applyUrl: 'https://wwf.gov.pk/',
+      image: '/images/card-ots.jpg'
     },
     {
       id: 'benevolent',
@@ -36,7 +39,8 @@ export default function IntermediateScholarshipsPage() {
       board: 'Benevolent Fund Board (Establishment Division)',
       desc: 'Annual scholarship grants up to PKR 50,000 for children of serving, retired, or deceased government employees scoring distinction in Matric and FSc Part 1 & 2.',
       deadline: 'March to May annually',
-      applyUrl: 'https://www.febgbf.gov.pk/'
+      applyUrl: 'https://www.febgbf.gov.pk/',
+      image: '/images/card-fpsc.jpg'
     },
     {
       id: 'cadet-merit',
@@ -44,7 +48,8 @@ export default function IntermediateScholarshipsPage() {
       board: 'Hasan Abdal, Petaro, Kohat & MCJ Jhelum',
       desc: 'Special merit financial aid and half-boarding scholarships for top competitive candidates clearing Cadet College entrance exams and medical fitness procedures.',
       deadline: 'August to October annually',
-      applyUrl: 'https://ccha.edu.pk/'
+      applyUrl: 'https://ccha.edu.pk/',
+      image: '/images/card-pn-cadet.jpg'
     },
     {
       id: 'diya-pak',
@@ -52,13 +57,14 @@ export default function IntermediateScholarshipsPage() {
       board: 'Diya Pakistan Education Welfare',
       desc: 'Direct bank stipends and quarterly educational funding for regular FSc, ICS, I.Com, and FA students across government and registered colleges in Pakistan.',
       deadline: 'Open throughout the academic year (Online review)',
-      applyUrl: 'https://diyapak.org/'
+      applyUrl: 'https://diyapak.org/',
+      image: '/images/card-tcc.jpg'
     }
   ]
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow flex flex-col gap-10 bg-white text-gray-800">
-      <Link href="/scholarship" className="inline-flex items-center gap-2 text-xs font-extrabold text-gray-500 hover:text-[#0A192F] w-fit transition-colors uppercase tracking-wider">
+      <Link href="/scholarship" className="inline-flex items-center gap-2 text-xs font-extrabold text-gray-500 hover:text-[#B8212E] w-fit transition-colors uppercase tracking-wider">
         <ArrowLeft className="w-4 h-4" /> Back to Scholarship Categories
       </Link>
 
@@ -117,54 +123,61 @@ export default function IntermediateScholarshipsPage() {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {previewScholarships.map((item) => (
             <div
               key={item.id}
-              className="bg-[#0A192F] text-white rounded-3xl p-6 shadow-xl border-2 border-slate-800 hover:border-emerald-400 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5"
+              className="bg-white text-gray-800 rounded-3xl shadow-xl border-2 border-gray-200 hover:border-[#B8212E] flex flex-col justify-between overflow-hidden transition-all duration-300 hover:-translate-y-1.5 group"
             >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-black uppercase tracking-widest text-emerald-300 bg-emerald-950 px-3 py-1 rounded-full border border-emerald-700/50">
+              <div className="relative h-48 w-full bg-slate-100 overflow-hidden border-b border-gray-200">
+                <Image src={item.image || '/images/card-scholarship-prep.jpg'} alt={item.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                <div className="absolute top-3 left-3 z-10">
+                  <span className="text-xs font-black uppercase tracking-widest text-white bg-emerald-600 px-3 py-1 rounded-full shadow">
                     Pre-University Grant
                   </span>
-                  <span className="text-[10px] font-black text-amber-300 bg-amber-950 px-2.5 py-0.5 rounded border border-amber-500/30">
-                    Active
+                </div>
+                <div className="absolute bottom-2 right-3 z-20">
+                  <span className="text-[10px] font-mono text-white bg-black/70 px-2 py-0.5 rounded">
+                    FILE: {item.image.split('/').pop()}
                   </span>
-                </div>
-
-                <h3 className="text-lg font-black text-white uppercase tracking-tight leading-snug">
-                  {item.name}
-                </h3>
-                
-                <div className="text-xs text-cyan-300 font-bold bg-slate-900 p-2.5 rounded-xl border border-white/5">
-                  🏫 <strong>Board / Authority:</strong> {item.board}
-                </div>
-
-                <p className="text-xs text-gray-300 leading-relaxed font-normal">
-                  {item.desc}
-                </p>
-
-                <div className="text-[11px] text-amber-300 bg-black/40 p-2.5 rounded-xl border-l-2 border-emerald-400 font-bold">
-                  📅 Application Window: {item.deadline}
                 </div>
               </div>
 
-              <div className="pt-6 mt-6 border-t border-slate-800 flex flex-col gap-3">
-                <a
-                  href={item.applyUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-[#0A192F] font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-all text-center"
-                >
-                  OFFICIAL APPLY PORTAL <ExternalLink className="w-4 h-4 text-[#0A192F]" />
-                </a>
-                <Link
-                  href="/quizzes"
-                  className="text-center text-[11px] font-black text-amber-400 hover:underline transition-colors"
-                >
-                  Attempt Entry Test MCQs &rarr;
-                </Link>
+              <div className="p-6 space-y-4 flex flex-col flex-grow justify-between">
+                <div className="space-y-3">
+                  <h3 className="text-lg font-black text-[#0A192F] uppercase tracking-tight leading-snug group-hover:text-[#B8212E] transition-colors">
+                    {item.name}
+                  </h3>
+                  
+                  <div className="text-xs text-slate-700 font-bold bg-slate-50 p-2.5 rounded-xl border border-gray-200">
+                    🏫 <strong>Board / Authority:</strong> {item.board}
+                  </div>
+
+                  <p className="text-xs text-gray-600 leading-relaxed font-medium">
+                    {item.desc}
+                  </p>
+
+                  <div className="text-[11px] text-slate-700 bg-amber-50 p-2.5 rounded-xl border-l-4 border-emerald-500 font-bold">
+                    📅 Application Window: {item.deadline}
+                  </div>
+                </div>
+
+                <div className="pt-4 mt-4 border-t border-gray-200 flex flex-col gap-3">
+                  <a
+                    href={item.applyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-3.5 px-4 rounded-xl bg-[#0A192F] hover:bg-slate-800 text-white font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-all text-center group-hover:bg-[#B8212E]"
+                  >
+                    OFFICIAL APPLY PORTAL <ExternalLink className="w-4 h-4 text-amber-400" />
+                  </a>
+                  <Link
+                    href="/quizzes"
+                    className="text-center text-[11px] font-black text-slate-600 hover:text-[#B8212E] transition-colors"
+                  >
+                    Attempt Entry Test MCQs &rarr;
+                  </Link>
+                </div>
               </div>
             </div>
           ))}

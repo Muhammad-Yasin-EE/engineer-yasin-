@@ -14,7 +14,7 @@ export default function ScholarshipCardsHome() {
       cardBgUrl: '/images/card-paf-education.jpg',
       href: '/scholarship/international',
       icon: Globe,
-      tagColor: 'bg-cyan-500 text-[#0A192F]'
+      tagColor: 'bg-cyan-600 text-white'
     },
     {
       id: 'national',
@@ -24,7 +24,7 @@ export default function ScholarshipCardsHome() {
       cardBgUrl: '/images/card-tcc.jpg',
       href: '/scholarship/national',
       icon: MapPin,
-      tagColor: 'bg-amber-400 text-[#0A192F]'
+      tagColor: 'bg-amber-600 text-white'
     },
     {
       id: 'intermediate',
@@ -34,13 +34,13 @@ export default function ScholarshipCardsHome() {
       cardBgUrl: '/images/card-scholarship-prep.jpg',
       href: '/scholarship/intermediate',
       icon: Award,
-      tagColor: 'bg-emerald-400 text-[#0A192F]'
+      tagColor: 'bg-emerald-600 text-white'
     }
   ]
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow flex flex-col gap-10 bg-white text-gray-800">
-      <Link href="/" className="inline-flex items-center gap-2 text-xs font-extrabold text-gray-500 hover:text-[#0A192F] w-fit transition-colors uppercase tracking-wider">
+      <Link href="/" className="inline-flex items-center gap-2 text-xs font-extrabold text-gray-500 hover:text-[#B8212E] w-fit transition-colors uppercase tracking-wider">
         <ArrowLeft className="w-4 h-4" /> Back to Home Portal
       </Link>
 
@@ -67,9 +67,9 @@ export default function ScholarshipCardsHome() {
         </div>
       </div>
 
-      {/* ── THREE MASTER SCHOLARSHIP CARDS ───────────────────────────── */}
+      {/* ── THREE MASTER SCHOLARSHIP CARDS (LIGHT COLOR & BRIGHT PICTURES) ── */}
       <div className="space-y-8 mt-2">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b-2 border-gray-150 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b-2 border-gray-200 pb-4">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 shrink-0 bg-[#0A192F] text-amber-400 rounded-2xl flex items-center justify-center shadow-md">
               <GraduationCap className="w-6 h-6" />
@@ -94,40 +94,48 @@ export default function ScholarshipCardsHome() {
             return (
               <div
                 key={card.id}
-                className="group border-2 border-gray-200 rounded-3xl hover:border-[#0A192F] hover:shadow-2xl transition-all duration-300 flex flex-col justify-between h-full min-h-[340px] relative overflow-hidden bg-[#0A192F] shadow-xl hover:-translate-y-1"
+                className="group border-2 border-gray-200 rounded-3xl hover:border-[#B8212E] hover:shadow-2xl transition-all duration-300 flex flex-col justify-between h-full relative overflow-hidden bg-white shadow-xl hover:-translate-y-1.5"
               >
-                <Image 
-                  src={card.cardBgUrl} 
-                  alt={card.title} 
-                  fill 
-                  sizes="(max-width: 768px) 100vw, 400px" 
-                  className="object-cover absolute inset-0 z-0 group-hover:scale-110 transition-transform duration-700 opacity-75 mix-blend-overlay" 
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F] via-[#0A192F]/80 to-[#0A192F]/40 z-0" />
-                
-                <div className="relative z-10 p-6 sm:p-8 flex flex-col h-full justify-between gap-6">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shadow">
-                        <IconComponent className="w-6 h-6" />
-                      </div>
-                      <span className={`text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full shadow ${card.tagColor}`}>
-                        {card.badge}
-                      </span>
-                    </div>
+                {/* Top Bright Unobscured Image Section */}
+                <div className="relative h-[240px] sm:h-[260px] w-full overflow-hidden bg-slate-100 border-b border-gray-200">
+                  <Image 
+                    src={card.cardBgUrl} 
+                    alt={card.title} 
+                    fill 
+                    sizes="(max-width: 768px) 100vw, 400px" 
+                    className="object-cover absolute inset-0 z-0 group-hover:scale-110 transition-transform duration-700" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent z-10 pointer-events-none" />
+                  
+                  {/* Floating Badge */}
+                  <div className="absolute top-4 right-4 z-20">
+                    <span className={`text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-full shadow-md ${card.tagColor}`}>
+                      {card.badge}
+                    </span>
+                  </div>
 
-                    <h3 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight group-hover:text-amber-400 transition-colors leading-snug">
+                  <div className="absolute bottom-4 left-4 z-20 flex items-center gap-2">
+                    <div className="w-10 h-10 rounded-xl bg-white/90 backdrop-blur-md text-[#0A192F] flex items-center justify-center shadow-lg font-bold">
+                      <IconComponent className="w-5 h-5" />
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Light Colored Body Section */}
+                <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow bg-white space-y-6">
+                  <div className="space-y-3">
+                    <h3 className="text-xl sm:text-2xl font-black text-[#0A192F] uppercase tracking-tight group-hover:text-[#B8212E] transition-colors leading-snug">
                       {card.title}
                     </h3>
-                    <p className="text-xs sm:text-sm text-gray-200 font-medium line-clamp-4 leading-relaxed">
+                    <p className="text-xs sm:text-sm text-gray-600 font-medium line-clamp-4 leading-relaxed">
                       {card.desc}
                     </p>
                   </div>
 
-                  <div className="pt-4 border-t border-white/20 flex flex-col gap-3">
+                  <div className="pt-4 border-t border-gray-150 flex flex-col gap-3">
                     <Link
                       href={card.href}
-                      className="w-full py-3.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-[#0A192F] font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-transform group-hover:scale-105 text-center"
+                      className="w-full py-3.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-[#0A192F] font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-transform group-hover:scale-102 text-center"
                     >
                       EXPLORE SCHOLARSHIPS &amp; DEADLINES <ArrowRight className="w-4 h-4 text-[#0A192F]" />
                     </Link>

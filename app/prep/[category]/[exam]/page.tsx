@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import { armedForcesData, branchColors, branchImages } from '@/lib/data/armedForcesData'
 import ExamTabs from '@/components/ExamTabs'
+import DynamicPublicServiceJobs from '@/components/DynamicPublicServiceJobs'
 import {
   ArrowLeft, Shield, Calendar, GraduationCap, Clock, Users,
   BookOpen, ArrowRight, FileText
@@ -128,6 +129,11 @@ export default async function ExamPage({
             </p>
           </div>
         </div>
+
+        {/* ── Dynamic Admin Uploaded Job Postings ──────────────────────────────── */}
+        {(category === 'public-service' || pscInfo) && (
+          <DynamicPublicServiceJobs commissionSlug={exam} />
+        )}
 
         {/* ── BPSC Real-Time Verified Live Updates & Download Portal ────────────── */}
         {exam === 'bpsc' && (

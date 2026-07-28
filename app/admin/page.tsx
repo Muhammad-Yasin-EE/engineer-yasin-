@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import OrderStatusBadge from '@/components/OrderStatusBadge'
-import { ShieldCheck, ShieldAlert, Layers, BookMarked, Plus, Edit, Trash2, Check, X, Upload, ExternalLink, RefreshCw, FileText, Users, Mail, Award, MessageSquare } from 'lucide-react'
+import { ShieldCheck, ShieldAlert, Layers, BookMarked, Plus, Edit, Trash2, Check, X, Upload, ExternalLink, RefreshCw, FileText, Users, Mail, Award, MessageSquare, GraduationCap, Briefcase } from 'lucide-react'
+import PortalContentManager from '@/components/admin/PortalContentManager'
 
 const CATEGORIES = [
   "Academic Books", "Test Preparation", "Programming Books", "AI Books", "Engineering Books", 
@@ -28,7 +28,7 @@ const RESOURCE_TYPES = [
 export default function AdminDashboard() {
   const supabase = createClient()
   
-  const [activeTab, setActiveTab] = useState<'orders' | 'items' | 'pages' | 'blog' | 'subscribers' | 'quiz' | 'chat' | 'users'>('orders')
+  const [activeTab, setActiveTab] = useState<'orders' | 'items' | 'pages' | 'blog' | 'subscribers' | 'quiz' | 'chat' | 'users' | 'scholarships' | 'jobs'>('orders')
   const [orders, setOrders] = useState<any[]>([])
   const [items, setItems] = useState<any[]>([])
   const [customPages, setCustomPages] = useState<any[]>([])
@@ -948,6 +948,20 @@ export default function AdminDashboard() {
               </span>
             )}
           </button>
+          <button
+            onClick={() => setActiveTab('scholarships')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${activeTab === 'scholarships' ? 'bg-[#0A192F] text-amber-400 shadow-md ring-2 ring-amber-400' : 'text-gray-550 hover:text-[#0A192F]'}`}
+          >
+            <GraduationCap className="w-4 h-4 text-amber-500" />
+            Scholarships Manager
+          </button>
+          <button
+            onClick={() => setActiveTab('jobs')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${activeTab === 'jobs' ? 'bg-[#0A192F] text-cyan-400 shadow-md ring-2 ring-cyan-400' : 'text-gray-550 hover:text-[#0A192F]'}`}
+          >
+            <Briefcase className="w-4 h-4 text-cyan-500" />
+            Public Service Jobs
+          </button>
         </div>
       </div>
 
@@ -1713,6 +1727,12 @@ export default function AdminDashboard() {
           )}
         </div>
       )}
+
+      {/* TAB: SCHOLARSHIPS MANAGER */}
+      {activeTab === 'scholarships' && <PortalContentManager defaultType="scholarship" />}
+
+      {/* TAB: PUBLIC SERVICE JOBS MANAGER */}
+      {activeTab === 'jobs' && <PortalContentManager defaultType="job" />}
 
       {/* MODAL 4: CREATE / EDIT QUIZ */}
       {showQuizModal && (

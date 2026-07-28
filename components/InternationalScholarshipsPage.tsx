@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, ExternalLink, Globe, Search, Sparkles, MessageCircle, Award, CheckCircle } from 'lucide-react'
@@ -9,8 +9,38 @@ import { internationalScholarships, hecSpecialSchemes, germanEposCourses, intern
 export default function InternationalScholarshipsPage() {
   const [activeTab, setActiveTab] = useState<'global' | 'hec' | 'germany' | 'women'>('global')
   const [searchQuery, setSearchQuery] = useState('')
+  const [customItems, setCustomItems] = useState<any[]>([])
+  const [deletedIds, setDeletedIds] = useState<string[]>([])
 
-  const filteredGlobal = internationalScholarships.filter(s =>
+  useEffect(() => {
+    fetch('/api/admin/portal-manager')
+      .then(res => res.json())
+      .then(data => {
+        if (data) {
+          setCustomItems((data.customItems || []).filter((i: any) => i.type === 'scholarship' && (i.category === 'international' || !i.category)))
+          setDeletedIds(data.deletedIds || [])
+        }
+      })
+      .catch(err => console.error('Error fetching dynamic admin scholarships:', err))
+  }, [])
+
+  const combinedGlobal = [
+    ...customItems.map(c => ({
+      id: c.id,
+      name: c.title,
+      country: c.organization || 'GLOBAL / INTERNATIONAL',
+      image: c.imageUrl || '/images/scholarship-chevening-uk.jpg',
+      funding: c.badgeOrFunding,
+      openingDate: c.openingDate || 'Currently Active',
+      closingDate: c.closingDate || 'Check Official Link',
+      fields: c.eligibility || 'All Master, PhD and Special Research Degree Programs',
+      notes: c.description || 'Verified official scholarship added via Admin Management Engine.',
+      officialUrl: c.applyUrl
+    })),
+    ...internationalScholarships.filter(s => !deletedIds.includes(s.id))
+  ]
+
+  const filteredGlobal = combinedGlobal.filter(s =>
     s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     s.country.toLowerCase().includes(searchQuery.toLowerCase()) ||
     s.fields.toLowerCase().includes(searchQuery.toLowerCase())

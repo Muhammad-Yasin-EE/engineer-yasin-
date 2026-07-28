@@ -1,10 +1,26 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, Award, ExternalLink, Sparkles, MessageCircle, BookOpen } from 'lucide-react'
 
 export default function IntermediateScholarshipsPage() {
+  const [customItems, setCustomItems] = useState<any[]>([])
+  const [deletedIds, setDeletedIds] = useState<string[]>([])
+
+  useEffect(() => {
+    fetch('/api/admin/portal-manager')
+      .then(res => res.json())
+      .then(data => {
+        if (data) {
+          setCustomItems((data.customItems || []).filter((i: any) => i.type === 'scholarship' && i.category === 'intermediate'))
+          setDeletedIds(data.deletedIds || [])
+        }
+      })
+      .catch(err => console.error('Error fetching dynamic admin intermediate scholarships:', err))
+  }, [])
+
   const previewScholarships = [
     {
       id: 'peef-inter',
@@ -124,7 +140,18 @@ export default function IntermediateScholarshipsPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {previewScholarships.map((item) => (
+          {[
+            ...customItems.map(c => ({
+              id: c.id,
+              name: c.title,
+              board: c.organization || 'Pre-University Board & Commission',
+              desc: c.description || 'Verified talent scholarship and tuition fee waiver scheme.',
+              deadline: c.closingDate || 'See Official Portal',
+              applyUrl: c.applyUrl,
+              image: c.imageUrl || '/images/inter-peef-talent.jpg'
+            })),
+            ...previewScholarships.filter(item => !deletedIds.includes(item.id))
+          ].map((item) => (
             <div
               key={item.id}
               className="bg-white text-gray-800 rounded-3xl shadow-xl border-2 border-gray-200 hover:border-[#B8212E] flex flex-col justify-between overflow-hidden transition-all duration-300 hover:-translate-y-1.5 group"

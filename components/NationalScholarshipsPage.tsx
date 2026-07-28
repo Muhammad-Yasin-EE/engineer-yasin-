@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, ExternalLink, MapPin, Search, Sparkles, MessageCircle, CheckCircle, Award } from 'lucide-react'
@@ -9,8 +9,37 @@ import { pakistaniUniversities, pakistaniMinorityScholarships } from '@/lib/data
 export default function NationalScholarshipsPage() {
   const [activeTab, setActiveTab] = useState<'universities' | 'minorities' | 'checklist'>('universities')
   const [searchQuery, setSearchQuery] = useState('')
+  const [customItems, setCustomItems] = useState<any[]>([])
+  const [deletedIds, setDeletedIds] = useState<string[]>([])
 
-  const filteredUnis = pakistaniUniversities.filter(u =>
+  useEffect(() => {
+    fetch('/api/admin/portal-manager')
+      .then(res => res.json())
+      .then(data => {
+        if (data) {
+          setCustomItems((data.customItems || []).filter((i: any) => i.type === 'scholarship' && i.category === 'national'))
+          setDeletedIds(data.deletedIds || [])
+        }
+      })
+      .catch(err => console.error('Error fetching dynamic admin national scholarships:', err))
+  }, [])
+
+  const combinedUnis = [
+    ...customItems.map(c => ({
+      id: c.id,
+      name: c.title,
+      city: c.organization || 'Pakistan Merit Scheme',
+      image: c.imageUrl || '/images/uni-lums-lahore.jpg',
+      funding: c.badgeOrFunding,
+      deadline: c.closingDate || 'See Official Portal',
+      fields: c.eligibility || 'Undergraduate, BS & Honors Disciplines',
+      notes: c.description || 'Verified university financial assistance scheme added via Admin Panel.',
+      applyUrl: c.applyUrl
+    })),
+    ...pakistaniUniversities.filter(u => !deletedIds.includes(u.id))
+  ]
+
+  const filteredUnis = combinedUnis.filter(u =>
     u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     u.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
     u.fields.toLowerCase().includes(searchQuery.toLowerCase())

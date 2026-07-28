@@ -1,8 +1,27 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, ArrowRight, Target, Sparkles, MessageCircle, Globe } from 'lucide-react'
+import type { Metadata } from 'next'
 
 export const dynamic = 'force-static'
+
+export const metadata: Metadata = {
+  title: 'PUBLIC SERVICE COMMISSIONS & JOBS PORTAL - FPSC, PPSC, BPSC, SPSC, KPPSC | Engineer Yasin',
+  description: 'Explore official job advertisements, syllabus downloads, previous solved test papers & online mock quizzes for provincial and federal Civil Service Commissions across Pakistan.',
+  openGraph: {
+    title: 'PUBLIC SERVICE COMMISSIONS & JOBS PORTAL - FPSC, PPSC, BPSC, SPSC, KPPSC | Engineer Yasin',
+    description: 'Explore official job advertisements, syllabus downloads, previous solved test papers & online mock quizzes for provincial and federal Civil Service Commissions across Pakistan.',
+    url: 'https://www.engineeryasin.xyz/jobs',
+    type: 'website',
+    images: [{ url: '/images/public-service-header.jpg', width: 1200, height: 630, alt: 'Pakistan Public Service Commissions Portal' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'PUBLIC SERVICE COMMISSIONS & JOBS PORTAL - FPSC, PPSC, BPSC, SPSC, KPPSC | Engineer Yasin',
+    description: 'Explore official job advertisements, syllabus downloads, previous solved test papers & online mock quizzes for provincial and federal Civil Service Commissions across Pakistan.',
+    images: ['/images/public-service-header.jpg'],
+  }
+}
 
 export default function JobsPage() {
   const commissions = [

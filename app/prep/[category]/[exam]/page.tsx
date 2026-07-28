@@ -14,21 +14,56 @@ const formatTitle = (slug: string) =>
   slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
 
 export async function generateMetadata({ params }: { params: Promise<{ category: string; exam: string }> }) {
-  const { exam } = await params;
-  const info = armedForcesData[exam];
+  const { category, exam } = await params
+  const info = armedForcesData[exam]
+
+  const pscImages: Record<string, string> = {
+    bpsc: '/images/card-bpsc.jpg',
+    fpsc: '/images/card-fpsc.jpg',
+    ppsc: '/images/card-ppsc.jpg',
+    spsc: '/images/card-spsc.jpg',
+    kppsc: '/images/card-kppsc.jpg',
+    ajkpsc: '/images/card-ajkpsc.jpg',
+    gbpsc: '/images/card-gbpsc.jpg',
+  }
+  const pscTitles: Record<string, string> = {
+    bpsc: 'BALOCHISTAN PUBLIC SERVICE COMMISSION (BPSC QUETTA)',
+    fpsc: 'FEDERAL PUBLIC SERVICE COMMISSION (FPSC ISLAMABAD)',
+    ppsc: 'PUNJAB PUBLIC SERVICE COMMISSION (PPSC PUNJAB)',
+    spsc: 'SINDH PUBLIC SERVICE COMMISSION (SPSC SINDH)',
+    kppsc: 'KHYBER PAKHTUNKHWA PUBLIC SERVICE COMMISSION (KPPSC PESHAWAR)',
+    ajkpsc: 'AZAD JAMMU & KASHMIR PUBLIC SERVICE COMMISSION (AJKPSC)',
+    gbpsc: 'GILGIT-BALTISTAN PUBLIC SERVICE COMMISSION (GBPSC)',
+  }
   
   if (info) {
+    const title = `${info.title.toUpperCase()} - Official Selection Tests & Syllabus | Engineer Yasin`
+    const description = `Prepare for ${info.title} with premium interactive online mock tests, subject-wise syllabus downloads, and official selection process guidance.`
+    const image = branchImages[info.branchSlug] || '/images/hero-illustration.jpg'
+    const url = `https://www.engineeryasin.xyz/${info.branchSlug}/${exam}`
+
     return {
-      title: `${info.title} Mock Tests & Preparation | Engineer Yasin`,
-      description: `Prepare for the ${info.title} with premium mock tests, syllabus, and official selection process details.`,
-    };
+      title,
+      description,
+      openGraph: { title, description, url, type: 'website', images: [{ url: image, width: 1200, height: 630, alt: title }] },
+      twitter: { card: 'summary_large_image', title, description, images: [image] }
+    }
   }
 
-  const title = formatTitle(exam);
+  const examLower = exam.toLowerCase()
+  const displayTitle = pscTitles[examLower] ? `${pscTitles[examLower]} - Live Job Portal` : `${formatTitle(exam).toUpperCase()} - Preparation & Quizzes | Engineer Yasin`
+  const description = pscTitles[examLower]
+    ? `Explore real-time verified recruitment advertisements, E-Letter roll number slips, interview schedules and competitive mock quizzes for ${formatTitle(exam).toUpperCase()}.`
+    : `Access premium interactive mock tests, solved past papers and official preparation guidance for ${formatTitle(exam).toUpperCase()}.`
+  const image = pscImages[examLower] || (category === 'public-service' ? '/images/public-service-header.jpg' : '/images/hero-illustration.jpg')
+  const url = `https://www.engineeryasin.xyz/prep/${category}/${exam}`
+
   return {
-    title: `${title} Preparation & Quizzes | Engineer Yasin`,
-    description: `Access premium mock tests and past papers for ${title}.`,
-  };
+    title: displayTitle,
+    description,
+    openGraph: { title: displayTitle, description, url, type: 'website', images: [{ url: image, width: 1200, height: 630, alt: displayTitle }] },
+    twitter: { card: 'summary_large_image', title: displayTitle, description, images: [image] }
+  }
 }
 
 export default async function ExamPage({

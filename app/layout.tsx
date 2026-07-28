@@ -16,9 +16,10 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.engineeryasin.xyz"),
   title: "Engineer Yasin | Premier Armed Forces & Cadet Colleges Portal",
   description: "Official portal of Engineer Yasin Digital Prep Portal. Access premium Pakistan Armed Forces (PMA Long Course, PAF, Navy) initial practice tests, ISSB guidance, and Cadet Colleges preparation.",
-  keywords: ["Engineer Yasin", "Engineer Yasin Forces Portal", "Engineer Yasin Prep Hub", "PMA Long Course Preparation", "ISSB Preparation", "PAF GD Pilot Test", "PN Cadet Test", "Cadet Colleges Entry Test", "Forces MCQs Online"],
+  keywords: ["Engineer Yasin", "Engineer Yasin Forces Portal", "Engineer Yasin Prep Hub", "PMA Long Course Preparation", "ISSB Preparation", "PAF GD Pilot Test", "PN Cadet Test", "Cadet Colleges Entry Test", "Forces MCQs Online", "BPSC Quetta", "FPSC", "PPSC"],
   authors: [{ name: "Engineer Yasin" }],
   openGraph: {
     title: "Engineer Yasin | Premier Armed Forces & Cadet Colleges Portal",
@@ -27,6 +28,20 @@ export const metadata: Metadata = {
     siteName: "Engineer Yasin Forces Portal",
     locale: "en_PK",
     type: "website",
+    images: [
+      {
+        url: "/images/hero-illustration.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Engineer Yasin Pakistan Premier Forces & Public Service Portal",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Engineer Yasin | Premier Armed Forces & Cadet Colleges Portal",
+    description: "Access premium Pakistan Armed Forces initial practice tests, ISSB preparation, Public Service job updates and online mock quizzes.",
+    images: ["/images/hero-illustration.jpg"],
   },
   robots: {
     index: true,

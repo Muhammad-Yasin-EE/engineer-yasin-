@@ -874,93 +874,81 @@ export default function AdminDashboard() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow bg-white text-[#222222] space-y-8 animate-fade-in">
       
       {/* Title Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-150 pb-6 gap-4">
+      <div className="flex flex-col gap-6 border-b-2 border-gray-150 pb-6">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#222222] tracking-tight flex items-center gap-2">
-            <ShieldCheck className="w-7 h-7 text-[#B8212E]" />
-            Admin Operations Panel
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#0A192F] uppercase tracking-tight flex items-center gap-2.5">
+            <ShieldCheck className="w-8 h-8 text-[#B8212E]" />
+            Admin Operations &amp; Live Portal Engine
           </h1>
-          <p className="text-xs sm:text-sm text-gray-400 mt-1">
-            Manage your courses, software, scholarships, jobs, books, and custom informational pages.
+          <p className="text-xs sm:text-sm text-gray-500 font-extrabold mt-1.5 uppercase tracking-wider">
+            Manage your Scholarships, Public Service Commission Jobs, Quizzes, Profiles, and Custom Pages with Google AdSense Optimization.
           </p>
         </div>
 
-        {/* Tab Selector */}
-        <div className="flex flex-wrap gap-1 bg-gray-50 border border-gray-200 rounded-full p-1 shrink-0">
+        {/* Multi-line Wrapping Tab Selector */}
+        <div className="flex flex-wrap items-center gap-2.5 bg-slate-50 border-2 border-gray-200 rounded-3xl p-3 shadow-inner w-full">
           <button
             onClick={() => setActiveTab('orders')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${activeTab === 'orders' ? 'bg-[#B8212E] text-white shadow-sm' : 'text-gray-550'}`}
+            className={`flex items-center gap-2 px-4.5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${activeTab === 'orders' ? 'bg-[#B8212E] text-white shadow-md scale-105' : 'bg-white border border-gray-200 text-gray-700 hover:border-[#B8212E]'}`}
           >
-            <Layers className="w-4 h-4" />
+            <Layers className="w-4 h-4 text-[#B8212E] group-hover:text-white" />
             Orders ({orders.filter(o => o.status === 'payment_submitted').length} Pending)
           </button>
-          <button
-            onClick={() => setActiveTab('items')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${activeTab === 'items' ? 'bg-[#B8212E] text-white shadow-sm' : 'text-gray-550'}`}
-          >
-            <BookMarked className="w-4 h-4" />
-            Catalog ({items.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('pages')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${activeTab === 'pages' ? 'bg-[#B8212E] text-white shadow-sm' : 'text-gray-550'}`}
-          >
-            <FileText className="w-4 h-4" />
-            Pages ({customPages.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('blog')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${activeTab === 'blog' ? 'bg-[#B8212E] text-white shadow-sm' : 'text-gray-550'}`}
-          >
-            <FileText className="w-4 h-4" />
-            Blog ({blogPosts.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('subscribers')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${activeTab === 'subscribers' ? 'bg-[#B8212E] text-white shadow-sm' : 'text-gray-550'}`}
-          >
-            <Users className="w-4 h-4" />
-            Subscribers ({subscribers.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('quiz')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${activeTab === 'quiz' ? 'bg-[#B8212E] text-white shadow-sm' : 'text-gray-550'}`}
-          >
-            <Award className="w-4 h-4" />
-            Quizzes ({quizzes.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('users')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${activeTab === 'users' ? 'bg-[#B8212E] text-white shadow-sm' : 'text-gray-550'}`}
-          >
-            <Users className="w-4 h-4" />
-            Profiles ({users.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('chat')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer relative ${activeTab === 'chat' ? 'bg-[#B8212E] text-white shadow-sm' : 'text-gray-550'}`}
-          >
-            <MessageSquare className="w-4 h-4" />
-            Live Chat
-            {totalUnreadChats > 0 && (
-              <span className="absolute -top-1 -right-1 bg-rose-600 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center animate-pulse">
-                {totalUnreadChats}
-              </span>
-            )}
-          </button>
+
           <button
             onClick={() => setActiveTab('scholarships')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${activeTab === 'scholarships' ? 'bg-[#0A192F] text-amber-400 shadow-md ring-2 ring-amber-400' : 'text-gray-550 hover:text-[#0A192F]'}`}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-sm ${activeTab === 'scholarships' ? 'bg-[#0A192F] text-amber-400 shadow-xl ring-2 ring-amber-400 scale-105' : 'bg-amber-400/10 border-2 border-amber-400/50 text-[#0A192F] hover:bg-[#0A192F] hover:text-amber-400'}`}
           >
-            <GraduationCap className="w-4 h-4 text-amber-500" />
-            Scholarships Manager
+            <GraduationCap className="w-4.5 h-4.5 text-amber-500 shrink-0" />
+            🎓 Scholarships Manager
           </button>
+
           <button
             onClick={() => setActiveTab('jobs')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${activeTab === 'jobs' ? 'bg-[#0A192F] text-cyan-400 shadow-md ring-2 ring-cyan-400' : 'text-gray-550 hover:text-[#0A192F]'}`}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-sm ${activeTab === 'jobs' ? 'bg-[#0A192F] text-cyan-400 shadow-xl ring-2 ring-cyan-400 scale-105' : 'bg-cyan-400/10 border-2 border-cyan-400/50 text-[#0A192F] hover:bg-[#0A192F] hover:text-cyan-300'}`}
           >
-            <Briefcase className="w-4 h-4 text-cyan-500" />
-            Public Service Jobs
+            <Briefcase className="w-4.5 h-4.5 text-cyan-600 shrink-0" />
+            🏛️ Public Service Jobs
+          </button>
+
+          <button
+            onClick={() => setActiveTab('pages')}
+            className={`flex items-center gap-2 px-4.5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${activeTab === 'pages' ? 'bg-[#0A192F] text-white shadow-md scale-105' : 'bg-white border border-gray-200 text-gray-700 hover:border-[#0A192F]'}`}
+          >
+            <FileText className="w-4 h-4 text-blue-600" />
+            Pages ({customPages.length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab('blog')}
+            className={`flex items-center gap-2 px-4.5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${activeTab === 'blog' ? 'bg-[#0A192F] text-white shadow-md scale-105' : 'bg-white border border-gray-200 text-gray-700 hover:border-[#0A192F]'}`}
+          >
+            <FileText className="w-4 h-4 text-emerald-600" />
+            Blog ({blogPosts.length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab('subscribers')}
+            className={`flex items-center gap-2 px-4.5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${activeTab === 'subscribers' ? 'bg-[#0A192F] text-white shadow-md scale-105' : 'bg-white border border-gray-200 text-gray-700 hover:border-[#0A192F]'}`}
+          >
+            <Users className="w-4 h-4 text-purple-600" />
+            Subscribers ({subscribers.length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab('quiz')}
+            className={`flex items-center gap-2 px-4.5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${activeTab === 'quiz' ? 'bg-[#0A192F] text-white shadow-md scale-105' : 'bg-white border border-gray-200 text-gray-700 hover:border-[#0A192F]'}`}
+          >
+            <Award className="w-4 h-4 text-amber-600" />
+            Quizzes ({quizzes.length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab('users')}
+            className={`flex items-center gap-2 px-4.5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${activeTab === 'users' ? 'bg-[#0A192F] text-white shadow-md scale-105' : 'bg-white border border-gray-200 text-gray-700 hover:border-[#0A192F]'}`}
+          >
+            <Users className="w-4 h-4 text-slate-700" />
+            Profiles ({users.length})
           </button>
         </div>
       </div>
@@ -968,39 +956,39 @@ export default function AdminDashboard() {
       {/* Analytics Stats Dashboard */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Revenue */}
-        <div className="bg-[#f8fafc] border border-gray-200 p-5 rounded-none space-y-2">
-          <span className="block text-[8px] uppercase text-gray-400 font-bold tracking-wider">Total Verified Earnings</span>
-          <span className="text-xl font-extrabold text-emerald-600 block">
+        <div className="bg-[#f8fafc] border border-gray-200 p-5 rounded-2xl space-y-2 shadow-sm">
+          <span className="block text-[9px] uppercase text-gray-400 font-black tracking-wider">Total Verified Earnings</span>
+          <span className="text-xl font-black text-emerald-600 block">
             PKR {orders.filter(o => o.status === 'verified').reduce((sum, o) => sum + o.total_price, 0).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
           </span>
-          <span className="text-[10px] text-gray-400 font-semibold block">Unlocked premium orders</span>
+          <span className="text-[10px] text-gray-400 font-extrabold uppercase block">Unlocked premium orders</span>
         </div>
 
         {/* Card 2: Pending verifications */}
-        <div className="bg-[#f8fafc] border border-gray-200 p-5 rounded-none space-y-2">
-          <span className="block text-[8px] uppercase text-gray-400 font-bold tracking-wider">Pending Verifications</span>
-          <span className="text-xl font-extrabold text-amber-600 block">
+        <div className="bg-[#f8fafc] border border-gray-200 p-5 rounded-2xl space-y-2 shadow-sm">
+          <span className="block text-[9px] uppercase text-gray-400 font-black tracking-wider">Pending Verifications</span>
+          <span className="text-xl font-black text-amber-600 block">
             {orders.filter(o => o.status === 'payment_submitted').length} Claims
           </span>
-          <span className="text-[10px] text-gray-400 font-semibold block">Awaiting receipt verification</span>
+          <span className="text-[10px] text-gray-400 font-extrabold uppercase block">Awaiting receipt verification</span>
         </div>
 
-        {/* Card 3: Catalog Size */}
-        <div className="bg-[#f8fafc] border border-gray-200 p-5 rounded-none space-y-2">
-          <span className="block text-[8px] uppercase text-gray-400 font-bold tracking-wider">Active Catalog</span>
-          <span className="text-xl font-extrabold text-blue-600 block">
-            {items.length} Resources
+        {/* Card 3: Online Quizzes */}
+        <div className="bg-[#f8fafc] border border-gray-200 p-5 rounded-2xl space-y-2 shadow-sm">
+          <span className="block text-[9px] uppercase text-gray-400 font-black tracking-wider">Online Quizzes Ready</span>
+          <span className="text-xl font-black text-blue-600 block">
+            {quizzes.length} Tests
           </span>
-          <span className="text-[10px] text-gray-400 font-semibold block">Ebooks, courses, software & services</span>
+          <span className="text-[10px] text-gray-400 font-extrabold uppercase block">Interactive preparation modules</span>
         </div>
 
         {/* Card 4: Newsletter Subscribers */}
-        <div className="bg-[#f8fafc] border border-gray-200 p-5 rounded-none space-y-2">
-          <span className="block text-[8px] uppercase text-gray-400 font-bold tracking-wider">Newsletter Subscribers</span>
-          <span className="text-xl font-extrabold text-rose-600 block">
+        <div className="bg-[#f8fafc] border border-gray-200 p-5 rounded-2xl space-y-2 shadow-sm">
+          <span className="block text-[9px] uppercase text-gray-400 font-black tracking-wider">Newsletter Subscribers</span>
+          <span className="text-xl font-black text-rose-600 block">
             {subscribers.length} Emails
           </span>
-          <span className="text-[10px] text-gray-400 font-semibold block">Subscribed for update notifications</span>
+          <span className="text-[10px] text-gray-400 font-extrabold uppercase block">Subscribed for update notifications</span>
         </div>
       </div>
 

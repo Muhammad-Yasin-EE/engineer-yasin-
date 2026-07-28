@@ -1,0 +1,200 @@
+'use client'
+
+import Link from 'next/link'
+import Image from 'next/image'
+import { ArrowLeft, Award, ExternalLink, Sparkles, MessageCircle, BookOpen } from 'lucide-react'
+
+export default function IntermediateScholarshipsPage() {
+  const previewScholarships = [
+    {
+      id: 'peef-inter',
+      name: 'PEEF Intermediate / FSc Talent Scholarship',
+      board: 'Punjab Educational Endowment Fund',
+      desc: 'Full fee waiver, boarding, and monthly stipend for high achievers (minimum 60% in Matric / SSC) belonging to deserving households across Punjab and AJK.',
+      deadline: 'Announced after BISE SSC / Matric Annual Results',
+      applyUrl: 'https://www.peef.org.pk/peef-scholarships'
+    },
+    {
+      id: 'fauji-inter',
+      name: 'Fauji Foundation Educational Stipend (Matric to FSc)',
+      board: 'Fauji Foundation Pakistan',
+      desc: 'Annual financial academic awards for children of retired Armed Forces personnel and civilian students with extraordinary performance in Intermediate and FSc examinations.',
+      deadline: 'November to December annually',
+      applyUrl: 'https://www.fauji.org.pk/welfare/education'
+    },
+    {
+      id: 'wwb-fsc',
+      name: 'Workers Welfare Board (WWB) FSc Free Education Grant',
+      board: 'Ministry of Overseas & Human Resource Development',
+      desc: '100% full financial sponsorship including college fee, textbooks, uniforms, transport, and hostel facilities for children of registered industrial factory employees.',
+      deadline: 'July to September annually',
+      applyUrl: 'https://wwf.gov.pk/'
+    },
+    {
+      id: 'benevolent',
+      name: 'Federal & Provincial Benevolent Fund Educational Merit Awards',
+      board: 'Benevolent Fund Board (Establishment Division)',
+      desc: 'Annual scholarship grants up to PKR 50,000 for children of serving, retired, or deceased government employees scoring distinction in Matric and FSc Part 1 & 2.',
+      deadline: 'March to May annually',
+      applyUrl: 'https://www.febgbf.gov.pk/'
+    },
+    {
+      id: 'cadet-merit',
+      name: 'Cadet Colleges Entry & Merit Tuition Aid (Class 8 & FSc)',
+      board: 'Hasan Abdal, Petaro, Kohat & MCJ Jhelum',
+      desc: 'Special merit financial aid and half-boarding scholarships for top competitive candidates clearing Cadet College entrance exams and medical fitness procedures.',
+      deadline: 'August to October annually',
+      applyUrl: 'https://ccha.edu.pk/'
+    },
+    {
+      id: 'diya-pak',
+      name: 'Diya Pakistan Talent & Merit Scholarship (FSc & ICS)',
+      board: 'Diya Pakistan Education Welfare',
+      desc: 'Direct bank stipends and quarterly educational funding for regular FSc, ICS, I.Com, and FA students across government and registered colleges in Pakistan.',
+      deadline: 'Open throughout the academic year (Online review)',
+      applyUrl: 'https://diyapak.org/'
+    }
+  ]
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow flex flex-col gap-10 bg-white text-gray-800">
+      <Link href="/scholarship" className="inline-flex items-center gap-2 text-xs font-extrabold text-gray-500 hover:text-[#0A192F] w-fit transition-colors uppercase tracking-wider">
+        <ArrowLeft className="w-4 h-4" /> Back to Scholarship Categories
+      </Link>
+
+      {/* ── HERO BANNER WITH IMAGE ─────────────────────────────────────── */}
+      <div className="relative rounded-3xl overflow-hidden shadow-xl border-2 border-gray-200 min-h-[280px] sm:min-h-[350px] flex items-center justify-center">
+        <div className="absolute inset-0 bg-[#0A192F]/90 z-10 mix-blend-multiply" />
+        <Image 
+          src="/images/card-scholarship-prep.jpg" 
+          alt="Intermediate & FSc Scholarships Portal Pakistan" 
+          fill 
+          priority 
+          className="absolute inset-0 object-cover object-center" 
+        />
+        <div className="relative z-20 flex flex-col items-center text-center p-8 sm:p-14 text-white w-full max-w-4xl">
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-400/20 text-emerald-300 border border-emerald-400/40 text-[11px] font-black uppercase tracking-widest mb-4 shadow-sm">
+            <Award className="w-3.5 h-3.5" /> 🎓 MATRIC, FSC, ICS &amp; CADET COLLEGES MERIT SCHEMES
+          </span>
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-4 drop-shadow-lg text-white uppercase leading-none">
+            INTERMEDIATE SCHOLARSHIPS
+          </h1>
+          <p className="text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-medium text-gray-200 drop-shadow-md leading-relaxed">
+            Discover premier national scholarships, tuition fee waivers, and monthly stipends for Matric, FA, FSc, and pre-university honors students across Pakistan.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-6">
+            <a
+              href="https://chat.whatsapp.com/IzPd4vwXbrjGhAkanhYvTp?s=cl&p=a&ilr=0"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3 bg-[#25D366] hover:bg-[#1EBE5B] text-[#0A192F] font-black text-xs sm:text-sm uppercase rounded-xl shadow-lg inline-flex items-center gap-2 transition-transform hover:-translate-y-0.5"
+            >
+              <MessageCircle className="w-5 h-5 fill-current" /> Join WhatsApp Scholarship Alerts &rarr;
+            </a>
+            <Link
+              href="/quizzes"
+              className="px-6 py-3 bg-amber-400 hover:bg-amber-300 text-[#0A192F] font-black text-xs sm:text-sm uppercase rounded-xl shadow-lg inline-flex items-center gap-2"
+            >
+              <BookOpen className="w-5 h-5" /> Attempt Cadet &amp; College Entry Mock Quizzes
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* ── SCHOLARSHIP CARDS GRID ────────────────────────────────────── */}
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b-2 border-gray-200 pb-4">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-black uppercase text-[#0A192F] tracking-tight">
+              ACTIVE INTERMEDIATE &amp; FSC SCHOLARSHIP CARDS
+            </h2>
+            <p className="text-xs font-extrabold text-gray-500 uppercase tracking-widest">
+              Updated National Pre-University Academic Grants &amp; Tuition Aid
+            </p>
+          </div>
+          <span className="px-3 py-1 bg-slate-100 text-[#0A192F] font-black text-xs rounded-xl border border-slate-300 self-start sm:self-auto">
+            Verified Student Schemes
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {previewScholarships.map((item) => (
+            <div
+              key={item.id}
+              className="bg-[#0A192F] text-white rounded-3xl p-6 shadow-xl border-2 border-slate-800 hover:border-emerald-400 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5"
+            >
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black uppercase tracking-widest text-emerald-300 bg-emerald-950 px-3 py-1 rounded-full border border-emerald-700/50">
+                    Pre-University Grant
+                  </span>
+                  <span className="text-[10px] font-black text-amber-300 bg-amber-950 px-2.5 py-0.5 rounded border border-amber-500/30">
+                    Active
+                  </span>
+                </div>
+
+                <h3 className="text-lg font-black text-white uppercase tracking-tight leading-snug">
+                  {item.name}
+                </h3>
+                
+                <div className="text-xs text-cyan-300 font-bold bg-slate-900 p-2.5 rounded-xl border border-white/5">
+                  🏫 <strong>Board / Authority:</strong> {item.board}
+                </div>
+
+                <p className="text-xs text-gray-300 leading-relaxed font-normal">
+                  {item.desc}
+                </p>
+
+                <div className="text-[11px] text-amber-300 bg-black/40 p-2.5 rounded-xl border-l-2 border-emerald-400 font-bold">
+                  📅 Application Window: {item.deadline}
+                </div>
+              </div>
+
+              <div className="pt-6 mt-6 border-t border-slate-800 flex flex-col gap-3">
+                <a
+                  href={item.applyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-[#0A192F] font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-all text-center"
+                >
+                  OFFICIAL APPLY PORTAL <ExternalLink className="w-4 h-4 text-[#0A192F]" />
+                </a>
+                <Link
+                  href="/quizzes"
+                  className="text-center text-[11px] font-black text-amber-400 hover:underline transition-colors"
+                >
+                  Attempt Entry Test MCQs &rarr;
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── MONETIZED AD CALLOUT BANNER ───────────────────────────────── */}
+      <div className="bg-[#0A192F] text-white rounded-3xl p-8 sm:p-10 text-center flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl border border-slate-800 mt-4">
+        <div className="space-y-2 max-w-2xl text-left">
+          <span className="text-[11px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-950 px-3 py-1 rounded-full">
+            🚀 MAXIMIZE YOUR FSC &amp; COLLEGE SCHOLARSHIP AWARDS
+          </span>
+          <h3 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-white mt-2">
+            JOIN VIP WHATSAPP ALERT COMMUNITY
+          </h3>
+          <p className="text-xs sm:text-sm text-gray-300 font-medium leading-relaxed">
+            Receive verified notification alerts the day PEEF, Workers Welfare Board, and Government scholarship portals open for FSc and Intermediate students!
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-3.5 shrink-0 w-full md:w-auto">
+          <a
+            href="https://chat.whatsapp.com/IzPd4vwXbrjGhAkanhYvTp?s=cl&p=a&ilr=0"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-8 py-4 bg-[#25D366] hover:bg-[#1EBE5B] text-[#0A192F] font-black rounded-2xl shadow-xl transition-transform hover:scale-105 flex items-center justify-center gap-2 text-xs uppercase tracking-wider"
+          >
+            <MessageCircle className="w-5 h-5 fill-current" /> JOIN WHATSAPP ALERT GROUP &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+  )
+}

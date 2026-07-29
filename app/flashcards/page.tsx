@@ -68,7 +68,7 @@ export default function FlashcardsPage() {
   }
 
   return (
-    <div className="bg-slate-50 min-h-screen flex flex-col overflow-hidden fixed inset-0">
+    <div className="bg-slate-50 h-[100dvh] flex flex-col overflow-hidden fixed inset-0">
       
       {/* Header */}
       <div className="p-4 sm:p-6 flex items-center justify-between border-b border-gray-200 bg-white z-10 shrink-0 shadow-sm">

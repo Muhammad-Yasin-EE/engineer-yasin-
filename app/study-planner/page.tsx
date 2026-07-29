@@ -5,10 +5,34 @@ import { Calendar, ChevronRight, Target, Clock, BookOpen, BrainCircuit } from 'l
 import Link from 'next/link'
 
 const exams = [
-  { id: 'pma', name: 'PMA Long Course' },
-  { id: 'gd-pilot', name: 'PAF GD Pilot' },
-  { id: 'pn-cadet', name: 'Navy PN Cadet' },
-  { id: 'afns', name: 'Army AFNS' }
+  // Army
+  { id: 'pma', name: 'Army: PMA Long Course' },
+  { id: 'tcc', name: 'Army: Technical Cadet Course (TCC)' },
+  { id: 'amc', name: 'Army: Army Medical College (AMC)' },
+  { id: 'afns', name: 'Army: Armed Forces Nursing Service (AFNS)' },
+  { id: 'dssc', name: 'Army: Direct Short Service Commission (DSSC)' },
+  { id: 'm-cadet', name: 'Army: M Cadet' },
+  { id: 'mujahid', name: 'Army: Mujahid Force' },
+  { id: 'soldier', name: 'Army: Soldier (Sipahi)' },
+  // Navy
+  { id: 'pn-cadet', name: 'Navy: PN Cadet' },
+  { id: 'marine-eng', name: 'Navy: Marine Engineering' },
+  { id: 'supply', name: 'Navy: Supply Branch' },
+  { id: 'ops', name: 'Navy: Operations Branch' },
+  { id: 'navy-it', name: 'Navy: IT Branch' },
+  { id: 'navy-edu', name: 'Navy: Education Branch' },
+  { id: 'navy-med', name: 'Navy: Medical Branch' },
+  { id: 'sailor', name: 'Navy: Sailor' },
+  // PAF
+  { id: 'gd-pilot', name: 'PAF: GD Pilot' },
+  { id: 'cae', name: 'PAF: Aeronautical Engineering (CAE)' },
+  { id: 'air-defence', name: 'PAF: Air Defence' },
+  { id: 'logistics', name: 'PAF: Logistics' },
+  { id: 'admin-sd', name: 'PAF: Admin & Special Duties' },
+  { id: 'accounts', name: 'PAF: Accounts' },
+  { id: 'paf-it', name: 'PAF: IT Branch' },
+  { id: 'met', name: 'PAF: Met Branch' },
+  { id: 'airman', name: 'PAF: Airman' }
 ]
 
 export default function StudyPlannerPage() {

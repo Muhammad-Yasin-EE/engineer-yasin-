@@ -70,11 +70,10 @@ export default function TatHubPage() {
                 </div>
                 {scene.imageUrl && (
                   <div className="relative w-full h-36 sm:h-44 rounded-2xl overflow-hidden border border-slate-800 bg-slate-950/80 my-2">
-                    <Image
+                    <img
                       src={scene.imageUrl}
                       alt={scene.title}
-                      fill
-                      className="object-contain p-2 hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-contain p-2 hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                 )}
@@ -108,12 +107,10 @@ export default function TatHubPage() {
                 </div>
                 {selectedScene.imageUrl && (
                   <div className="relative w-full h-64 sm:h-80 md:h-96 rounded-3xl overflow-hidden border border-emerald-500/40 bg-slate-950 shadow-2xl p-3 flex items-center justify-center">
-                    <Image
+                    <img
                       src={selectedScene.imageUrl}
                       alt={selectedScene.title}
-                      fill
-                      className="object-contain p-4"
-                      priority
+                      className="w-full h-full object-contain p-4"
                     />
                   </div>
                 )}

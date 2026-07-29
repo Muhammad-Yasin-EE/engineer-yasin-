@@ -16,6 +16,29 @@ type GTOScenario = {
   objective: string
 }
 
+const fallbackGTOScenarios: GTOScenario[] = [
+  {
+    id: 'gto-1',
+    image_url: '/images/gto/task-1.jpg',
+    objective: 'Transport the 50kg ammunition box from Start Line to Finish Line without touching the red zones.',
+    constraints: [
+      'The red painted structures are completely out of bounds for candidates and materials.',
+      'You cannot jump more than 4 feet.',
+      'The ammunition box must not touch the ground.'
+    ]
+  },
+  {
+    id: 'gto-2',
+    image_url: '/images/gto/task-2.jpg',
+    objective: 'Cross the double ditch using the provided planks and ropes.',
+    constraints: [
+      'The central dividing wall is painted blue (only candidates can touch it, materials cannot).',
+      'Planks cannot be tied together.',
+      'Minimum of 3 candidates must cross together.'
+    ]
+  }
+];
+
 export default function GTOEvaluatorPage() {
   const [scenarios, setScenarios] = useState<GTOScenario[]>([])
   const [currentIdx, setCurrentIdx] = useState(0)
@@ -27,11 +50,22 @@ export default function GTOEvaluatorPage() {
 
   useEffect(() => {
     async function loadScenarios() {
-      const { data } = await supabase.from('gto_scenarios').select('*')
-      if (data && data.length > 0) {
-        setScenarios(data.sort(() => 0.5 - Math.random()))
+      try {
+        const { data, error } = await supabase.from('gto_scenarios').select('*')
+        let finalData = data;
+
+        if (error || !data || data.length === 0) {
+          finalData = fallbackGTOScenarios;
+        }
+
+        if (finalData && finalData.length > 0) {
+          setScenarios(finalData.sort(() => 0.5 - Math.random()))
+        }
+      } catch (err) {
+        setScenarios(fallbackGTOScenarios.sort(() => 0.5 - Math.random()))
+      } finally {
+        setFetching(false)
       }
-      setFetching(false)
     }
     loadScenarios()
   }, [])

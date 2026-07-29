@@ -17,6 +17,19 @@ type Flashcard = {
   back_text: string
 }
 
+const fallbackFlashcards: Flashcard[] = [
+  { id: 'f1', category: 'General Knowledge', front_text: 'What is the highest military award of Pakistan?', back_text: 'Nishan-e-Haider' },
+  { id: 'f2', category: 'Psychological', front_text: 'What does OPI stand for in ISSB?', back_text: 'Officer Personality Inventory' },
+  { id: 'f3', category: 'GTO Task', front_text: 'What does the Red Color signify in GTO tasks?', back_text: 'Out of Bounds (Cannot be touched by candidate or material)' },
+  { id: 'f4', category: 'GTO Task', front_text: 'What does the White Color signify in GTO?', back_text: 'Safe Zone (Can be touched by candidate and material)' },
+  { id: 'f5', category: 'Interview', front_text: 'What is the primary focus of the Deputy President (DP) Interview?', back_text: 'Assessing your confidence, truthfulness, and emotional stability under pressure' },
+  { id: 'f6', category: 'Psychological', front_text: 'What does TAT stand for?', back_text: 'Thematic Apperception Test (Picture Story Writing)' },
+  { id: 'f7', category: 'General Knowledge', front_text: 'Name the first recipient of Nishan-e-Haider.', back_text: 'Captain Raja Muhammad Sarwar Shaheed' },
+  { id: 'f8', category: 'Psychological', front_text: 'What is WAT?', back_text: 'Word Association Test (Writing spontaneous sentences on given words)' },
+  { id: 'f9', category: 'GTO Task', front_text: 'What is the 4-Feet Rule in GTO?', back_text: 'A candidate cannot jump over a gap greater than 4 feet.' },
+  { id: 'f10', category: 'Interview', front_text: 'If asked a question you do not know, what is the best response?', back_text: 'Say "Sorry Sir, I do not know" confidently instead of guessing.' },
+];
+
 export default function FlashcardsPage() {
   const [cards, setCards] = useState<Flashcard[]>([])
   const [originalCards, setOriginalCards] = useState<Flashcard[]>([])
@@ -26,14 +39,29 @@ export default function FlashcardsPage() {
 
   useEffect(() => {
     async function loadCards() {
-      const { data, error } = await supabase.from('flashcards').select('*')
-      if (data && data.length > 0) {
-        // shuffle
-        const shuffled = data.sort(() => 0.5 - Math.random())
+      try {
+        const { data, error } = await supabase.from('flashcards').select('*')
+        let finalData = data;
+        
+        // If Supabase fails or table is empty, use the fallback
+        if (error || !data || data.length === 0) {
+          finalData = fallbackFlashcards;
+        }
+
+        if (finalData && finalData.length > 0) {
+          // shuffle
+          const shuffled = finalData.sort(() => 0.5 - Math.random())
+          setCards(shuffled)
+          setOriginalCards(shuffled)
+        }
+      } catch (err) {
+        // Ultimate fallback
+        const shuffled = fallbackFlashcards.sort(() => 0.5 - Math.random())
         setCards(shuffled)
         setOriginalCards(shuffled)
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }
     loadCards()
   }, [])
@@ -72,7 +100,7 @@ export default function FlashcardsPage() {
       
       {/* Header */}
       <div className="p-4 sm:p-6 flex items-center justify-between border-b border-gray-200 bg-white z-10 shrink-0 shadow-sm">
-        <Link href="/prep" className="inline-flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
+        <Link href="/issb" className="inline-flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
           <ArrowLeft className="w-4 h-4" /> Back
         </Link>
         <h1 className="text-lg sm:text-xl font-black text-[#0A192F] uppercase tracking-widest flex items-center gap-2">

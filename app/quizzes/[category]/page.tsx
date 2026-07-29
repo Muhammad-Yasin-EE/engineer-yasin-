@@ -4,9 +4,10 @@ import { ArrowLeft, ArrowRight, FileText } from 'lucide-react'
 import { armedForcesData } from '@/lib/data/armedForcesData'
 import { notFound } from 'next/navigation'
 
-// Removed static params to prevent Vercel caching 404s
+export const dynamic = 'force-dynamic'
 
-export default function QuizCategoryPage({ params }: { params: { category: string } }) {
+export default async function QuizCategoryPage(props: { params: Promise<{ category: string }> }) {
+  const params = await props.params;
   const { category } = params
   
   const categoryConfigs: Record<string, { title: string, colorClass: string, bgClass: string, textClass: string, exams: any[] }> = {

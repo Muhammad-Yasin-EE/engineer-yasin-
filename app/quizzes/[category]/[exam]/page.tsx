@@ -5,7 +5,8 @@ import { armedForcesData } from '@/lib/data/armedForcesData'
 
 export const dynamic = 'force-dynamic'
 
-export default async function QuizExamListPage({ params }: { params: { category: string, exam: string } }) {
+export default async function QuizExamListPage(props: { params: Promise<{ category: string, exam: string }> }) {
+  const params = await props.params;
   const { category, exam } = params
   const supabase = createClient()
 

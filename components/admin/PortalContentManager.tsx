@@ -50,7 +50,7 @@ export default function PortalContentManager({ defaultType }: PortalContentManag
   const scholarshipCategories = [
     { value: 'international', label: '🌐 Global International Scholarships' },
     { value: 'national', label: '🇵🇰 National Pakistani Universities & Minorities' },
-    { value: 'intermediate', label: '🎓 Intermediate, FSc & Matric Talent Aid' },
+    { value: 'intermediate', label: '🎓 12th/FSc & Colleges Scholarships' },
     { value: 'hec', label: '🏛️ HEC Foreign Nomination Portals' },
     { value: 'women', label: '👩 Women-Only International Fellowships' },
     { value: 'germany', label: '🇩🇪 Germany DAAD EPOS Courses' }

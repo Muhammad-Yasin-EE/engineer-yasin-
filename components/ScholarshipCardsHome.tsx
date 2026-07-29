@@ -28,7 +28,7 @@ export default function ScholarshipCardsHome() {
     },
     {
       id: 'intermediate',
-      title: 'INTERMEDIATE & FSC SCHOLARSHIPS (COLLEGES)',
+      title: '12TH/FSC & COLLEGES SCHOLARSHIPS',
       badge: '🎓 MATRIC & FSC MERIT SCHEMES',
       desc: 'Dedicated educational scholarships, talent awards and fee waivers for Matric, FA, FSc, Intermediate students, Cadet Colleges and national pre-university merit programs.',
       cardBgUrl: '/images/scholarship-portal-intermediate.jpg',

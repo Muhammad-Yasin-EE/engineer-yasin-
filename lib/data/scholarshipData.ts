@@ -334,96 +334,10 @@ export const germanEposCourses: GermanEposCourse[] = [
   { id: 20, university: 'University of Passau', program: 'MA Development Studies', field: 'International Dev', funding: '✅ DAAD Funded', opening: 'April', closing: '30 June 2026', applyUrl: 'https://www.uni-passau.de/en', image: '/images/scholarship-daad-germany.jpg' }
 ]
 
-export const pakistaniUniversities: PakistaniUniversity[] = [
-  { id: 1, name: 'Lahore University of Management Sciences (LUMS)', city: 'Lahore', meritAid: '✅ Yes (Up to 50% for GMAT 700+/GRE equivalent)', needAid: '✅ Yes (Interest-free loan / tuition waivers)', graduateAid: 'Extensive Support', fields: 'Business, Economics, Computer Science, AI, Data Science, Law, Education, Public Policy', opening: 'November', closing: 'February', applyUrl: 'https://admissions.lums.edu.pk', image: '/images/uni-lums-lahore.jpg' },
-  { id: 2, name: 'Institute of Business Administration (IBA)', city: 'Karachi', meritAid: '✅ Highly Competitive Awards', needAid: '✅ Yes (Financial Aid & Donor Scholarships)', graduateAid: 'Full Support', fields: 'Business Admin, Accounting & Finance, Economics, AI, Computer Science, Public Policy', opening: 'April (Fall) / Oct (Spring)', closing: 'June (Fall) / Dec (Spring)', applyUrl: 'https://admissions.iba.edu.pk', image: '/images/uni-iba-karachi.jpg' },
-  { id: 3, name: 'National University of Sciences & Tech (NUST)', city: 'Islamabad / Rawalpindi', meritAid: '✅ High CGPA / Entry Merit', needAid: '✅ NUST Need Based & Ehsaas / HEC', graduateAid: 'Research Assistantships', fields: 'Engineering, Computer Science, Aerospace, AI, Business, Natural Sciences, Architecture', opening: 'May', closing: 'July', applyUrl: 'https://nust.edu.pk/admissions', image: '/images/uni-nust-islamabad.jpg' },
-  { id: 4, name: 'FAST - NUCES', city: 'Multiple Campuses', meritAid: '✅ Top position holders waivers', needAid: 'Limited Hardship Assistance', graduateAid: 'Merit Scholarships', fields: 'Computer Science, Software Engineering, AI, Cyber Security, Data Science, Electrical', opening: 'May', closing: 'July', applyUrl: 'https://admissions.nu.edu.pk', image: '/images/uni-fast-nuces.jpg' },
-  { id: 5, name: 'University of Management & Technology (UMT)', city: 'Lahore / Sialkot', meritAid: '✅ CGPA based up to 60% Waiver (3.75+ = 60%)', needAid: '✅ Need assessment support', graduateAid: 'Extensive Graduate Aid', fields: 'Business Admin, Computer Science, AI, Engineering, Education, Psychology, Social Sciences', opening: 'May', closing: 'August', applyUrl: 'https://admissions.umt.edu.pk', image: '/images/uni-umt-lahore.jpg' },
-  { id: 6, name: 'University of Central Punjab (UCP)', city: 'Lahore', meritAid: '✅ Merit waivers on prior degree', needAid: '✅ Demonstrated hardship aid', graduateAid: 'Full Support', fields: 'Business Admin, Accounting, Computer Science, Pharmacy, Engineering, Law, Media', opening: 'May', closing: 'August', applyUrl: 'https://www.ucp.edu.pk/admissions', image: '/images/uni-ucp-lahore.jpg' },
-  { id: 7, name: 'Superior University', city: 'Lahore', meritAid: '✅ Talent & Merit fee waivers', needAid: '✅ Need-based financial evaluation', graduateAid: 'Available', fields: 'Business Admin, AI, Engineering, Health Sciences, Pharmacy, Law, Education, Agriculture', opening: 'May', closing: 'August', applyUrl: 'https://admissions.superior.edu.pk', image: '/images/uni-superior-lahore.jpg' },
-  { id: 8, name: 'SZABIST', city: 'Karachi / Islamabad / Larkana', meritAid: '✅ Academic performance awards', needAid: '✅ Hardship & family income evaluation', graduateAid: 'Extensive', fields: 'Business Admin, AI, Data Science, Media Sciences, Public Health, Social Sciences, Education', opening: 'June (Fall) / Nov (Spring)', closing: 'August / January', applyUrl: 'https://www.szabist.edu.pk/admissions', image: '/images/uni-szabist.jpg' },
-  { id: 9, name: 'COMSATS University', city: 'Multiple Campuses', meritAid: '✅ High merit scholarships', needAid: 'Limited Financial Aid', graduateAid: 'Selected Programs', fields: 'Engineering, Computer Science, AI, Data Science, Biosciences, Environmental Sciences', opening: 'May / November', closing: 'July / January', applyUrl: 'https://admissions.comsats.edu.pk', image: '/images/uni-comsats.jpg' },
-  { id: 10, name: 'Institute of Business Management (IoBM)', city: 'Karachi', meritAid: '✅ High CGPA concessions', needAid: '✅ Tuition fee support on hardship', graduateAid: 'Available', fields: 'Business Admin, Marketing, Supply Chain, Computer Science, Engineering, Economics, Media', opening: 'May', closing: 'July', applyUrl: 'https://admissions.iobm.edu.pk', image: '/images/uni-iobm-karachi.jpg' },
-  { id: 11, name: 'Bahria University', city: 'Islamabad / Karachi / Lahore', meritAid: '✅ Academic Excellence Awards', needAid: 'Limited Hardship', graduateAid: 'Yes', fields: 'Business Admin, Computer Science, AI, Engineering, Maritime Studies, Health Sciences, Psychology', opening: 'May / November', closing: 'July / January', applyUrl: 'https://bahria.edu.pk/admissions', image: '/images/uni-bahria.jpg' },
-  { id: 12, name: 'University of Lahore (UOL)', city: 'Lahore', meritAid: '✅ High percentage / CGPA concessions', needAid: '✅ Need assessment support', graduateAid: 'Yes', fields: 'Medicine, Pharmacy, Engineering, Business Admin, AI, Law, Allied Health Sciences', opening: 'May', closing: 'August', applyUrl: 'https://admissions.uol.edu.pk', image: '/images/uni-uol-lahore.jpg' },
-  { id: 13, name: 'Riphah International University', city: 'Islamabad / Rawalpindi / Lahore', meritAid: '✅ Merit Scholarships', needAid: '✅ Financial Assistance', graduateAid: 'Available', fields: 'Health Sciences, Pharmacy, Rehabilitation, Business Admin, Computing, Psychology', opening: 'May / November', closing: 'July / January', applyUrl: 'https://admissions.riphah.edu.pk', image: '/images/uni-riphah.jpg' },
-  { id: 14, name: 'Air University', city: 'Islamabad / Multan / Kamra', meritAid: '✅ Merit Awards', needAid: 'Limited Support', graduateAid: 'Available', fields: 'Aerospace Engineering, Cyber Security, AI, Electrical Engineering, Business, Avionics', opening: 'May / November', closing: 'July / January', applyUrl: 'https://portals.au.edu.pk/admissions', image: '/images/uni-air-university.jpg' },
-  { id: 15, name: 'Beaconhouse National University (BNU)', city: 'Lahore', meritAid: '✅ Academic Excellence', needAid: '✅ Demonstrated Need Support', graduateAid: 'Selected Programs', fields: 'Fine Arts, Architecture, Design, Media Studies, Liberal Arts, Psychology, Visual Arts', opening: 'May', closing: 'July', applyUrl: 'https://www.bnu.edu.pk/admissions', image: '/images/uni-bnu-lahore.jpg' },
-  { id: 16, name: 'Foundation University', city: 'Islamabad / Rawalpindi', meritAid: '✅ Tuition Concessions', needAid: 'Limited', graduateAid: 'Available', fields: 'Business Admin, Engineering, Computer Science, Pharmacy, Medical Sciences, Psychology', opening: 'May', closing: 'July', applyUrl: 'https://www.fui.edu.pk', image: '/images/uni-foundation.jpg' },
-  { id: 17, name: 'DHA Suffa University', city: 'Karachi', meritAid: '✅ Merit Scholarships', needAid: 'Limited Support', graduateAid: 'Available', fields: 'Engineering, Computer Science, Software Engineering, AI, Business Administration, Architecture', opening: 'June', closing: 'August', applyUrl: 'https://www.dsu.edu.pk/admissions', image: '/images/uni-dha-suffa.jpg' },
-  { id: 18, name: 'Habib University', city: 'Karachi', meritAid: '✅ Generous Merit Aid', needAid: '✅ Yohsin Need Scholarships', graduateAid: 'Limited Graduate Programs', fields: 'Computer Science, Electrical Engineering, Liberal Arts, Social Development & Policy', opening: 'November', closing: 'March', applyUrl: 'https://habib.edu.pk/admissions', image: '/images/uni-habib-karachi.jpg' },
-  { id: 19, name: 'Mohamad Ali Jinnah University (MAJU)', city: 'Karachi', meritAid: '✅ Merit Awards', needAid: '✅ Financial Assistance', graduateAid: 'Available', fields: 'Business Admin, Computer Science, AI, Software Engineering, Mathematics, Economics', opening: 'May', closing: 'August', applyUrl: 'https://jinnah.edu', image: '/images/uni-maju-karachi.jpg' },
-  { id: 20, name: 'Indus University', city: 'Karachi', meritAid: '✅ Merit Scholarships', needAid: '✅ Hardship Aid', graduateAid: 'Yes', fields: 'Engineering, Computer Science, AI, Business Admin, Media Sciences, Architecture', opening: 'May', closing: 'August', applyUrl: 'https://indus.edu.pk', image: '/images/uni-indus-karachi.jpg' },
-  { id: 21, name: 'Hamdard University', city: 'Karachi / Islamabad', meritAid: '✅ Merit Support', needAid: '✅ Need & Hardship Concessions', graduateAid: 'Yes', fields: 'Medicine, Pharmacy, Eastern Medicine, Engineering, Computer Science, Business Admin', opening: 'May', closing: 'July', applyUrl: 'https://hamdard.edu.pk/admissions', image: '/images/uni-hamdard.jpg' },
-  { id: 22, name: 'GIFT University', city: 'Gujranwala', meritAid: '✅ Academic Awards', needAid: '✅ Need & Family Aid', graduateAid: 'Yes', fields: 'Business Admin, Computer Science, AI, Software Engineering, Law, Psychology, Education', opening: 'May', closing: 'August', applyUrl: 'https://gift.edu.pk', image: '/images/uni-gift-gujranwala.jpg' },
-  { id: 23, name: 'Minhaj University', city: 'Lahore', meritAid: '✅ Merit & Talent Aid', needAid: '✅ Financial Hardship Support', graduateAid: 'Yes', fields: 'Business Admin, AI, Computer Science, Islamic Studies, Education, Psychology, Media', opening: 'May', closing: 'August', applyUrl: 'https://mul.edu.pk/admissions', image: '/images/uni-minhaj-lahore.jpg' },
-  { id: 24, name: 'National Textile University (NTU)', city: 'Faisalabad', meritAid: '✅ Top Performers', needAid: '✅ Need Based Support', graduateAid: 'Yes', fields: 'Textile Engineering, Materials Engineering, Fashion Design, Business Admin, Computer Science', opening: 'May', closing: 'July', applyUrl: 'https://ntu.edu.pk/admissions', image: '/images/uni-ntu-faisalabad.jpg' },
-  { id: 25, name: 'Capital University of Science & Tech (CUST)', city: 'Islamabad', meritAid: '✅ Merit Concessions', needAid: 'Limited', graduateAid: 'Available', fields: 'Engineering, Computer Science, AI, Data Science, Mathematics, Business Admin, Psychology', opening: 'May', closing: 'July', applyUrl: 'https://cust.edu.pk/admissions', image: '/images/uni-cust-islamabad.jpg' }
-]
+export const pakistaniUniversities: PakistaniUniversity[] = []
 
-export const pakistaniMinorityScholarships: MinorityAid[] = [
-  {
-    title: 'Punjab Human Rights & Minorities Affairs (HR&MA) Scholarship',
-    target: 'Christians, Hindus, Sikhs, Parsis, Bahá’ís, Kalash & recognized minorities',
-    level: 'Matric to PhD (Master’s up to PKR 70,000 / Professional up to PKR 100,000)',
-    funding: '✅ Up to PKR 100,000 Cash Grant',
-    eligibility: 'Punjab domicile, regular student in recognized institution, min 40% marks in last exam, family income below threshold.',
-    fields: 'Engineering, Computer Science, Business Admin, Medicine, Pharmacy, Education, Law, Agriculture, Social Sciences.',
-    opening: 'September',
-    closing: 'November annually',
-    applyUrl: 'https://hrma.punjab.gov.pk',
-    image: '/images/minority-punjab-hrma.jpg'
-  },
-  {
-    title: 'PEEF – HR&MA Minority Scholarship Scheme',
-    target: 'Religious Minorities residing in Punjab',
-    level: 'Intermediate, Bachelor’s & Master’s Degrees',
-    funding: '✅ Full Tuition Support + Monthly Stipend via PEEF',
-    eligibility: 'Punjab domicile, academic merit, genuine financial need, admission in HEC recognized institution.',
-    fields: 'All disciplines offered by HEC recognized public and eligible private universities across Pakistan.',
-    opening: 'September',
-    closing: 'October annually',
-    applyUrl: 'https://www.peef.org.pk',
-    image: '/images/minority-peef-hrma.jpg'
-  },
-  {
-    title: 'Ministry of Religious Affairs & Interfaith Harmony (MoRA) Minorities Welfare Fund',
-    target: 'Christians, Hindus, Sikhs, Buddhists, Parsis & Non-Muslim minorities',
-    level: 'School to Higher Education / Graduate level',
-    funding: '✅ Merit & Need Financial Assistance',
-    eligibility: 'Regular student enrolled in recognized institution across Pakistan with good academic standing.',
-    fields: 'Open to all academic disciplines including STEM, Health Sciences, Business, Agriculture, Law & Humanities.',
-    opening: 'August',
-    closing: 'October annually',
-    applyUrl: 'https://mora.gov.pk',
-    image: '/images/minority-mora-welfare.jpg'
-  },
-  {
-    title: 'Khyber Pakhtunkhwa (KP) Minority Scholarship',
-    target: 'Religious minorities domiciled in KP',
-    level: 'Intermediate to PhD (MS/MPhil up to PKR 150,000; PhD up to PKR 250,000)',
-    funding: '✅ PKR 150,000 to PKR 250,000 Grant',
-    eligibility: 'KP domicile, enrolled in public sector university, not receiving another concurrent government scholarship.',
-    fields: 'Engineering, Computer Science, Medicine, Pharmacy, Business Administration, Education, Agriculture & Arts.',
-    opening: 'September',
-    closing: 'November annually',
-    applyUrl: 'https://www.kp.gov.pk',
-    image: '/images/minority-kp-scheme.jpg'
-  },
-  {
-    title: 'University of the Punjab – Institutional Minority Scholarship',
-    target: 'Minority regular students enrolled at PU Lahore',
-    level: 'BS 4-Year, Master’s (MS/MPhil) & above',
-    funding: '✅ Merit Tuition Waiver & Financial Aid',
-    eligibility: 'Recognized minority status and valid active enrollment at University of the Punjab.',
-    fields: 'All Master’s and postgraduate departments at PU: Computer Science, Engineering, Law, Pharmacy, Business.',
-    opening: 'October',
-    closing: 'December (varies by academic term)',
-    applyUrl: 'https://pu.edu.pk',
-    image: '/images/minority-pu-lahore.jpg'
-  }
-]
+
+export const pakistaniMinorityScholarships: MinorityAid[] = []
 
 export const internationalWomenScholarships: ScholarshipItem[] = [
   {

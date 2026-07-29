@@ -21,62 +21,7 @@ export default function IntermediateScholarshipsPage() {
       .catch(err => console.error('Error fetching dynamic admin intermediate scholarships:', err))
   }, [])
 
-  const previewScholarships = [
-    {
-      id: 'peef-inter',
-      name: 'PEEF Intermediate / FSc Talent Scholarship',
-      board: 'Punjab Educational Endowment Fund',
-      desc: 'Full fee waiver, boarding, and monthly stipend for high achievers (minimum 60% in Matric / SSC) belonging to deserving households across Punjab and AJK.',
-      deadline: 'Announced after BISE SSC / Matric Annual Results',
-      applyUrl: 'https://www.peef.org.pk/peef-scholarships',
-      image: '/images/inter-peef-talent.jpg'
-    },
-    {
-      id: 'fauji-inter',
-      name: 'Fauji Foundation Educational Stipend (Matric to FSc)',
-      board: 'Fauji Foundation Pakistan',
-      desc: 'Annual financial academic awards for children of retired Armed Forces personnel and civilian students with extraordinary performance in Intermediate and FSc examinations.',
-      deadline: 'November to December annually',
-      applyUrl: 'https://www.fauji.org.pk/welfare/education',
-      image: '/images/inter-fauji-foundation.jpg'
-    },
-    {
-      id: 'wwb-fsc',
-      name: 'Workers Welfare Board (WWB) FSc Free Education Grant',
-      board: 'Ministry of Overseas & Human Resource Development',
-      desc: '100% full financial sponsorship including college fee, textbooks, uniforms, transport, and hostel facilities for children of registered industrial factory employees.',
-      deadline: 'July to September annually',
-      applyUrl: 'https://wwf.gov.pk/',
-      image: '/images/inter-wwb-grant.jpg'
-    },
-    {
-      id: 'benevolent',
-      name: 'Federal & Provincial Benevolent Fund Educational Merit Awards',
-      board: 'Benevolent Fund Board (Establishment Division)',
-      desc: 'Annual scholarship grants up to PKR 50,000 for children of serving, retired, or deceased government employees scoring distinction in Matric and FSc Part 1 & 2.',
-      deadline: 'March to May annually',
-      applyUrl: 'https://www.febgbf.gov.pk/',
-      image: '/images/inter-benevolent-fund.jpg'
-    },
-    {
-      id: 'cadet-merit',
-      name: 'Cadet Colleges Entry & Merit Tuition Aid (Class 8 & FSc)',
-      board: 'Hasan Abdal, Petaro, Kohat & MCJ Jhelum',
-      desc: 'Special merit financial aid and half-boarding scholarships for top competitive candidates clearing Cadet College entrance exams and medical fitness procedures.',
-      deadline: 'August to October annually',
-      applyUrl: 'https://ccha.edu.pk/',
-      image: '/images/inter-cadet-colleges.jpg'
-    },
-    {
-      id: 'diya-pak',
-      name: 'Diya Pakistan Talent & Merit Scholarship (FSc & ICS)',
-      board: 'Diya Pakistan Education Welfare',
-      desc: 'Direct bank stipends and quarterly educational funding for regular FSc, ICS, I.Com, and FA students across government and registered colleges in Pakistan.',
-      deadline: 'Open throughout the academic year (Online review)',
-      applyUrl: 'https://diyapak.org/',
-      image: '/images/inter-diya-pakistan.jpg'
-    }
-  ]
+  const previewScholarships: any[] = []
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow flex flex-col gap-10 bg-white text-gray-800">
@@ -89,7 +34,7 @@ export default function IntermediateScholarshipsPage() {
         <div className="absolute inset-0 bg-[#0A192F]/90 z-10 mix-blend-multiply" />
         <Image 
           src="/images/card-scholarship-prep.jpg" 
-          alt="Intermediate & FSc Scholarships Portal Pakistan" 
+          alt="12th/FSc & Colleges Scholarships Portal Pakistan" 
           fill 
           priority 
           className="absolute inset-0 object-cover object-center" 
@@ -99,7 +44,7 @@ export default function IntermediateScholarshipsPage() {
             <Award className="w-3.5 h-3.5" /> 🎓 MATRIC, FSC, ICS &amp; CADET COLLEGES MERIT SCHEMES
           </span>
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-4 drop-shadow-lg text-white uppercase leading-none">
-            INTERMEDIATE SCHOLARSHIPS
+            12TH/FSC & COLLEGES SCHOLARSHIPS
           </h1>
           <p className="text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-medium text-gray-200 drop-shadow-md leading-relaxed">
             Discover premier national scholarships, tuition fee waivers, and monthly stipends for Matric, FA, FSc, and pre-university honors students across Pakistan.

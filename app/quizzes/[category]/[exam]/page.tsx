@@ -32,27 +32,32 @@ export default async function QuizExamListPage(props: { params: Promise<{ catego
     }
   }
 
-  // Build the OR query for Supabase based on search terms
-  // Example: title.ilike.%pn cadet%,title.ilike.%naval%
-  const orQuery = searchTerms.map(term => `title.ilike.%${term}%`).join(',')
-
   let quizzes: any[] = []
   let errorMsg = ''
 
   try {
-    let query = supabase
-      .from('quizzes')
-      .select('id, title, description, category, created_at')
-      .order('created_at', { ascending: false })
+    const seenIds = new Set<string>()
+    for (const term of searchTerms) {
+      const { data, error } = await supabase
+        .from('quizzes')
+        .select('id, title, description, category, created_at')
+        .ilike('title', `%${term}%`)
+        .order('created_at', { ascending: false })
 
-    if (orQuery) {
-      query = query.or(orQuery)
+      if (error) {
+        console.error('Error fetching quiz for term:', term, error)
+        continue
+      }
+      
+      if (data) {
+        for (const q of data) {
+          if (!seenIds.has(q.id)) {
+            seenIds.add(q.id)
+            quizzes.push(q)
+          }
+        }
+      }
     }
-
-    const { data, error } = await query
-
-    if (error) throw error
-    quizzes = data || []
   } catch (err: any) {
     console.error('Error loading specific quizzes:', err)
     errorMsg = 'Failed to load quizzes from database.'

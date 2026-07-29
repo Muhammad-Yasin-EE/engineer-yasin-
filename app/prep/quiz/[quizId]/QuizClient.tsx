@@ -586,7 +586,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
               </div>
 
               <div className="w-full flex flex-col sm:flex-row justify-center gap-3 pt-4 border-t border-gray-100 dark:border-gray-800 overflow-hidden">
-                {percentage >= 85 && !autoSubmittedDueToCheat && (
+                {percentage >= 30 && !autoSubmittedDueToCheat && (
                   <button
                     onClick={downloadCertificate}
                     disabled={downloadingCert}
@@ -730,7 +730,11 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
       )}
 
       {/* Hidden Certificate Template for PDF Generation */}
-      {examState === 'completed' && (
+      {examState === 'completed' && (() => {
+        const percentage = questions.length > 0 ? (finalScore / questions.length) * 100 : 0;
+        const isPass = percentage >= 50;
+        const borderColor = isPass ? 'border-emerald-500' : 'border-rose-500';
+        return (
         <div className="fixed top-[-10000px] left-[-10000px]">
           <div 
             ref={certificateRef}
@@ -739,33 +743,33 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
           >
             {/* Elegant Borders */}
             <div className="absolute inset-4 border-[10px] border-[#0A192F] opacity-90 rounded-none pointer-events-none" />
-            <div className="absolute inset-7 border-2 border-amber-500 rounded-none pointer-events-none" />
+            <div className={`absolute inset-7 border-2 ${borderColor} rounded-none pointer-events-none`} />
             
             {/* Corner Accents */}
-            <div className="absolute top-4 left-4 w-16 h-16 border-t-[10px] border-l-[10px] border-amber-500" />
-            <div className="absolute top-4 right-4 w-16 h-16 border-t-[10px] border-r-[10px] border-amber-500" />
-            <div className="absolute bottom-4 left-4 w-16 h-16 border-b-[10px] border-l-[10px] border-amber-500" />
-            <div className="absolute bottom-4 right-4 w-16 h-16 border-b-[10px] border-r-[10px] border-amber-500" />
+            <div className={`absolute top-4 left-4 w-16 h-16 border-t-[10px] border-l-[10px] ${borderColor}`} />
+            <div className={`absolute top-4 right-4 w-16 h-16 border-t-[10px] border-r-[10px] ${borderColor}`} />
+            <div className={`absolute bottom-4 left-4 w-16 h-16 border-b-[10px] border-l-[10px] ${borderColor}`} />
+            <div className={`absolute bottom-4 right-4 w-16 h-16 border-b-[10px] border-r-[10px] ${borderColor}`} />
 
             {/* Content */}
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-12 mt-4">
               <div className="mb-4 opacity-10">
                 <Shield className="w-32 h-32 text-[#0A192F]" />
               </div>
-              <h4 className="text-amber-600 font-black tracking-[0.3em] uppercase text-sm mb-3">
-                Certificate of Excellence
+              <h4 className={`font-black tracking-[0.3em] uppercase text-sm mb-3 ${isPass ? 'text-emerald-600' : 'text-rose-600'}`}>
+                {isPass ? 'Certificate of Excellence' : 'Certificate of Participation'}
               </h4>
               <h1 className="text-5xl font-black text-[#0A192F] mb-8 font-serif uppercase">
-                Mock Test Cleared
+                {isPass ? 'Mock Test Passed' : 'Mock Test Failed'}
               </h1>
               
               <p className="text-gray-500 italic text-lg mb-4 font-serif">This certifies that</p>
-              <h2 className="text-4xl font-extrabold text-[#B8212E] border-b-2 border-gray-200 pb-2 mb-6 px-12 capitalize inline-block">
+              <h2 className="text-4xl font-extrabold text-[#0A192F] border-b-2 border-gray-200 pb-2 mb-6 px-12 capitalize inline-block">
                 {studentName || 'Student Name'}
               </h2>
               
               <p className="text-gray-600 text-lg max-w-lg mb-8 leading-relaxed">
-                has successfully completed the <strong>{quiz.title}</strong> with an outstanding score of <strong>{finalScore}/{questions.length}</strong> ({(questions.length > 0 ? (finalScore / questions.length) * 100 : 0).toFixed(1)}%).
+                has {isPass ? 'successfully passed' : 'attempted'} the <strong>{quiz.title}</strong> and achieved a score of <strong>{finalScore}/{questions.length}</strong> ({(questions.length > 0 ? (finalScore / questions.length) * 100 : 0).toFixed(1)}%).
               </p>
               
               <div className="flex w-full justify-between px-20 mt-8 items-end">
@@ -776,10 +780,10 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
                 </div>
                 
                 {/* Official Stamp */}
-                <div className="w-24 h-24 rounded-full border-4 border-[#B8212E] flex flex-col items-center justify-center text-[#B8212E] rotate-12 opacity-80 mix-blend-multiply bg-white">
-                  <span className="text-[10px] font-black uppercase tracking-widest mb-1">Official</span>
-                  <Award className="w-6 h-6" />
-                  <span className="text-[10px] font-black uppercase mt-1">Verified</span>
+                <div className={`w-24 h-24 rounded-full border-4 ${isPass ? 'border-emerald-600 text-emerald-600' : 'border-rose-600 text-rose-600'} flex flex-col items-center justify-center rotate-12 opacity-80 mix-blend-multiply bg-white`}>
+                  <span className="text-[10px] font-black uppercase tracking-widest mb-1">{isPass ? 'Official' : 'Failed'}</span>
+                  {isPass ? <Award className="w-6 h-6" /> : <XCircle className="w-6 h-6" />}
+                  <span className="text-[10px] font-black uppercase mt-1">{isPass ? 'Verified' : 'Review'}</span>
                 </div>
 
                 <div className="text-center">
@@ -793,7 +797,8 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
             </div>
           </div>
         </div>
-      )}
+        );
+      })()}
 
       </div>
     </div>

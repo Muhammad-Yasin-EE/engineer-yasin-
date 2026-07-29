@@ -11,7 +11,7 @@ export async function chatWithISSBPsychologist(messageHistory: { role: 'user' | 
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
     
     const systemPrompt = `You are an expert ISSB (Inter Services Selection Board) Psychologist for the Pakistan Armed Forces (Army, Navy, PAF). 
 Your goal is to cross-question candidates based on their responses to test their Officer Like Qualities (OLQs) such as:

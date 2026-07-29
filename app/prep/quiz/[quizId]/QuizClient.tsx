@@ -4,7 +4,10 @@ import React, { useEffect, useState, useRef, use } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { ArrowLeft, Loader2, Award, CheckCircle2, XCircle, ChevronRight, ChevronLeft, RotateCcw, AlertTriangle, Clock, User, ShieldAlert, CheckSquare, Lock, UserPlus, LogIn, Shield, X, MessageCircle } from 'lucide-react'
+import { ArrowLeft, Loader2, Award, CheckCircle2, XCircle, ChevronRight, ChevronLeft, RotateCcw, AlertTriangle, Clock, User, ShieldAlert, CheckSquare, Lock, UserPlus, LogIn, Shield, X, MessageCircle, Download } from 'lucide-react'
+import html2canvas from 'html2canvas'
+import jsPDF from 'jspdf'
+import confetti from 'canvas-confetti'
 
 // Constants
 const QUIZ_TIME_LIMIT_MINUTES = 15
@@ -41,6 +44,10 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
   const [currentIndex, setCurrentIndex] = useState(0)
   const [answers, setAnswers] = useState<Record<number, number>>({}) // { questionIndex: selectedOptionIndex }
   const [finalScore, setFinalScore] = useState(0)
+  
+  // Certificate Ref
+  const certificateRef = useRef<HTMLDivElement>(null)
+  const [downloadingCert, setDownloadingCert] = useState(false)
 
   // 1. Fetch Quiz Data
   useEffect(() => {
@@ -195,7 +202,6 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
     })
     setFinalScore(calculatedScore)
     
-    // Save to Database
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (user && quiz) {
@@ -212,6 +218,38 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
       }
     } catch (err) {
       console.error('Failed to save score:', err)
+    }
+
+    // Trigger Confetti if passed with flying colors
+    const percentage = questions.length > 0 ? Math.round((calculatedScore / questions.length) * 100) : 0
+    if (percentage >= 85 && !autoSubmittedDueToCheat) {
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#B8212E', '#D4AF37', '#10B981']
+      })
+    }
+  }
+
+  const downloadCertificate = async () => {
+    if (!certificateRef.current) return
+    
+    setDownloadingCert(true)
+    try {
+      const canvas = await html2canvas(certificateRef.current, { scale: 2 })
+      const imgData = canvas.toDataURL('image/png')
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'px',
+        format: [800, 560]
+      })
+      pdf.addImage(imgData, 'PNG', 0, 0, 800, 560)
+      pdf.save(`${studentName.replace(/ /g, '_')}_Certificate.pdf`)
+    } catch (err) {
+      console.error('Certificate Generation Error:', err)
+    } finally {
+      setDownloadingCert(false)
     }
   }
 
@@ -548,17 +586,27 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
               </div>
 
               <div className="w-full flex flex-col sm:flex-row justify-center gap-3 pt-4 border-t border-gray-100 dark:border-gray-800 overflow-hidden">
+                {percentage >= 85 && !autoSubmittedDueToCheat && (
+                  <button
+                    onClick={downloadCertificate}
+                    disabled={downloadingCert}
+                    className="px-6 py-3 bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white font-black rounded-xl text-xs sm:text-sm shadow-md cursor-pointer flex items-center justify-center gap-2 uppercase tracking-wider transition-all shrink-0 break-words"
+                  >
+                    {downloadingCert ? <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin shrink-0" /> : <Download className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />}
+                    Get Certificate
+                  </button>
+                )}
                 <button
                   onClick={handleRestart}
                   className="px-6 py-3 border-2 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 font-bold rounded-xl text-xs sm:text-sm cursor-pointer flex items-center justify-center gap-2 transition-all shrink-0 break-words"
                 >
-                  <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" /> Retake Exam
+                  <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" /> Retake
                 </button>
                 <Link
                   href="/prep"
                   className="px-6 py-3 bg-[#B8212E] hover:bg-[#D62636] text-white font-black rounded-xl text-xs sm:text-sm shadow-md cursor-pointer flex items-center justify-center gap-2 uppercase tracking-wider transition-all shrink-0 break-words"
                 >
-                  Exit to Dashboard
+                  Dashboard
                 </Link>
               </div>
             </div>
@@ -677,6 +725,72 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
             <p className="text-[11px] font-semibold text-gray-400 italic">
               *Your timed exam session will start immediately after clicking Start Mock Test.
             </p>
+          </div>
+        </div>
+      )}
+
+      {/* Hidden Certificate Template for PDF Generation */}
+      {examState === 'completed' && (
+        <div className="fixed top-[-10000px] left-[-10000px]">
+          <div 
+            ref={certificateRef}
+            className="w-[800px] h-[560px] bg-white relative overflow-hidden"
+            style={{ backgroundImage: 'radial-gradient(#F1F5F9 1px, transparent 1px)', backgroundSize: '20px 20px' }}
+          >
+            {/* Elegant Borders */}
+            <div className="absolute inset-4 border-[10px] border-[#0A192F] opacity-90 rounded-none pointer-events-none" />
+            <div className="absolute inset-7 border-2 border-amber-500 rounded-none pointer-events-none" />
+            
+            {/* Corner Accents */}
+            <div className="absolute top-4 left-4 w-16 h-16 border-t-[10px] border-l-[10px] border-amber-500" />
+            <div className="absolute top-4 right-4 w-16 h-16 border-t-[10px] border-r-[10px] border-amber-500" />
+            <div className="absolute bottom-4 left-4 w-16 h-16 border-b-[10px] border-l-[10px] border-amber-500" />
+            <div className="absolute bottom-4 right-4 w-16 h-16 border-b-[10px] border-r-[10px] border-amber-500" />
+
+            {/* Content */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-12 mt-4">
+              <div className="mb-4 opacity-10">
+                <Shield className="w-32 h-32 text-[#0A192F]" />
+              </div>
+              <h4 className="text-amber-600 font-black tracking-[0.3em] uppercase text-sm mb-3">
+                Certificate of Excellence
+              </h4>
+              <h1 className="text-5xl font-black text-[#0A192F] mb-8 font-serif uppercase">
+                Mock Test Cleared
+              </h1>
+              
+              <p className="text-gray-500 italic text-lg mb-4 font-serif">This certifies that</p>
+              <h2 className="text-4xl font-extrabold text-[#B8212E] border-b-2 border-gray-200 pb-2 mb-6 px-12 capitalize inline-block">
+                {studentName || 'Student Name'}
+              </h2>
+              
+              <p className="text-gray-600 text-lg max-w-lg mb-8 leading-relaxed">
+                has successfully completed the <strong>{quiz.title}</strong> with an outstanding score of <strong>{finalScore}/{questions.length}</strong> ({(questions.length > 0 ? (finalScore / questions.length) * 100 : 0).toFixed(1)}%).
+              </p>
+              
+              <div className="flex w-full justify-between px-20 mt-8 items-end">
+                <div className="text-center">
+                  <div className="w-40 border-b border-gray-400 mb-2"></div>
+                  <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Date Issued</p>
+                  <p className="text-sm font-semibold text-gray-800">{new Date().toLocaleDateString()}</p>
+                </div>
+                
+                {/* Official Stamp */}
+                <div className="w-24 h-24 rounded-full border-4 border-[#B8212E] flex flex-col items-center justify-center text-[#B8212E] rotate-12 opacity-80 mix-blend-multiply bg-white">
+                  <span className="text-[10px] font-black uppercase tracking-widest mb-1">Official</span>
+                  <Award className="w-6 h-6" />
+                  <span className="text-[10px] font-black uppercase mt-1">Verified</span>
+                </div>
+
+                <div className="text-center">
+                  <div className="w-40 border-b border-gray-400 mb-2 font-black text-xl italic text-[#0A192F] opacity-70">
+                    Engr. Yasin
+                  </div>
+                  <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Platform Director</p>
+                  <p className="text-[10px] text-gray-400">engineeryasin.xyz</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

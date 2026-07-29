@@ -264,23 +264,26 @@ export default async function Home() {
             <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping shrink-0" />
           </div>
 
-          {/* Center Content: Core Subjects Grid */}
+          {/* Center Content: Premium Features Grid */}
           <div className="p-6 sm:p-10 space-y-6 text-center bg-gradient-to-b from-white to-slate-50">
-            <h2 className="text-lg sm:text-2xl font-black text-[#0A192F] uppercase tracking-tight inline-block pb-1 border-b-4 border-[#B8212E]/80">
-              CORE SUBJECTS
-            </h2>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-[10px] font-black uppercase tracking-widest mb-2 border border-amber-200 shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 text-amber-600" /> Killer Features
+            </div>
+            <div>
+              <h2 className="text-lg sm:text-2xl font-black text-[#0A192F] uppercase tracking-tight inline-block pb-1 border-b-4 border-[#B8212E]/80">
+                PREMIUM AI TOOLS
+              </h2>
+            </div>
             <p className="text-xs sm:text-sm text-gray-500 font-medium max-w-2xl mx-auto">
-              Select any core subject below to begin interactive timed practice quizzes with explanation notes.
+              Unlock our exclusive AI-powered evaluations and smart interactive study planners designed to maximize your recommendation chances.
             </p>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4 max-w-6xl mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto">
               {[
-                { title: "Intelligence", icon: "🧠", href: "/prep/armed-forces", bg: "hover:bg-emerald-50 hover:border-emerald-500 text-emerald-900" },
-                { title: "English", icon: "📚", href: "/prep/armed-forces", bg: "hover:bg-blue-50 hover:border-blue-500 text-blue-900" },
-                { title: "Mathematics", icon: "➗", href: "/prep/armed-forces", bg: "hover:bg-amber-50 hover:border-amber-500 text-amber-900" },
-                { title: "Science / Physics", icon: "🔬", href: "/prep/armed-forces", bg: "hover:bg-purple-50 hover:border-purple-500 text-purple-900" },
-                { title: "Urdu", icon: "✍️", href: "/issb/sct-urdu", bg: "hover:bg-rose-50 hover:border-rose-500 text-rose-900" },
-                { title: "Interview & ISSB", icon: "🎤", href: "/issb/dp-interview", bg: "hover:bg-indigo-50 hover:border-indigo-500 text-indigo-900" }
+                { title: "AI Psychologist", icon: "🧠", href: "/issb/ai-interview", bg: "hover:bg-emerald-50 hover:border-emerald-500 text-emerald-900" },
+                { title: "TAT AI Evaluator", icon: "🖼️", href: "/issb/tat-evaluator", bg: "hover:bg-blue-50 hover:border-blue-500 text-blue-900" },
+                { title: "Study Planner", icon: "📅", href: "/study-planner", bg: "hover:bg-amber-50 hover:border-amber-500 text-amber-900" },
+                { title: "Tinder Flashcards", icon: "🃏", href: "/flashcards", bg: "hover:bg-rose-50 hover:border-rose-500 text-rose-900" }
               ].map((subj) => (
                 <Link
                   key={subj.title}
@@ -288,7 +291,7 @@ export default async function Home() {
                   className={`p-4 rounded-2xl bg-white border-2 border-gray-200 shadow-sm transition-all duration-200 hover:shadow-lg hover:-translate-y-1 flex flex-col items-center justify-center gap-2 group ${subj.bg}`}
                 >
                   <span className="text-2xl sm:text-3xl group-hover:scale-110 transition-transform">{subj.icon}</span>
-                  <span className="text-xs font-extrabold tracking-tight uppercase">{subj.title}</span>
+                  <span className="text-[11px] sm:text-xs font-extrabold tracking-tight uppercase">{subj.title}</span>
                 </Link>
               ))}
             </div>

@@ -26,10 +26,11 @@ Candidate's Bio-Data (PIF) Form:
 ${pifString}
 
 Interview Rules:
-1. You must cross-question the candidate aggressively based on their PIF data. (e.g. if their father has a low income but they study in an expensive school, ask why. If they listed a specific hobby, test their deep knowledge on it).
+1. You must cross-question the candidate aggressively based on their PIF data and their previous answers. (e.g. if their father has a low income but they study in an expensive school, ask why).
 2. Keep your questions very short and direct (1-3 sentences max).
-3. Do NOT provide feedback or chatty filler. ONLY output the next question. 
-4. You are currently on question ${questionCount} out of 15.
+3. Do NOT be polite or friendly. Act strictly.
+4. Respond naturally but strictly to what the candidate just said, and then immediately ask your next question.
+5. You are currently on question ${questionCount} out of 15.
 `
 
     if (questionCount >= 15) {
@@ -49,7 +50,8 @@ Instead, drop the persona and output a final evaluation in EXACTLY this JSON for
     const chat = model.startChat({
       history: [
         { role: 'user', parts: [{ text: systemPrompt }] },
-        { role: 'model', parts: [{ text: "Understood. I will strictly act as the Deputy President and keep questions short based on the PIF." }] },
+        // We omit the dummy model response because messageHistory ALWAYS starts with a model message (the greeting).
+        // This ensures the history perfectly alternates: user(prompt) -> model(greeting) -> user(response) -> etc.
         ...messageHistory.map(msg => ({
           role: msg.role,
           parts: [{ text: msg.content }]

@@ -48,8 +48,8 @@ export default function AIInterviewPage() {
   }
 
   return (
-    <div className="bg-slate-50 min-h-screen text-gray-800 flex flex-col">
-      <div className="max-w-4xl mx-auto w-full px-4 py-8 flex flex-col h-screen">
+    <div className="bg-slate-50 h-[100dvh] text-gray-800 flex flex-col">
+      <div className="max-w-4xl mx-auto w-full px-3 sm:px-4 py-4 sm:py-6 flex flex-col flex-1 overflow-hidden">
         
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-200 pb-4 mb-4 shrink-0">
@@ -86,7 +86,7 @@ export default function AIInterviewPage() {
                   </div>
                 )}
                 
-                <div className={`max-w-[75%] rounded-2xl p-4 shadow-sm ${
+                <div className={`max-w-[85%] sm:max-w-[75%] rounded-2xl p-3 sm:p-4 shadow-sm ${
                   msg.role === 'user' 
                     ? 'bg-[#B8212E] text-white rounded-tr-none' 
                     : 'bg-slate-100 text-slate-800 rounded-tl-none border border-slate-200'

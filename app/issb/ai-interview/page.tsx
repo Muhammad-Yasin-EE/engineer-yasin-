@@ -51,31 +51,23 @@ export default function AIInterviewPage() {
     <div className="bg-slate-50 h-[100dvh] text-gray-800 flex flex-col">
       <div className="max-w-4xl mx-auto w-full flex flex-col flex-1 overflow-hidden bg-white sm:bg-transparent sm:px-4 sm:py-6">
         
-        {/* Header */}
-        <div className="bg-white px-4 py-3 sm:py-4 flex items-center justify-between border-b border-gray-200 shrink-0 z-10 shadow-sm sm:rounded-t-3xl">
-          <div>
-            <Link href="/issb" className="inline-flex items-center gap-2 text-xs font-extrabold text-gray-500 hover:text-[#B8212E] transition-colors uppercase tracking-wider mb-1">
-              <ArrowLeft className="w-4 h-4" /> Back to ISSB Hub
-            </Link>
-            <h1 className="text-xl sm:text-3xl font-black text-[#0A192F] tracking-tight uppercase flex items-center gap-2">
-              <BrainCircuit className="w-6 h-6 text-[#B8212E]" />
-              Virtual Psychologist
-            </h1>
+        {/* Header (WhatsApp Style) */}
+        <div className="bg-[#0A192F] px-2 py-2 flex items-center gap-2 shrink-0 z-10 shadow-sm sm:rounded-t-3xl text-white">
+          <Link href="/issb" className="p-2 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center">
+            <ArrowLeft className="w-6 h-6 text-white" />
+          </Link>
+          <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm border border-white/20">
+            <BrainCircuit className="w-6 h-6 text-[#B8212E]" />
           </div>
-          <div className="hidden sm:flex items-center gap-2 bg-[#0A192F] text-amber-400 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full">
-            <ShieldAlert className="w-4 h-4" />
-            Strict Mode
+          <div className="flex flex-col justify-center">
+            <span className="font-bold text-base leading-none mb-0.5">Psychologist</span>
+            <span className="text-[11px] text-emerald-400 font-medium leading-none">online</span>
           </div>
         </div>
 
         {/* Chat Area */}
-        <div className="flex-1 bg-slate-50 sm:bg-white sm:border sm:border-gray-200 sm:border-t-0 sm:rounded-b-3xl sm:shadow-sm overflow-hidden flex flex-col">
-          
-          <div className="bg-blue-50 p-3 sm:p-4 text-center mx-4 mt-4 rounded-xl shadow-sm border border-blue-100">
-            <p className="text-xs font-semibold text-slate-500">
-              This AI simulates a tough ISSB Psychologist interview. Try to answer confidently without breaking under pressure. When done, type <strong>"EVALUATE ME"</strong> for your final score.
-            </p>
-          </div>
+        <div className="flex-1 bg-[#E4DDD6] sm:border sm:border-gray-200 sm:border-t-0 sm:rounded-b-3xl sm:shadow-sm overflow-hidden flex flex-col relative"
+             style={{ backgroundImage: 'url("https://w0.peakpx.com/wallpaper/818/148/HD-wallpaper-whatsapp-background-cool-dark-green-new-theme-whatsapp.jpg")', backgroundSize: 'cover', backgroundPosition: 'center', backgroundBlendMode: 'soft-light' }}>
           
           <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
             {messages.map((msg, idx) => (

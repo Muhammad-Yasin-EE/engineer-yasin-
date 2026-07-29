@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic'
 export default async function QuizExamListPage(props: { params: Promise<{ category: string, exam: string }> }) {
   const params = await props.params;
   const { category, exam } = params
-  const supabase = createClient()
+  const supabase = await createClient()
 
   let examTitle = exam.replace(/-/g, ' ').toUpperCase()
   let searchTerms: string[] = [exam.replace(/-/g, ' ')]

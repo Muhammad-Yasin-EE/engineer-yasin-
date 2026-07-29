@@ -48,8 +48,10 @@ export default function AIInterviewPage() {
   }
 
   return (
+    <div className="bg-[#0A192F] h-[100dvh] text-gray-800 flex flex-col">
+      <div className="max-w-4xl mx-auto w-full flex flex-col flex-1 overflow-hidden sm:px-4 sm:py-6">
         {/* Premium Dark Header */}
-        <div className="bg-[#0A192F]/95 backdrop-blur-md px-3 py-3 flex items-center gap-3 shrink-0 z-10 shadow-lg border-b border-white/10 text-white">
+        <div className="bg-[#0A192F]/95 backdrop-blur-md px-3 py-3 flex items-center gap-3 shrink-0 z-10 shadow-lg border-b border-white/10 text-white sm:rounded-t-3xl">
           <Link href="/issb" className="p-2 hover:bg-white/10 rounded-lg transition-colors flex items-center justify-center">
             <ArrowLeft className="w-5 h-5 text-gray-300 hover:text-white" />
           </Link>

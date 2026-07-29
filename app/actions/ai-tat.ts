@@ -10,7 +10,7 @@ export async function evaluateTATStory(story: string) {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
     
     const prompt = `You are a military psychologist evaluating a candidate's TAT (Thematic Apperception Test) or Picture Story.
 Analyze the following story written by the candidate for an armed forces initial test.

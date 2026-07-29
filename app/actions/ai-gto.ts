@@ -10,7 +10,7 @@ export async function evaluateGTOPlan(plan: string, objective: string, constrain
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
     
     const prompt = `You are an expert military Group Testing Officer (GTO) evaluating a candidate's strategy for a Command Task obstacle.
 Task Objective: ${objective}

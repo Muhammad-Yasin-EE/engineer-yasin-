@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { tatScenarios, TatScene } from '@/lib/data/issbRemainingData'
 import { ArrowLeft, MessageCircle, Eye, Shield, CheckCircle2, Award, Clock, BookOpen } from 'lucide-react'
 

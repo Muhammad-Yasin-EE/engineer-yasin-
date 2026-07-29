@@ -16,6 +16,18 @@ type TATScenario = {
   image_url: string
 }
 
+const fallbackTATScenarios: TATScenario[] = [
+  { id: 'tat-1', image_url: '/images/tat/scene-1.jpg' },
+  { id: 'tat-2', image_url: '/images/tat/scene-2.jpg' },
+  { id: 'tat-3', image_url: '/images/tat/scene-3.jpg' },
+  { id: 'tat-4', image_url: '/images/tat/scene-4.jpg' },
+  { id: 'tat-5', image_url: '/images/tat/scene-5.jpg' },
+  { id: 'tat-6', image_url: '/images/tat/scene-6.jpg' },
+  { id: 'tat-7', image_url: '/images/tat/scene-7.jpg' },
+  { id: 'tat-8', image_url: '/images/tat/scene-8.jpg' },
+  { id: 'tat-9', image_url: '/images/tat/scene-9.jpg' }
+];
+
 export default function TATEvaluatorPage() {
   const [scenarios, setScenarios] = useState<TATScenario[]>([])
   const [currentIdx, setCurrentIdx] = useState(0)
@@ -27,12 +39,22 @@ export default function TATEvaluatorPage() {
 
   useEffect(() => {
     async function loadScenarios() {
-      const { data } = await supabase.from('tat_scenarios').select('*')
-      if (data && data.length > 0) {
-        // shuffle
-        setScenarios(data.sort(() => 0.5 - Math.random()))
+      try {
+        const { data, error } = await supabase.from('tat_scenarios').select('*')
+        let finalData = data;
+        
+        if (error || !data || data.length === 0) {
+          finalData = fallbackTATScenarios;
+        }
+
+        if (finalData && finalData.length > 0) {
+          setScenarios(finalData.sort(() => 0.5 - Math.random()))
+        }
+      } catch (err) {
+        setScenarios(fallbackTATScenarios.sort(() => 0.5 - Math.random()))
+      } finally {
+        setFetchingImages(false)
       }
-      setFetchingImages(false)
     }
     loadScenarios()
   }, [])
@@ -96,7 +118,7 @@ export default function TATEvaluatorPage() {
                 {fetchingImages ? (
                   <div className="absolute inset-0 flex items-center justify-center text-gray-400 font-bold">Loading Image...</div>
                 ) : scenarios.length > 0 ? (
-                  <img src={scenarios[currentIdx].image_url} alt="TAT Scenario" className="w-full h-full object-cover grayscale-[30%] blur-[1px] mix-blend-multiply opacity-90" />
+                  <img src={scenarios[currentIdx].image_url} alt="TAT Scenario" className="w-full h-full object-contain mix-blend-multiply" />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center text-gray-400 flex-col gap-2 bg-slate-100 p-4 text-center">
                     <ImageIcon className="w-12 h-12 text-slate-300" />

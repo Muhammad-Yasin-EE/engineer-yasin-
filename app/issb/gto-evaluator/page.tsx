@@ -75,7 +75,7 @@ export default function GTOEvaluatorPage() {
   const [plan, setPlan] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [result, setResult] = useState<{ feedback: string } | null>(null)
+  const [result, setResult] = useState<{ verdict: string, score: number, pros: string[], cons: string[], feedback: string } | null>(null)
   const [fetching, setFetching] = useState(true)
 
   useEffect(() => {
@@ -234,20 +234,44 @@ export default function GTOEvaluatorPage() {
 
             {/* Results Panel */}
             {result && (
-              <div className="bg-white border-2 border-emerald-500 rounded-3xl p-6 shadow-xl relative overflow-hidden animate-in fade-in slide-in-from-bottom-4">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl" />
+              <div className={`bg-white border-2 rounded-3xl p-6 shadow-xl relative overflow-hidden animate-in fade-in slide-in-from-bottom-4 ${result.verdict.toLowerCase() === 'pass' ? 'border-emerald-500' : 'border-[#B8212E]'}`}>
+                <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl ${result.verdict.toLowerCase() === 'pass' ? 'bg-emerald-500/10' : 'bg-[#B8212E]/10'}`} />
                 
                 <h3 className="font-black text-gray-900 text-xl flex items-center gap-2 mb-6">
-                  <ShieldAlert className="w-6 h-6 text-emerald-600" />
+                  <ShieldAlert className={`w-6 h-6 ${result.verdict.toLowerCase() === 'pass' ? 'text-emerald-600' : 'text-[#B8212E]'}`} />
                   GTO Feedback
                 </h3>
                 
-                <div className="space-y-5">
-                  <div className="mt-2 pt-2">
-                    <p className="text-sm font-medium text-gray-800 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-gray-100 whitespace-pre-line">
-                      {result.feedback}
-                    </p>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-gray-100 flex flex-col items-center justify-center text-center">
+                    <span className="text-xs font-black uppercase text-gray-400 mb-1">Verdict</span>
+                    <span className={`text-xl font-black uppercase ${result.verdict.toLowerCase() === 'pass' ? 'text-emerald-600' : 'text-[#B8212E]'}`}>{result.verdict}</span>
                   </div>
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-gray-100 flex flex-col items-center justify-center text-center">
+                    <span className="text-xs font-black uppercase text-gray-400 mb-1">Score</span>
+                    <span className="text-xl font-black text-[#0A192F]">{result.score}/10</span>
+                  </div>
+                </div>
+
+                <div className="space-y-3 mb-4">
+                  <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+                    <h4 className="text-xs font-black uppercase text-emerald-800 mb-2">Strengths (Pros)</h4>
+                    <ul className="list-disc pl-4 text-sm font-medium text-emerald-700 space-y-1">
+                      {result.pros?.map((pro, i) => <li key={i}>{pro}</li>)}
+                    </ul>
+                  </div>
+                  <div className="bg-red-50 p-4 rounded-2xl border border-red-100">
+                    <h4 className="text-xs font-black uppercase text-red-800 mb-2">Flaws (Cons)</h4>
+                    <ul className="list-disc pl-4 text-sm font-medium text-red-700 space-y-1">
+                      {result.cons?.map((con, i) => <li key={i}>{con}</li>)}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-gray-100">
+                  <p className="text-sm font-medium text-gray-800 leading-relaxed italic">
+                    "{result.feedback}"
+                  </p>
                 </div>
               </div>
             )}

@@ -31,6 +31,37 @@ export default function QuizCategoryPage({ params }: { params: { category: strin
   const config = categoryConfigs[category]
   if (!config) return notFound()
 
+import Image from 'next/image'
+
+// ... existing code ...
+
+  const imageMap: Record<string, string> = {
+    'pma-long-course': '/images/card-pma.jpg',
+    'lcc': '/images/card-lcc.jpg',
+    'dssc': '/images/card-dssc.jpg',
+    'tcc': '/images/card-tcc.jpg',
+    'afns': '/images/card-afns.jpg',
+    'army-soldier': '/images/card-soldier.jpg',
+    'army-amc': '/images/card-army-amc.jpg',
+    'navy-pn-cadet': '/images/card-pn-cadet.jpg',
+    'navy-ssc': '/images/card-ssc-navy.jpg',
+    'navy-marines': '/images/card-marines.jpg',
+    'navy-sailor': '/images/card-sailor.jpg',
+    'navy-pnec': '/images/card-navy-pnec.jpg',
+    'paf-gd-pilot': '/images/card-gd-pilot.jpg',
+    'paf-aeronautical-engineering': '/images/card-aeronautical.jpg',
+    'paf-admin': '/images/card-paf-admin.jpg',
+    'paf-airmen': '/images/card-paf-airmen.jpg',
+    'paf-civilian': '/images/card-civilian.jpg',
+    'paf-education': '/images/card-paf-education.jpg',
+    'paf-it': '/images/card-paf-it.jpg',
+    'paf-logistics': '/images/card-paf-logistics.jpg',
+    'paf-accounts': '/images/card-paf-accounts.jpg',
+    'wat': '/images/issb-header.jpg',
+    'oir': '/images/issb-header.jpg',
+    'mechanical': '/images/issb-header.jpg',
+  }
+
   // For Armed Forces, populate from armedForcesData
   if (['army', 'navy', 'paf'].includes(category)) {
     Object.entries(armedForcesData).forEach(([slug, data]) => {
@@ -39,15 +70,16 @@ export default function QuizCategoryPage({ params }: { params: { category: strin
           id: slug,
           title: data.title,
           desc: data.overview,
-          href: `/quizzes/${category}/${slug}`
+          href: `/quizzes/${category}/${slug}`,
+          imageUrl: imageMap[slug] || '/images/real-forces-illustration.jpg'
         })
       }
     })
   } else if (category === 'issb') {
     config.exams = [
-      { id: 'wat', title: 'Word Association Test (WAT)', desc: 'Practice psychological word association tests for ISSB.', href: `/quizzes/issb/wat` },
-      { id: 'oir', title: 'Officer Intelligence Rating (OIR)', desc: 'Verbal and non-verbal intelligence tests.', href: `/quizzes/issb/oir` },
-      { id: 'mechanical', title: 'Mechanical Aptitude Test (MAT)', desc: 'Gears, pulleys, and mechanical reasoning.', href: `/quizzes/issb/mechanical` },
+      { id: 'wat', title: 'Word Association Test (WAT)', desc: 'Practice psychological word association tests for ISSB.', href: `/quizzes/issb/wat`, imageUrl: imageMap['wat'] },
+      { id: 'oir', title: 'Officer Intelligence Rating (OIR)', desc: 'Verbal and non-verbal intelligence tests.', href: `/quizzes/issb/oir`, imageUrl: imageMap['oir'] },
+      { id: 'mechanical', title: 'Mechanical Aptitude Test (MAT)', desc: 'Gears, pulleys, and mechanical reasoning.', href: `/quizzes/issb/mechanical`, imageUrl: imageMap['mechanical'] },
     ]
   }
   // Scholarships and Jobs remain empty
@@ -82,23 +114,28 @@ export default function QuizCategoryPage({ params }: { params: { category: strin
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {config.exams.map(exam => (
               <Link 
                 key={exam.id} 
                 href={exam.href}
-                className={`flex flex-col p-6 sm:p-8 rounded-3xl border-2 transition-all duration-300 group shadow-sm hover:shadow-xl hover:-translate-y-1 bg-white ${config.colorClass}`}
+                className={`flex flex-col p-6 rounded-3xl border-2 transition-all duration-300 group shadow-sm hover:shadow-xl hover:-translate-y-1 bg-white ${config.colorClass}`}
               >
-                <div className="flex items-center justify-between mb-4">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${config.bgClass} ${config.textClass}`}>
-                    <FileText className="w-6 h-6" />
+                <div className="relative h-40 sm:h-48 w-full mb-6 rounded-2xl overflow-hidden shadow-sm bg-slate-100">
+                  {exam.imageUrl && (
+                    <Image src={exam.imageUrl} alt={exam.title} fill sizes="(max-width: 768px) 100vw, 400px" className="object-cover group-hover:scale-110 transition-transform duration-500" />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10" />
+                  <div className="absolute bottom-4 left-4 z-20 flex items-center justify-between w-[calc(100%-2rem)]">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-white shadow-md ${config.textClass}`}>
+                      <FileText className="w-6 h-6" />
+                    </div>
                   </div>
-                  <ArrowRight className={`w-6 h-6 opacity-0 group-hover:opacity-100 transition-all transform -translate-x-4 group-hover:translate-x-0 ${config.textClass}`} />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight mb-3 text-gray-900 group-hover:text-[#B8212E] transition-colors">
+                <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight mb-3 text-gray-900 group-hover:text-[#B8212E] transition-colors line-clamp-1">
                   {exam.title}
                 </h3>
-                <p className="text-gray-500 font-medium text-sm leading-relaxed line-clamp-3">
+                <p className="text-gray-500 font-medium text-sm leading-relaxed line-clamp-2">
                   {exam.desc}
                 </p>
               </Link>

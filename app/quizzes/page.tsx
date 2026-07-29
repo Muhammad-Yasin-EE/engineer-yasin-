@@ -16,7 +16,8 @@ export default function QuizzesHubPage() {
       bgClass: 'bg-emerald-50 hover:bg-emerald-100',
       textClass: 'text-emerald-700',
       borderClass: 'border-emerald-200 hover:border-emerald-400',
-      href: '/quizzes/army'
+      href: '/quizzes/army',
+      imageUrl: '/images/pak_army_emblem.jpg'
     },
     {
       id: 'navy',
@@ -27,7 +28,8 @@ export default function QuizzesHubPage() {
       bgClass: 'bg-indigo-50 hover:bg-indigo-100',
       textClass: 'text-indigo-700',
       borderClass: 'border-indigo-200 hover:border-indigo-400',
-      href: '/quizzes/navy'
+      href: '/quizzes/navy',
+      imageUrl: '/images/pak_navy_emblem.jpg'
     },
     {
       id: 'paf',
@@ -38,7 +40,8 @@ export default function QuizzesHubPage() {
       bgClass: 'bg-sky-50 hover:bg-sky-100',
       textClass: 'text-sky-700',
       borderClass: 'border-sky-200 hover:border-sky-400',
-      href: '/quizzes/paf'
+      href: '/quizzes/paf',
+      imageUrl: '/images/pak_paf_emblem.jpg'
     },
     {
       id: 'issb',
@@ -49,7 +52,8 @@ export default function QuizzesHubPage() {
       bgClass: 'bg-purple-50 hover:bg-purple-100',
       textClass: 'text-purple-700',
       borderClass: 'border-purple-200 hover:border-purple-400',
-      href: '/quizzes/issb'
+      href: '/quizzes/issb',
+      imageUrl: '/images/issb-header.jpg'
     },
     {
       id: 'scholarships',
@@ -60,7 +64,8 @@ export default function QuizzesHubPage() {
       bgClass: 'bg-amber-50 hover:bg-amber-100',
       textClass: 'text-amber-700',
       borderClass: 'border-amber-200 hover:border-amber-400',
-      href: '/quizzes/scholarships'
+      href: '/quizzes/scholarships',
+      imageUrl: '/images/scholarship-portal-international.jpg'
     },
     {
       id: 'jobs',
@@ -71,7 +76,8 @@ export default function QuizzesHubPage() {
       bgClass: 'bg-rose-50 hover:bg-rose-100',
       textClass: 'text-rose-700',
       borderClass: 'border-rose-200 hover:border-rose-400',
-      href: '/quizzes/jobs'
+      href: '/quizzes/jobs',
+      imageUrl: '/images/public-service-header.jpg'
     }
   ]
 
@@ -105,10 +111,18 @@ export default function QuizzesHubPage() {
               <Link 
                 key={cat.id} 
                 href={cat.href}
-                className={`flex flex-col p-8 rounded-3xl border-2 transition-all duration-300 group shadow-sm hover:shadow-xl hover:-translate-y-1.5 ${cat.bgClass} ${cat.borderClass}`}
+                className={`flex flex-col p-6 rounded-3xl border-2 transition-all duration-300 group shadow-sm hover:shadow-xl hover:-translate-y-1.5 ${cat.bgClass} ${cat.borderClass}`}
               >
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-white shadow-sm transition-transform group-hover:scale-110 ${cat.textClass}`}>
-                  <Icon className="w-7 h-7" />
+                <div className="relative h-40 sm:h-48 w-full mb-6 rounded-2xl overflow-hidden shadow-sm">
+                  {cat.imageUrl && (
+                    <Image src={cat.imageUrl} alt={cat.title} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10" />
+                  <div className="absolute bottom-4 left-4 z-20">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-white shadow-md ${cat.textClass}`}>
+                      <Icon className="w-6 h-6" />
+                    </div>
+                  </div>
                 </div>
                 <h3 className={`text-2xl font-black uppercase tracking-tight mb-3 ${cat.textClass}`}>
                   {cat.title}

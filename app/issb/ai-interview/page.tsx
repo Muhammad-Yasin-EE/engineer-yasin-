@@ -48,60 +48,60 @@ export default function AIInterviewPage() {
   }
 
   return (
-    <div className="bg-[#0A192F] h-[100dvh] text-gray-800 flex flex-col">
+    <div className="bg-slate-50 h-[100dvh] text-gray-800 flex flex-col">
       <div className="max-w-4xl mx-auto w-full flex flex-col flex-1 overflow-hidden sm:px-4 sm:py-6">
-        {/* Premium Dark Header */}
-        <div className="bg-[#0A192F]/95 backdrop-blur-md px-3 py-3 flex items-center gap-3 shrink-0 z-10 shadow-lg border-b border-white/10 text-white sm:rounded-t-3xl">
-          <Link href="/issb" className="p-2 hover:bg-white/10 rounded-lg transition-colors flex items-center justify-center">
-            <ArrowLeft className="w-5 h-5 text-gray-300 hover:text-white" />
+        {/* Brand Header */}
+        <div className="bg-white px-3 py-3 flex items-center gap-3 shrink-0 z-10 shadow-sm border-b border-gray-200 sm:rounded-t-3xl">
+          <Link href="/issb" className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex items-center justify-center">
+            <ArrowLeft className="w-5 h-5 text-gray-500" />
           </Link>
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#B8212E] to-rose-700 flex items-center justify-center shrink-0 shadow-inner border border-white/20">
+          <div className="w-10 h-10 rounded-full bg-[#0A192F] flex items-center justify-center shrink-0 shadow-sm border border-gray-100">
             <BrainCircuit className="w-5 h-5 text-white" />
           </div>
           <div className="flex flex-col justify-center">
-            <span className="font-black text-sm uppercase tracking-wider leading-none mb-1 text-gray-100">Virtual Assessor</span>
-            <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest leading-none flex items-center gap-1">
+            <span className="font-black text-sm uppercase tracking-wider leading-none mb-1 text-[#0A192F]">Psychologist</span>
+            <span className="text-[10px] text-emerald-500 font-bold uppercase tracking-widest leading-none flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Active
             </span>
           </div>
         </div>
 
-        {/* Chat Area - Premium Dark Mode */}
-        <div className="flex-1 bg-gradient-to-b from-[#0A192F] to-[#112240] sm:border sm:border-white/10 sm:border-t-0 sm:rounded-b-2xl sm:shadow-2xl overflow-hidden flex flex-col relative">
+        {/* Chat Area - Light Brand Mode */}
+        <div className="flex-1 bg-slate-50 sm:bg-white sm:border sm:border-gray-200 sm:border-t-0 sm:rounded-b-2xl sm:shadow-sm overflow-hidden flex flex-col relative">
           
           <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 sm:space-y-6 scrollbar-hide">
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex gap-2 sm:gap-4 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {msg.role === 'model' && (
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-white/10 backdrop-blur-sm border border-white/10 text-white flex items-center justify-center shrink-0 shadow-md">
-                    <BrainCircuit className="w-4 h-4 sm:w-5 sm:h-5 text-gray-300" />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#0A192F] text-white flex items-center justify-center shrink-0 shadow-sm">
+                    <BrainCircuit className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
                 )}
                 
-                <div className={`max-w-[85%] sm:max-w-[75%] rounded-2xl p-3 sm:p-4 shadow-lg ${
+                <div className={`max-w-[85%] sm:max-w-[75%] rounded-2xl p-3 sm:p-4 shadow-sm ${
                   msg.role === 'user' 
-                    ? 'bg-gradient-to-br from-[#B8212E] to-rose-700 text-white rounded-br-sm border border-rose-600' 
-                    : 'bg-white/10 backdrop-blur-md text-gray-100 border border-white/10 rounded-bl-sm'
+                    ? 'bg-[#B8212E] text-white rounded-br-sm border border-[#B8212E]' 
+                    : 'bg-white text-gray-800 border border-gray-200 rounded-bl-sm'
                 }`}>
                   <p className="text-sm font-medium leading-relaxed whitespace-pre-wrap">{msg.content}</p>
                 </div>
 
                 {msg.role === 'user' && (
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-white/10 backdrop-blur-sm border border-white/10 text-white flex items-center justify-center shrink-0 shadow-md">
-                    <UserRound className="w-4 h-4 sm:w-5 sm:h-5 text-gray-300" />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center shrink-0 shadow-sm border border-white">
+                    <UserRound className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                 )}
               </div>
             ))}
             {loading && (
               <div className="flex gap-2 sm:gap-4 justify-start">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-white/10 backdrop-blur-sm border border-white/10 text-white flex items-center justify-center shrink-0 shadow-md">
-                  <BrainCircuit className="w-4 h-4 sm:w-5 sm:h-5 text-gray-300 animate-pulse" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#0A192F] text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <BrainCircuit className="w-4 h-4 sm:w-5 sm:h-5 text-white animate-pulse" />
                 </div>
-                <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl rounded-tl-none p-3 sm:p-4 flex gap-1.5 items-center">
-                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400 animate-bounce"></span>
-                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400 animate-bounce delay-75"></span>
-                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400 animate-bounce delay-150"></span>
+                <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-none p-3 sm:p-4 flex gap-1.5 items-center">
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-gray-400 animate-bounce"></span>
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-gray-400 animate-bounce delay-75"></span>
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-gray-400 animate-bounce delay-150"></span>
                 </div>
               </div>
             )}
@@ -109,9 +109,9 @@ export default function AIInterviewPage() {
           </div>
 
           {/* Input Area */}
-          <div className="p-3 sm:p-4 bg-[#0A192F]/80 backdrop-blur-md border-t border-white/10 shrink-0">
+          <div className="p-3 sm:p-4 bg-white border-t border-gray-200 shrink-0">
             {error && (
-              <div className="mb-3 text-xs font-bold text-rose-400 text-center bg-rose-900/20 py-2 rounded-lg border border-rose-500/20">
+              <div className="mb-3 text-xs font-bold text-[#B8212E] text-center bg-rose-50 py-2 rounded-lg border border-rose-200">
                 ⚠️ {error}
               </div>
             )}
@@ -124,13 +124,13 @@ export default function AIInterviewPage() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Type your response..."
-                className="flex-1 bg-white/5 border border-white/10 text-white placeholder-gray-400 text-sm rounded-xl py-3.5 pl-4 pr-14 focus:outline-none focus:border-[#B8212E] focus:ring-1 focus:ring-[#B8212E] focus:bg-white/10 transition-all shadow-inner"
+                className="flex-1 bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm rounded-xl py-3.5 pl-4 pr-14 focus:outline-none focus:border-[#B8212E] focus:ring-1 focus:ring-[#B8212E] focus:bg-white transition-all shadow-inner"
                 disabled={loading}
               />
               <button
                 type="submit"
                 disabled={loading || !input.trim()}
-                className="absolute right-1.5 top-1.5 bottom-1.5 bg-[#B8212E] hover:bg-rose-600 disabled:bg-white/10 disabled:text-gray-500 text-white w-10 h-10 rounded-lg flex items-center justify-center transition-all shadow-md"
+                className="absolute right-1.5 top-1.5 bottom-1.5 bg-[#0A192F] hover:bg-[#B8212E] disabled:bg-gray-300 disabled:text-gray-500 text-white w-10 h-10 rounded-lg flex items-center justify-center transition-all shadow-sm"
               >
                 <Send className="w-4 h-4" />
               </button>

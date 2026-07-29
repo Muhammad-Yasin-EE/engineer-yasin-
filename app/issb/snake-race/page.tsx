@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, MessageCircle, Users, Flame, Trophy, ShieldAlert } from 'lucide-react'
+import SnakeRaceAiSimulator from '@/components/SnakeRaceAiSimulator'
 
 export default function SnakeRacePage() {
   return (
@@ -84,6 +85,9 @@ export default function SnakeRacePage() {
             </div>
           </div>
         </div>
+
+        {/* AI Simulator Engine */}
+        <SnakeRaceAiSimulator />
 
         {/* WhatsApp Banner */}
         <div className="bg-gradient-to-r from-[#0A192F] to-[#112240] border border-[#1A2E4C] rounded-3xl p-8 sm:p-10 text-center max-w-4xl mx-auto space-y-5 shadow-2xl">

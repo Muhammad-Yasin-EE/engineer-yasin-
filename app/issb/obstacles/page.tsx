@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { individualObstaclesList } from '@/lib/data/issbRemainingData'
 import { ArrowLeft, MessageCircle, Award, CheckCircle2, Trophy, Flame, Activity } from 'lucide-react'
+import IoAiSimulator from '@/components/IoAiSimulator'
 
 export default function ObstaclesPage() {
   const totalMarks = individualObstaclesList.reduce((acc, curr) => acc + curr.marks, 0)
@@ -104,6 +105,9 @@ export default function ObstaclesPage() {
             If a highly physically fit candidate successfully clears all 10 obstacles before the 2-minute horn blasts, they are legally allowed to re-commence from Obstacle #1 or #10 to accumulate additional bonus points (e.g., scoring 65+ out of 55). Pace your breathing and never hesitate on the Tiger Leap or Vertical Rope!
           </p>
         </div>
+
+        {/* AI Simulator Engine */}
+        <IoAiSimulator />
 
         {/* WhatsApp Banner */}
         <div className="bg-gradient-to-r from-[#0A192F] to-[#112240] border border-[#1A2E4C] rounded-3xl p-8 sm:p-10 text-center max-w-4xl mx-auto space-y-5 shadow-2xl">

@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, MessageCircle, Users, CheckCircle, Award, Shield } from 'lucide-react'
+import GtoAiSimulator from '@/components/GtoAiSimulator'
 
 export default function FgtPage() {
   return (
@@ -83,6 +84,9 @@ export default function FgtPage() {
             </div>
           </div>
         </div>
+
+        {/* AI Simulator Engine */}
+        <GtoAiSimulator taskType="FGT" />
 
         {/* WhatsApp Banner */}
         <div className="bg-gradient-to-r from-[#0A192F] to-[#112240] border border-[#1A2E4C] rounded-3xl p-8 sm:p-10 text-center max-w-4xl mx-auto space-y-5 shadow-2xl">

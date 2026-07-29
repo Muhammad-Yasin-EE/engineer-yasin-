@@ -36,6 +36,36 @@ const fallbackGTOScenarios: GTOScenario[] = [
       'Planks cannot be tied together.',
       'Minimum of 3 candidates must cross together.'
     ]
+  },
+  {
+    id: 'gto-3',
+    image_url: '/images/gto/task-3.jpg',
+    objective: 'Progressive Group Task (PGT): Lead your entire 10-man group across the chasm using the central blue drum.',
+    constraints: [
+      'The central drum is blue: Candidates can step on it, but planks/ropes cannot rest on it.',
+      'No candidate can jump over a gap wider than 4 feet.',
+      'All group members and material must cross the finish line.'
+    ]
+  },
+  {
+    id: 'gto-4',
+    image_url: '/images/gto/task-4.jpg',
+    objective: 'Half Group Task (HGT): Navigate the zigzag wooden structure over the red zone.',
+    constraints: [
+      'The entire ground beneath the zigzag is a red zone.',
+      'You cannot tie two planks together to increase length.',
+      'Only 4 members are available for this task.'
+    ]
+  },
+  {
+    id: 'gto-5',
+    image_url: '/images/gto/task-5.jpg',
+    objective: 'Command Task (CT): As the designated commander, lead your subordinates to retrieve the ammunition box over the red fence.',
+    constraints: [
+      'You cannot participate physically; you can only direct your subordinates.',
+      'The red fence extends to infinity on both sides.',
+      'You must cantilever the plank to reach the box.'
+    ]
   }
 ];
 

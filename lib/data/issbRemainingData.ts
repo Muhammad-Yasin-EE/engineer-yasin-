@@ -71,6 +71,71 @@ export const tatScenarios: TatScene[] = [
       currentAction: "Demonstrating swift presence of mind, Usman shouted loud clear instructions to clear the rickshaw pathway, anticipated the suspect's blind turn, sprinted diagonally to intercept the robber with an athletic tackle, and disarmed the perpetrator safely.",
       positiveOutcome: "His bold community intervention recovered the family's valuables completely unharmed and secured the suspect until patrol officers arrived, inspiring neighborhood shopkeepers to form a vigilant citizen watch club."
     }
+  },
+  {
+    id: 5,
+    title: "Two Individuals in Deep Conversation",
+    theme: "Interpersonal Empathy & Conflict Resolution",
+    description: "A blurry, grainy sketch of two people having a conversation in a dimly lit room, with ambiguous facial expressions.",
+    imageUrl: "/images/tat/scene-5.jpg",
+    idealOfficerQualities: ["Empathy", "Persuasion", "Active Listening", "Composure"],
+    sampleStory: {
+      background: "As a senior cadet, Ali noticed that two of his junior squad members were having a recurring disagreement regarding their guard duty schedules, affecting squad morale.",
+      currentAction: "Ali invited both cadets to his room for a calm, private discussion. He actively listened to their concerns without taking sides, ensuring both felt heard and respected.",
+      positiveOutcome: "Through his empathetic mediation, the cadets resolved their differences, reorganized their schedule cooperatively, and the squad's unity and performance significantly improved."
+    }
+  },
+  {
+    id: 6,
+    title: "Solitary Figure Looking Out a Window",
+    theme: "Strategic Foresight & Mental Preparation",
+    description: "A very blurry sketch of a person standing alone looking out a window into the distance.",
+    imageUrl: "/images/tat/scene-6.jpg",
+    idealOfficerQualities: ["Foresight", "Mental Resilience", "Planning", "Focus"],
+    sampleStory: {
+      background: "Lieutenant Hasan was assigned to lead a challenging border patrol operation the next morning. It was his first major independent command in hostile terrain.",
+      currentAction: "Instead of sleeping restlessly, he stood by his window, mentally rehearsing the patrol routes, anticipating potential ambush points, and visualizing his team's rapid response protocols.",
+      positiveOutcome: "His quiet, solitary mental preparation ensured that when a sudden sandstorm hit during the patrol, his team executed the contingency plan flawlessly without a single casualty."
+    }
+  },
+  {
+    id: 7,
+    title: "Figure Scaling a High Structure",
+    theme: "Determination & Physical Courage",
+    description: "A grainy, dark sketch of a young man climbing a vertical rope or structure.",
+    imageUrl: "/images/tat/scene-7.jpg",
+    idealOfficerQualities: ["Determination", "Courage", "Stamina", "Willpower"],
+    sampleStory: {
+      background: "During the final obstacle course of the academy, Cadet Tariq sprained his wrist slightly but still had the 12-foot vertical rope climb remaining to pass the test.",
+      currentAction: "Ignoring the fatigue and discomfort, Tariq utilized his leg-lock technique to conserve arm strength, maintaining a slow but highly determined upward progression, refusing to give up.",
+      positiveOutcome: "His sheer willpower allowed him to touch the top beam within the time limit, earning him the respect of his instructors and inspiring his peers to push their own limits."
+    }
+  },
+  {
+    id: 8,
+    title: "Individual Working Late at a Desk",
+    theme: "Dedication & Sense of Responsibility",
+    description: "A blurry, ambiguous sketch of a figure working diligently at a desk late at night.",
+    imageUrl: "/images/tat/scene-8.jpg",
+    idealOfficerQualities: ["Responsibility", "Dedication", "Focus", "Hard Work"],
+    sampleStory: {
+      background: "Captain Usman was tasked with drafting a comprehensive logistics report for an upcoming brigade-level deployment, with a very strict deadline.",
+      currentAction: "Understanding the critical importance of accurate supplies for the troops, Usman voluntarily stayed up late at his desk, meticulously cross-checking ammunition and ration tallies against field requirements.",
+      positiveOutcome: "His dedicated late-night effort resulted in a flawless logistics plan, ensuring the brigade was perfectly equipped for their month-long deployment without any shortages."
+    }
+  },
+  {
+    id: 9,
+    title: "Group Pointing Towards the Horizon",
+    theme: "Team Leadership & Decisive Action",
+    description: "A highly blurry charcoal sketch of a group of people in an open field, pointing at something in the distance.",
+    imageUrl: "/images/tat/scene-9.jpg",
+    idealOfficerQualities: ["Leadership", "Initiative", "Teamwork", "Quick Decision Making"],
+    sampleStory: {
+      background: "While leading a routine navigational exercise, Cadet Omar and his squad noticed a sudden plume of smoke rising from a nearby civilian forested area.",
+      currentAction: "Taking immediate initiative, Omar gathered his squad, pointed out the precise coordinates of the smoke, delegated two cadets to alert base command, and led the rest to form a preliminary firebreak.",
+      positiveOutcome: "His decisive leadership and effective team coordination contained the fire until emergency services arrived, preventing a major ecological disaster."
+    }
   }
 ]
 

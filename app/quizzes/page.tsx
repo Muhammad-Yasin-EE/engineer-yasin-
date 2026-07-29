@@ -1,88 +1,79 @@
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
-import { Flame, ArrowLeft, FileText, ArrowRight, BookOpen } from 'lucide-react'
+import Image from 'next/image'
+import { ArrowLeft, ArrowRight, Shield, Anchor, Plane, Brain, GraduationCap, Briefcase } from 'lucide-react'
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-static'
+export const revalidate = 3600
 
-function formatQuizDisplay(title: string = '', cat: string = '') {
-  let displayTitle = title
-    .replace(/^pma-long-course/i, 'PMA Long Course')
-    .replace(/^gd-pilot/i, 'PAF GD Pilot')
-    .replace(/^pn-cadet/i, 'PN Cadet (Pakistan Navy)')
-    .replace(/^aeronautical-engineering/i, 'PAF Aeronautical Engineering')
-    .replace(/^tcc/i, 'TCC (Technical Cadet Course)')
-    .replace(/^admin/i, 'PAF Admin & Special Duties')
-    .replace(/^lcc/i, 'LCC (Lady Cadet Course)')
-    .replace(/^afns/i, 'AFNS (Nursing Service)')
-    .replace(/^dssc/i, 'DSSC (Direct Short Service)')
-    .replace(/^ssc/i, 'Navy SSC')
-    .replace(/^marines/i, 'Pak Marines')
-    .replace(/^sailor/i, 'Navy Sailor')
-    .replace(/^soldier/i, 'Pak Army Soldier')
-
-  let badge = '🛡️ FORCES MOCK'
-  let colorClass = 'bg-slate-100 text-slate-700 border-slate-200'
-  const tLower = title.toLowerCase()
-  const cLower = cat.toLowerCase()
-
-  if (tLower.includes('pma') || tLower.includes('army') || tLower.includes('tcc') || tLower.includes('lcc') || tLower.includes('afns') || tLower.includes('soldier') || tLower.includes('amc') || cLower.includes('pma')) {
-    badge = '🛡️ PAK ARMY'
-    colorClass = 'bg-emerald-50 text-emerald-700 border-emerald-300'
-  } else if (tLower.includes('paf') || tLower.includes('gd-pilot') || tLower.includes('aeronautical') || tLower.includes('airmen') || tLower.includes('icto') || cLower.includes('paf')) {
-    badge = '✈️ PAK AIR FORCE'
-    colorClass = 'bg-sky-50 text-sky-700 border-sky-300'
-  } else if (tLower.includes('navy') || tLower.includes('pn-cadet') || tLower.includes('marines') || tLower.includes('sailor') || tLower.includes('ssc') || cLower.includes('navy')) {
-    badge = '⚓ PAK NAVY'
-    colorClass = 'bg-indigo-50 text-indigo-700 border-indigo-300'
-  } else if (tLower.includes('fpsc') || tLower.includes('ppsc') || tLower.includes('css') || cLower.includes('civil')) {
-    badge = '🏛️ CIVIL SERVICES'
-    colorClass = 'bg-amber-50 text-amber-700 border-amber-300'
-  }
-
-  return { displayTitle, badge, colorClass }
-}
-
-export default async function QuizzesPage() {
-  const supabase = createClient()
-  let quizzes: any[] = []
-  let errorMsg = ''
-
-  try {
-    const { data, error } = await supabase
-      .from('quizzes')
-      .select('id, title, description, category, created_at')
-      .order('created_at', { ascending: false })
-
-    if (error) throw error
-    quizzes = data || []
-    if (quizzes.length === 0) {
-      quizzes = [
-        { id: 'pma-long-course-mock-1', title: 'PMA Long Course Initial Intelligence Mock', category: 'Pak Army', description: 'Timed verbal and non-verbal reasoning test modeled on authentic AS&RC screening patterns.' },
-        { id: 'paf-gd-pilot-mock-1', title: 'PAF GD Pilot Academic & IQ Battery', category: 'Pak Air Force', description: 'Physics, English, and rapid spatial visual pattern series for General Duty Pilot candidates.' },
-        { id: 'pn-cadet-navy-mock-1', title: 'PN Cadet (Pakistan Navy) Screening Mock', category: 'Pak Navy', description: 'Mathematics, analytical physics, and verbal logic timed mock test for Naval officer selection.' },
-        { id: 'issb-wat-psych-mock-1', title: 'ISSB Word Association & IQ Battery', category: 'ISSB', description: 'Fast-paced psychological projection screening practice to train spontaneous leader traits.' },
-        { id: 'army-tcc-academic-mock-1', title: 'Army TCC (Technical Cadet) Math & Physics', category: 'Pak Army', description: 'High-level calculus, trigonometry, and electrostatics multiple choice questions.' },
-        { id: 'cadet-colleges-scholarship-mock-1', title: 'Forces & Cadet Scholarships Entry Mock 2026', category: 'Scholarships', description: 'Comprehensive 8th & 11th class military scholarship entrance test covering English, Math, & Urdu.' },
-        { id: 'paf-aero-engineering-mock-1', title: 'PAF Aeronautical Engineering IQ Battery', category: 'Pak Air Force', description: 'Specialized speed testing and engineering physics problem sets for aero engineering induction.' },
-        { id: 'navy-ssc-marines-mock-1', title: 'Pak Navy SSC & Marines General Mock', category: 'Pak Navy', description: 'General knowledge, maritime intelligence, and current affairs screening exam.' },
-        { id: 'issb-gto-mechanical-mock-1', title: 'ISSB Mechanical Aptitude & MAT Screening', category: 'ISSB', description: 'Assess spatial visualization, structural logic, gears, and practical military physical reasoning.' }
-      ]
+export default function QuizzesHubPage() {
+  const categories = [
+    {
+      id: 'army',
+      title: 'PAKISTAN ARMY',
+      desc: 'PMA Long Course, TCC, LCC, AFNS, DSSC & Soldier mock tests and intelligence batteries.',
+      icon: Shield,
+      color: 'emerald',
+      bgClass: 'bg-emerald-50 hover:bg-emerald-100',
+      textClass: 'text-emerald-700',
+      borderClass: 'border-emerald-200 hover:border-emerald-400',
+      href: '/quizzes/army'
+    },
+    {
+      id: 'navy',
+      title: 'PAKISTAN NAVY',
+      desc: 'PN Cadet, SSC, Marines, and Sailor academic, verbal and non-verbal screening tests.',
+      icon: Anchor,
+      color: 'indigo',
+      bgClass: 'bg-indigo-50 hover:bg-indigo-100',
+      textClass: 'text-indigo-700',
+      borderClass: 'border-indigo-200 hover:border-indigo-400',
+      href: '/quizzes/navy'
+    },
+    {
+      id: 'paf',
+      title: 'PAKISTAN AIR FORCE',
+      desc: 'GD Pilot, Aero Eng, Admin, Airmen & Civilian spatial and technical mock exams.',
+      icon: Plane,
+      color: 'sky',
+      bgClass: 'bg-sky-50 hover:bg-sky-100',
+      textClass: 'text-sky-700',
+      borderClass: 'border-sky-200 hover:border-sky-400',
+      href: '/quizzes/paf'
+    },
+    {
+      id: 'issb',
+      title: 'ISSB PSYCHOLOGICAL',
+      desc: 'Word Association (WAT), Picture Story (OIR), Mechanical Aptitude & MAT screening.',
+      icon: Brain,
+      color: 'purple',
+      bgClass: 'bg-purple-50 hover:bg-purple-100',
+      textClass: 'text-purple-700',
+      borderClass: 'border-purple-200 hover:border-purple-400',
+      href: '/quizzes/issb'
+    },
+    {
+      id: 'scholarships',
+      title: 'SCHOLARSHIPS',
+      desc: 'Cadet Colleges, FSc Merit, and HEC scholarship admission mock tests.',
+      icon: GraduationCap,
+      color: 'amber',
+      bgClass: 'bg-amber-50 hover:bg-amber-100',
+      textClass: 'text-amber-700',
+      borderClass: 'border-amber-200 hover:border-amber-400',
+      href: '/quizzes/scholarships'
+    },
+    {
+      id: 'jobs',
+      title: 'PUBLIC SERVICE JOBS',
+      desc: 'FPSC, PPSC, FIA, and CSS general knowledge and current affairs MCQs.',
+      icon: Briefcase,
+      color: 'rose',
+      bgClass: 'bg-rose-50 hover:bg-rose-100',
+      textClass: 'text-rose-700',
+      borderClass: 'border-rose-200 hover:border-rose-400',
+      href: '/quizzes/jobs'
     }
-  } catch (err: any) {
-    console.error('Error loading all quizzes:', err)
-    quizzes = [
-      { id: 'pma-long-course-mock-1', title: 'PMA Long Course Initial Intelligence Mock', category: 'Pak Army', description: 'Timed verbal and non-verbal reasoning test modeled on authentic AS&RC screening patterns.' },
-      { id: 'paf-gd-pilot-mock-1', title: 'PAF GD Pilot Academic & IQ Battery', category: 'Pak Air Force', description: 'Physics, English, and rapid spatial visual pattern series for General Duty Pilot candidates.' },
-      { id: 'pn-cadet-navy-mock-1', title: 'PN Cadet (Pakistan Navy) Screening Mock', category: 'Pak Navy', description: 'Mathematics, analytical physics, and verbal logic timed mock test for Naval officer selection.' },
-      { id: 'issb-wat-psych-mock-1', title: 'ISSB Word Association & IQ Battery', category: 'ISSB', description: 'Fast-paced psychological projection screening practice to train spontaneous leader traits.' },
-      { id: 'army-tcc-academic-mock-1', title: 'Army TCC (Technical Cadet) Math & Physics', category: 'Pak Army', description: 'High-level calculus, trigonometry, and electrostatics multiple choice questions.' },
-      { id: 'cadet-colleges-scholarship-mock-1', title: 'Forces & Cadet Scholarships Entry Mock 2026', category: 'Scholarships', description: 'Comprehensive 8th & 11th class military scholarship entrance test covering English, Math, & Urdu.' },
-      { id: 'paf-aero-engineering-mock-1', title: 'PAF Aeronautical Engineering IQ Battery', category: 'Pak Air Force', description: 'Specialized speed testing and engineering physics problem sets for aero engineering induction.' },
-      { id: 'navy-ssc-marines-mock-1', title: 'Pak Navy SSC & Marines General Mock', category: 'Pak Navy', description: 'General knowledge, maritime intelligence, and current affairs screening exam.' },
-      { id: 'issb-gto-mechanical-mock-1', title: 'ISSB Mechanical Aptitude & MAT Screening', category: 'ISSB', description: 'Assess spatial visualization, structural logic, gears, and practical military physical reasoning.' }
-    ]
-    errorMsg = ''
-  }
+  ]
 
   return (
     <div className="bg-slate-50 min-h-screen py-12 text-gray-800">
@@ -90,7 +81,7 @@ export default async function QuizzesPage() {
         
         {/* Top Header */}
         <div className="flex flex-col items-start gap-3 border-b border-gray-200 pb-8">
-          <Link href="/" className="inline-flex items-center gap-2 text-xs font-extrabold text-gray-500 hover:text-[#B8212E] transition-colors">
+          <Link href="/" className="inline-flex items-center gap-2 text-xs font-extrabold text-gray-500 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
             <ArrowLeft className="w-4 h-4" /> Back to Home
           </Link>
           <div className="flex items-center gap-2">
@@ -99,69 +90,39 @@ export default async function QuizzesPage() {
             </span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-black text-[#0A192F] tracking-tight uppercase">
-            All Online Practice Quizzes
+            Select Your Category
           </h1>
           <p className="text-sm sm:text-base text-gray-500 max-w-2xl font-medium">
-            Complete repository of preliminary academic, verbal, and non-verbal mock tests for Pak Army, Navy &amp; PAF examinations. Click any quiz to start immediately.
+            Choose your desired branch or field to access the complete repository of preliminary academic, verbal, and non-verbal mock tests.
           </p>
         </div>
 
-        {errorMsg && (
-          <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-[#B8212E] font-bold text-center text-sm">
-            ⚠️ {errorMsg}
-          </div>
-        )}
-
-        {quizzes.length === 0 ? (
-          <div className="py-20 bg-white border-2 border-dashed border-gray-200 rounded-3xl flex flex-col items-center justify-center text-center p-6 space-y-3">
-            <BookOpen className="w-14 h-14 text-gray-300" />
-            <h3 className="text-lg font-black text-gray-700">No Practice Quizzes Found</h3>
-            <p className="text-xs text-gray-400 font-medium max-w-md">
-              We are currently uploading new automated mock quiz banks for the upcoming 2026 induction courses.
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {quizzes.map(quiz => {
-              const { displayTitle, badge, colorClass } = formatQuizDisplay(quiz.title, quiz.category);
-              return (
-                <div 
-                  key={quiz.id} 
-                  className="bg-white border border-gray-200 p-6 rounded-3xl shadow-sm hover:shadow-xl hover:border-[#B8212E]/40 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
-                >
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <div className="w-10 h-10 rounded-2xl bg-rose-50 text-[#B8212E] flex items-center justify-center shrink-0 group-hover:bg-[#B8212E] group-hover:text-white transition-colors shadow-sm">
-                        <FileText className="w-5 h-5" />
-                      </div>
-                      <span className={`text-[10px] font-black uppercase tracking-wider border px-3 py-1 rounded-full ${colorClass}`}>
-                        {badge}
-                      </span>
-                    </div>
-                    <h3 className="font-extrabold text-gray-900 text-lg sm:text-xl leading-snug group-hover:text-[#B8212E] transition-colors">
-                      {displayTitle}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-gray-500 leading-relaxed font-medium line-clamp-2">
-                      {quiz.description || 'Attempt this timed mock examination to evaluate your speed, accuracy, and concepts for initial military screening.'}
-                    </p>
-                  </div>
-
-                  <div className="pt-6 border-t border-gray-100 mt-4 flex items-center justify-between">
-                    <span className="text-xs font-extrabold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md">
-                      ⚡ Instant Result
-                    </span>
-                    <Link
-                      href={`/prep/quiz/${quiz.id}`}
-                      className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 bg-[#0A192F] hover:bg-[#B8212E] text-white font-black rounded-xl text-xs shadow-md transition-all uppercase tracking-wider active:scale-95"
-                    >
-                      Attempt Test <ArrowRight className="w-4 h-4" />
-                    </Link>
-                  </div>
+        {/* Categories Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {categories.map(cat => {
+            const Icon = cat.icon
+            return (
+              <Link 
+                key={cat.id} 
+                href={cat.href}
+                className={`flex flex-col p-8 rounded-3xl border-2 transition-all duration-300 group shadow-sm hover:shadow-xl hover:-translate-y-1.5 ${cat.bgClass} ${cat.borderClass}`}
+              >
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-white shadow-sm transition-transform group-hover:scale-110 ${cat.textClass}`}>
+                  <Icon className="w-7 h-7" />
                 </div>
-              );
-            })}
-          </div>
-        )}
+                <h3 className={`text-2xl font-black uppercase tracking-tight mb-3 ${cat.textClass}`}>
+                  {cat.title}
+                </h3>
+                <p className="text-gray-600 font-medium text-sm leading-relaxed mb-8 flex-grow">
+                  {cat.desc}
+                </p>
+                <div className={`flex items-center gap-2 font-bold text-sm ${cat.textClass}`}>
+                  View Exam Categories <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </div>
+              </Link>
+            )
+          })}
+        </div>
 
       </div>
     </div>

@@ -4,18 +4,7 @@ import { ArrowLeft, ArrowRight, FileText } from 'lucide-react'
 import { armedForcesData } from '@/lib/data/armedForcesData'
 import { notFound } from 'next/navigation'
 
-export const dynamic = 'force-static'
-
-export function generateStaticParams() {
-  return [
-    { category: 'army' },
-    { category: 'navy' },
-    { category: 'paf' },
-    { category: 'issb' },
-    { category: 'scholarships' },
-    { category: 'jobs' },
-  ]
-}
+// Removed static params to prevent Vercel caching 404s
 
 export default function QuizCategoryPage({ params }: { params: { category: string } }) {
   const { category } = params

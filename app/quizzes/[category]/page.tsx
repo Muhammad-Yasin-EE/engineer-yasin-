@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowLeft, ArrowRight, FileText } from 'lucide-react'
 import { armedForcesData } from '@/lib/data/armedForcesData'
 import { notFound } from 'next/navigation'
@@ -30,10 +31,6 @@ export default function QuizCategoryPage({ params }: { params: { category: strin
 
   const config = categoryConfigs[category]
   if (!config) return notFound()
-
-import Image from 'next/image'
-
-// ... existing code ...
 
   const imageMap: Record<string, string> = {
     'pma-long-course': '/images/card-pma.jpg',

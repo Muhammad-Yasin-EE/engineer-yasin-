@@ -110,9 +110,9 @@ export default async function Home() {
     if (curated.length === 0) {
       quizzes = [
         { id: 'pma-long-course-mock-1', title: 'PMA Long Course Initial Intelligence Mock', category: 'Pak Army', description: 'Timed verbal and non-verbal reasoning test modeled on authentic AS&RC screening patterns.' },
-        { id: 'paf-gd-pilot-mock-1', title: 'PAF GD Pilot Academic & IQ Battery', category: 'Pak Air Force', description: 'Physics, English, and rapid spatial visual pattern series for General Duty Pilot candidates.' },
+        { id: 'paf-gd-pilot-mock-1', title: 'PAF GD Pilot Academic & IQ Evaluation', category: 'Pak Air Force', description: 'Physics, English, and rapid spatial visual pattern series for General Duty Pilot candidates.' },
         { id: 'pn-cadet-navy-mock-1', title: 'PN Cadet (Pakistan Navy) Screening Mock', category: 'Pak Navy', description: 'Mathematics, analytical physics, and verbal logic timed mock test for Naval officer selection.' },
-        { id: 'issb-wat-psych-mock-1', title: 'ISSB Word Association & IQ Battery', category: 'ISSB', description: 'Fast-paced psychological projection screening practice to train spontaneous leader traits.' },
+        { id: 'issb-wat-psych-mock-1', title: 'ISSB Word Association & IQ Evaluation', category: 'ISSB', description: 'Fast-paced psychological projection screening practice to train spontaneous leader traits.' },
         { id: 'army-tcc-academic-mock-1', title: 'Army TCC (Technical Cadet) Math & Physics', category: 'Pak Army', description: 'High-level calculus, trigonometry, and electrostatics multiple choice questions.' },
         { id: 'cadet-colleges-scholarship-mock-1', title: 'Forces & Cadet Scholarships Entry Mock 2026', category: 'Scholarships', description: 'Comprehensive 8th & 11th class military scholarship entrance test covering English, Math, & Urdu.' }
       ]
@@ -123,9 +123,9 @@ export default async function Home() {
     console.error('Home Page Data Fetching Error:', err)
     quizzes = [
       { id: 'pma-long-course-mock-1', title: 'PMA Long Course Initial Intelligence Mock', category: 'Pak Army', description: 'Timed verbal and non-verbal reasoning test modeled on authentic AS&RC screening patterns.' },
-      { id: 'paf-gd-pilot-mock-1', title: 'PAF GD Pilot Academic & IQ Battery', category: 'Pak Air Force', description: 'Physics, English, and rapid spatial visual pattern series for General Duty Pilot candidates.' },
+      { id: 'paf-gd-pilot-mock-1', title: 'PAF GD Pilot Academic & IQ Evaluation', category: 'Pak Air Force', description: 'Physics, English, and rapid spatial visual pattern series for General Duty Pilot candidates.' },
       { id: 'pn-cadet-navy-mock-1', title: 'PN Cadet (Pakistan Navy) Screening Mock', category: 'Pak Navy', description: 'Mathematics, analytical physics, and verbal logic timed mock test for Naval officer selection.' },
-      { id: 'issb-wat-psych-mock-1', title: 'ISSB Word Association & IQ Battery', category: 'ISSB', description: 'Fast-paced psychological projection screening practice to train spontaneous leader traits.' },
+      { id: 'issb-wat-psych-mock-1', title: 'ISSB Word Association & IQ Evaluation', category: 'ISSB', description: 'Fast-paced psychological projection screening practice to train spontaneous leader traits.' },
       { id: 'army-tcc-academic-mock-1', title: 'Army TCC (Technical Cadet) Math & Physics', category: 'Pak Army', description: 'High-level calculus, trigonometry, and electrostatics multiple choice questions.' },
       { id: 'cadet-colleges-scholarship-mock-1', title: 'Forces & Cadet Scholarships Entry Mock 2026', category: 'Scholarships', description: 'Comprehensive 8th & 11th class military scholarship entrance test covering English, Math, & Urdu.' }
     ]
@@ -278,12 +278,13 @@ export default async function Home() {
               Unlock our exclusive AI-powered evaluations and smart interactive study planners designed to maximize your recommendation chances.
             </p>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 max-w-5xl mx-auto">
               {[
                 { title: "AI Psychologist", icon: "🧠", href: "/issb/ai-interview", bg: "hover:bg-emerald-50 hover:border-emerald-500 text-emerald-900" },
                 { title: "TAT AI Evaluator", icon: "🖼️", href: "/issb/tat-evaluator", bg: "hover:bg-blue-50 hover:border-blue-500 text-blue-900" },
                 { title: "Study Planner", icon: "📅", href: "/study-planner", bg: "hover:bg-amber-50 hover:border-amber-500 text-amber-900" },
-                { title: "Tinder Flashcards", icon: "🃏", href: "/flashcards", bg: "hover:bg-rose-50 hover:border-rose-500 text-rose-900" }
+                { title: "Tinder Flashcards", icon: "🃏", href: "/flashcards", bg: "hover:bg-rose-50 hover:border-rose-500 text-rose-900" },
+                { title: "GTO Evaluator", icon: "🚩", href: "/issb/gto-evaluator", bg: "hover:bg-indigo-50 hover:border-indigo-500 text-indigo-900" }
               ].map((subj) => (
                 <Link
                   key={subj.title}

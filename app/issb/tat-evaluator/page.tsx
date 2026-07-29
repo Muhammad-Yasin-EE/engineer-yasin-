@@ -1,24 +1,41 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ArrowLeft, BrainCircuit, Image as ImageIcon, Send, ShieldAlert, Sparkles, UserRoundCheck } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { evaluateTATStory } from '@/app/actions/ai-tat'
+import { createClient } from '@supabase/supabase-js'
 
-// Fallback images in case they don't have proper TAT images
-const TAT_IMAGES = [
-  '/images/tat-1.jpg',
-  '/images/tat-2.jpg',
-  '/images/tat-3.jpg'
-]
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+type TATScenario = {
+  id: string
+  image_url: string
+}
 
 export default function TATEvaluatorPage() {
-  const [currentImageIdx, setCurrentImageIdx] = useState(0)
+  const [scenarios, setScenarios] = useState<TATScenario[]>([])
+  const [currentIdx, setCurrentIdx] = useState(0)
   const [story, setStory] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [result, setResult] = useState<{ scores: any, feedback: string } | null>(null)
+  const [fetchingImages, setFetchingImages] = useState(true)
+
+  useEffect(() => {
+    async function loadScenarios() {
+      const { data } = await supabase.from('tat_scenarios').select('*')
+      if (data && data.length > 0) {
+        // shuffle
+        setScenarios(data.sort(() => 0.5 - Math.random()))
+      }
+      setFetchingImages(false)
+    }
+    loadScenarios()
+  }, [])
 
   const handleEvaluate = async () => {
     if (story.length < 50) {
@@ -42,7 +59,9 @@ export default function TATEvaluatorPage() {
   }
 
   const nextImage = () => {
-    setCurrentImageIdx((prev) => (prev + 1) % TAT_IMAGES.length)
+    if (scenarios.length > 0) {
+      setCurrentIdx((prev) => (prev + 1) % scenarios.length)
+    }
     setStory('')
     setResult(null)
     setError('')
@@ -74,17 +93,22 @@ export default function TATEvaluatorPage() {
           <div className="space-y-4">
             <div className="bg-white p-4 rounded-3xl border border-gray-200 shadow-sm flex flex-col items-center">
               <div className="relative w-full aspect-video bg-gray-200 rounded-2xl overflow-hidden mb-4 border-2 border-dashed border-gray-300">
-                {/* Because we don't have actual TAT images yet, we will just use placeholders or show a generic fallback */}
-                <div className="absolute inset-0 flex items-center justify-center text-gray-400 flex-col gap-2 bg-slate-100">
-                  <ImageIcon className="w-12 h-12 text-slate-300" />
-                  <span className="text-sm font-bold">Picture {currentImageIdx + 1}</span>
-                  <span className="text-[10px] uppercase tracking-widest text-slate-400">(Upload TAT images to /public/images/tat-{currentImageIdx + 1}.jpg)</span>
-                </div>
+                {fetchingImages ? (
+                  <div className="absolute inset-0 flex items-center justify-center text-gray-400 font-bold">Loading Image...</div>
+                ) : scenarios.length > 0 ? (
+                  <img src={scenarios[currentIdx].image_url} alt="TAT Scenario" className="w-full h-full object-cover grayscale-[30%] blur-[1px] mix-blend-multiply opacity-90" />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center text-gray-400 flex-col gap-2 bg-slate-100 p-4 text-center">
+                    <ImageIcon className="w-12 h-12 text-slate-300" />
+                    <span className="text-sm font-bold">No images found in database.</span>
+                  </div>
+                )}
               </div>
               
               <button 
                 onClick={nextImage}
-                className="px-6 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 text-sm font-bold uppercase tracking-wider rounded-xl transition-colors"
+                disabled={fetchingImages || scenarios.length === 0}
+                className="px-6 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:opacity-50 text-sm font-bold uppercase tracking-wider rounded-xl transition-colors"
               >
                 Show Next Picture
               </button>

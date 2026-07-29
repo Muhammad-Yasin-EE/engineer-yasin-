@@ -7,7 +7,7 @@ import { chatWithISSBPsychologist } from '@/app/actions/ai-interview'
 
 export default function AIInterviewPage() {
   const [messages, setMessages] = useState<{ role: 'user' | 'model', content: string }[]>([
-    { role: 'model', content: 'Welcome to the ISSB Psychological Assessment Simulator. I am the virtual psychologist. Please enter your name and a brief introduction to begin your interview.' }
+    { role: 'model', content: 'Welcome to the ISSB Psychological Assessment Assessment. I am the virtual psychologist. Please enter your name and a brief introduction to begin your interview.' }
   ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)

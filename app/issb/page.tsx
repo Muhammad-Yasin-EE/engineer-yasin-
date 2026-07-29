@@ -640,7 +640,7 @@ export default function ISSBPage() {
                   The Inter Services Selection Board evaluates candidates through three scientific testing dimensions: <strong className="text-white">Psychology Assessments (Day 1)</strong>, <strong className="text-white">GTO Tactical Obstacles (Days 2–3)</strong>, and <strong className="text-white">Deputy President Interviews (Days 3–4)</strong>. All preparatory modules below follow standard operational criteria.
                 </p>
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-1 text-[11px] font-extrabold text-slate-200">
-                  <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">🧠 Psychology Battery</span>
+                  <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">🧠 Psychology Evaluation</span>
                   <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">🎯 GTO Field Tasks</span>
                   <span className="px-2.5 py-1 bg-white/10 rounded-lg border border-white/15">⭐ DP Interview Standards</span>
                 </div>

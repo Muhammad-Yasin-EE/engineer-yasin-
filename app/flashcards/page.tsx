@@ -1,29 +1,42 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, RefreshCw, Layers } from 'lucide-react'
 import Link from 'next/link'
+import { createClient } from '@supabase/supabase-js'
 
-const FLASHCARDS_DATA = [
-  { id: 1, type: 'Vocabulary', question: 'Abundant', answer: 'Existing or available in large quantities; plentiful.' },
-  { id: 2, type: 'General Knowledge', question: 'What is the capital of Australia?', answer: 'Canberra' },
-  { id: 3, type: 'Vocabulary', question: 'Eloquent', answer: 'Fluent or persuasive in speaking or writing.' },
-  { id: 4, type: 'General Knowledge', question: 'Who wrote the national anthem of Pakistan?', answer: 'Hafeez Jalandhari' },
-  { id: 5, type: 'Physics', question: 'What is the SI unit of Force?', answer: 'Newton (N)' },
-  { id: 6, type: 'Vocabulary', question: 'Meticulous', answer: 'Showing great attention to detail; very careful and precise.' },
-  { id: 7, type: 'General Knowledge', question: 'Which planet is known as the Red Planet?', answer: 'Mars' },
-  { id: 8, type: 'Mathematics', question: 'What is the derivative of sin(x)?', answer: 'cos(x)' },
-  { id: 9, type: 'Vocabulary', question: 'Tenacious', answer: 'Tending to keep a firm hold of something; clinging or adhering closely.' },
-  { id: 10, type: 'Physics', question: 'What is the speed of light?', answer: '299,792,458 m/s' },
-]
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+type Flashcard = {
+  id: string
+  category: string
+  front_text: string
+  back_text: string
+}
 
 export default function FlashcardsPage() {
-  const [cards, setCards] = useState(FLASHCARDS_DATA)
-  const [swiped, setSwiped] = useState<{ id: number, dir: 'left' | 'right' }[]>([])
-  
-  // 1 means facing front, -1 means facing back
+  const [cards, setCards] = useState<Flashcard[]>([])
+  const [originalCards, setOriginalCards] = useState<Flashcard[]>([])
+  const [loading, setLoading] = useState(true)
+  const [swiped, setSwiped] = useState<{ id: string, dir: 'left' | 'right' }[]>([])
   const [flipped, setFlipped] = useState(false)
+
+  useEffect(() => {
+    async function loadCards() {
+      const { data, error } = await supabase.from('flashcards').select('*')
+      if (data && data.length > 0) {
+        // shuffle
+        const shuffled = data.sort(() => 0.5 - Math.random())
+        setCards(shuffled)
+        setOriginalCards(shuffled)
+      }
+      setLoading(false)
+    }
+    loadCards()
+  }, [])
 
   const activeCardIndex = cards.length - 1
   const activeCard = cards[activeCardIndex]
@@ -45,9 +58,13 @@ export default function FlashcardsPage() {
   }
 
   const resetCards = () => {
-    setCards(FLASHCARDS_DATA)
+    setCards(originalCards)
     setSwiped([])
     setFlipped(false)
+  }
+
+  if (loading) {
+    return <div className="min-h-screen bg-slate-50 flex items-center justify-center font-bold text-gray-500">Loading AI Flashcards...</div>
   }
 
   return (
@@ -100,11 +117,11 @@ export default function FlashcardsPage() {
                       {/* FRONT OF CARD */}
                       <div className="absolute inset-0 backface-hidden bg-white border-2 border-gray-200 rounded-[2rem] shadow-xl p-8 flex flex-col items-center justify-center text-center gap-4">
                         <span className="absolute top-6 left-1/2 -translate-x-1/2 text-[10px] font-black uppercase tracking-widest text-amber-500 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-                          {card.type}
+                          {card.category}
                         </span>
                         
                         <h2 className="text-3xl font-black text-gray-900 leading-tight">
-                          {card.question}
+                          {card.front_text}
                         </h2>
                         
                         <p className="absolute bottom-8 left-1/2 -translate-x-1/2 text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
@@ -115,7 +132,7 @@ export default function FlashcardsPage() {
                       {/* BACK OF CARD */}
                       <div className="absolute inset-0 backface-hidden bg-[#0A192F] border-2 border-[#0A192F] rounded-[2rem] shadow-xl p-8 flex flex-col items-center justify-center text-center gap-4" style={{ transform: 'rotateY(180deg)' }}>
                         <h2 className="text-2xl font-bold text-white leading-relaxed">
-                          {card.answer}
+                          {card.back_text}
                         </h2>
                         <p className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
                           Swipe Right = I Know It <br/> Swipe Left = Needs Review
@@ -133,7 +150,7 @@ export default function FlashcardsPage() {
                 </div>
                 <h2 className="text-2xl font-black text-gray-900 mb-2 uppercase">Deck Completed!</h2>
                 <p className="text-gray-500 text-sm font-medium mb-8">
-                  You knew {swiped.filter(s => s.dir === 'right').length} out of {FLASHCARDS_DATA.length} concepts.
+                  You knew {swiped.filter(s => s.dir === 'right').length} out of {originalCards.length} concepts.
                 </p>
                 <button 
                   onClick={resetCards}

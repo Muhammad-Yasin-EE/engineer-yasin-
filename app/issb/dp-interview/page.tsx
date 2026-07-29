@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { dpInterviewQuestions } from '@/lib/data/issbRemainingData'
-import { ArrowLeft, MessageCircle, Award, Shield, HelpCircle, Flame, CheckCircle, Brain, Sparkles } from 'lucide-react'
+import { ArrowLeft, MessageCircle, Award, Shield, HelpCircle, Flame, CheckCircle, Brain, Sparkles, BrainCircuit } from 'lucide-react'
 
 type TabType = 'personal' | 'military' | 'gk' | 'stress'
 
@@ -35,6 +35,26 @@ export default function DpInterviewPage() {
           <p className="text-xs sm:text-sm md:text-base text-gray-300 font-medium leading-relaxed max-w-3xl">
             The Deputy President Interview is a rigorous 30 to 45 minute one-on-one psychological oral examination. Assessors test your emotional maturity, truthfulness, defense awareness, and stress resistance.
           </p>
+        </div>
+
+        {/* AI Mock Interview CTA */}
+        <div className="bg-gradient-to-r from-amber-900/40 to-amber-700/20 border border-amber-500/30 rounded-3xl p-6 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
+          <div className="absolute -right-10 -top-10 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="space-y-3 z-10 text-center md:text-left">
+            <h2 className="text-2xl sm:text-3xl font-black text-white flex items-center justify-center md:justify-start gap-3">
+              <BrainCircuit className="w-8 h-8 text-amber-400" />
+              Start Interactive AI Mock Interview
+            </h2>
+            <p className="text-sm text-gray-300 font-medium max-w-xl leading-relaxed">
+              Experience a realistic, high-pressure 15-question interview simulator. The AI Deputy President will dynamically cross-question you based on your live Bio-Data Form (PIF).
+            </p>
+          </div>
+          <Link
+            href="/issb/dp-interview/ai-mock"
+            className="shrink-0 px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black uppercase tracking-widest text-sm rounded-2xl shadow-xl hover:shadow-amber-500/20 transition-all flex items-center gap-2"
+          >
+            Start Interview ➔
+          </Link>
         </div>
 
         {/* Category Navigation Tabs */}

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { ArrowLeft, BrainCircuit, Image as ImageIcon, Send, ShieldAlert, Sparkles, Flag } from 'lucide-react'
 import Link from 'next/link'
 import AuthGateButton from '@/components/AuthGateButton'
+import { FreemiumModal } from '@/components/FreemiumModal'
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -78,6 +79,7 @@ export default function GTOEvaluatorPage() {
   const [error, setError] = useState('')
   const [result, setResult] = useState<{ verdict: string, score: number, pros: string[], cons: string[], feedback: string } | null>(null)
   const [fetching, setFetching] = useState(true)
+  const [showFreemiumModal, setShowFreemiumModal] = useState(false)
 
   useEffect(() => {
     async function loadScenarios() {
@@ -120,7 +122,11 @@ export default function GTOEvaluatorPage() {
       const res = await evaluateGTOPlan(plan, scenarios[currentIdx].objective, scenarios[currentIdx].constraints)
       
       if (res.error) {
-        setError(res.error)
+        if (res.error === 'insufficient_credits') {
+          setShowFreemiumModal(true)
+        } else {
+          setError(res.error)
+        }
       } else if (res.success && res.data) {
         setResult(res.data)
       }
@@ -142,6 +148,7 @@ export default function GTOEvaluatorPage() {
 
   return (
     <div className="bg-slate-50 min-h-screen text-gray-800 flex flex-col pb-20">
+      <FreemiumModal isOpen={showFreemiumModal} onClose={() => setShowFreemiumModal(false)} />
       <div className="max-w-6xl mx-auto w-full px-4 py-8">
         
         {/* Header */}

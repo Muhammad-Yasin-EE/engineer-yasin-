@@ -1,18 +1,21 @@
 'use server'
 
-import { GoogleGenerativeAI } from '@google/generative-ai'
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY_GTO || process.env.GEMINI_API_KEY || '')
+import { AIRouter } from '@/lib/ai/router'
+import { checkAndDeductAICredits } from '@/lib/ai/credits'
 
 export async function evaluateGTOPlan(plan: string, objective: string, constraints: string[]) {
-  if (!process.env.GEMINI_API_KEY_GTO && !process.env.GEMINI_API_KEY) {
-    return { error: 'GEMINI_API_KEY is not configured.' }
+  // 1. Check credits first
+  const creditCheck = await checkAndDeductAICredits()
+  if (!creditCheck.allowed) {
+    if (creditCheck.reason === 'not_logged_in') return { error: 'Please sign in to continue.' }
+    return { error: 'insufficient_credits', reason: creditCheck.reason }
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' })
-    
-    const prompt = `You are a strict GTO (Group Testing Officer) at ISSB.
+    return await AIRouter.executeWithFailover(async (ai) => {
+      const model = ai.getGenerativeModel({ model: 'gemini-flash-latest' })
+      
+      const prompt = `You are a strict GTO (Group Testing Officer) at ISSB.
 A candidate has submitted an execution plan for a Command Task/Group Task.
 Objective: ${objective}
 Rules & Constraints: ${constraints.join(' | ')}
@@ -28,23 +31,23 @@ Evaluate this plan strictly. Return a JSON object EXACTLY in this format, with N
 }
 Keep pros and cons extremely short to save tokens.`
 
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: {
-        maxOutputTokens: 250,
-        temperature: 0.3,
-      }
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: {
+          maxOutputTokens: 250,
+          temperature: 0.3,
+        }
+      })
+      
+      const response = await result.response
+      let text = response.text()
+      // strip markdown json fences if any
+      text = text.replace(/```json/g, '').replace(/```/g, '').trim()
+      
+      const data = JSON.parse(text)
+      
+      return { success: true, data }
     })
-    
-    const response = await result.response
-    let text = response.text()
-    // strip markdown json fences if any
-    text = text.replace(/```json/g, '').replace(/```/g, '').trim()
-    
-    const data = JSON.parse(text)
-    
-    return { success: true, data }
-
   } catch (error: any) {
     console.error('GTO AI Error:', error)
     return { error: 'Failed to evaluate GTO plan. Please try again.' }

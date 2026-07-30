@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { ArrowLeft, Send, BrainCircuit, UserRound, ShieldAlert } from 'lucide-react'
 import Link from 'next/link'
+import { FreemiumModal } from '@/components/FreemiumModal'
 import { chatWithISSBPsychologist } from '@/app/actions/ai-interview'
 
 export default function AIInterviewPage() {
@@ -12,6 +13,7 @@ export default function AIInterviewPage() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [showFreemiumModal, setShowFreemiumModal] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -36,7 +38,11 @@ export default function AIInterviewPage() {
     const res = await chatWithISSBPsychologist(messages, userMessage)
     
     if (res.error) {
-      setError(res.error)
+      if (res.error === 'insufficient_credits') {
+        setShowFreemiumModal(true)
+      } else {
+        setError(res.error)
+      }
       // Revert the last user message if there's an error so they can try again
       setMessages(messages)
       setInput(userMessage)
@@ -49,6 +55,7 @@ export default function AIInterviewPage() {
 
   return (
     <div className="bg-slate-50 h-[100dvh] text-gray-800 flex flex-col">
+      <FreemiumModal isOpen={showFreemiumModal} onClose={() => setShowFreemiumModal(false)} />
       <div className="max-w-4xl mx-auto w-full flex flex-col flex-1 overflow-hidden sm:px-4 sm:py-6">
         {/* Brand Header */}
         <div className="bg-white px-3 py-3 flex items-center gap-3 shrink-0 z-10 shadow-sm border-b border-gray-200 sm:rounded-t-3xl">

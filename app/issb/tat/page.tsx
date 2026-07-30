@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowLeft, Clock, BookOpen, BrainCircuit, CheckCircle2, AlertTriangle, PenTool } from 'lucide-react'
 import AuthGateButton from '@/components/AuthGateButton'
+import { FreemiumModal } from '@/components/FreemiumModal'
 import { evaluateTATStory } from '@/app/actions/ai-tat'
 
 type TestState = 'INTRO' | 'VIEWING' | 'WRITING' | 'EVALUATING' | 'RESULT'
@@ -16,6 +17,7 @@ export default function TATPage() {
   const [story, setStory] = useState('')
   const [evaluation, setEvaluation] = useState<any>(null)
   const [error, setError] = useState('')
+  const [showFreemiumModal, setShowFreemiumModal] = useState(false)
 
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -69,8 +71,13 @@ export default function TATPage() {
     const res = await evaluateTATStory(submittedStory, imageNumber)
     
     if (res.error) {
-      setError(res.error)
-      setTestState('WRITING')
+      if (res.error === 'insufficient_credits') {
+        setShowFreemiumModal(true)
+        setTestState('WRITING')
+      } else {
+        setError(res.error)
+        setTestState('WRITING')
+      }
     } else if (res.success) {
       setEvaluation(res.data)
       setTestState('RESULT')
@@ -151,6 +158,7 @@ export default function TATPage() {
   if (testState === 'WRITING') {
     return (
       <div className="min-h-screen bg-slate-50 py-6 px-4 flex flex-col font-sans">
+        <FreemiumModal isOpen={showFreemiumModal} onClose={() => setShowFreemiumModal(false)} />
         <div className="max-w-6xl mx-auto w-full flex-1 flex flex-col md:flex-row gap-6">
           
           <div className="w-full md:w-1/3 flex flex-col gap-4">
@@ -226,6 +234,7 @@ export default function TATPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 py-8 px-4 font-sans">
+      <FreemiumModal isOpen={showFreemiumModal} onClose={() => setShowFreemiumModal(false)} />
       <div className="max-w-4xl mx-auto space-y-6">
         <Link href="/issb/psychologist" className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
           <ArrowLeft className="w-4 h-4" /> Back to Psychologist Hub

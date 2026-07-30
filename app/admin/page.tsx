@@ -174,6 +174,34 @@ export default function AdminDashboard() {
     }
   }
 
+  const handleTogglePremium = async (userId: string, currentPlan: string) => {
+    let newPlan = 'free';
+    let newExpiry = null;
+    let newCredits = 3;
+
+    if (currentPlan === 'free') {
+      newPlan = 'monthly';
+      const expiry = new Date();
+      expiry.setDate(expiry.getDate() + 30);
+      newExpiry = expiry.toISOString();
+      newCredits = 999; // unlimited equivalent
+    }
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ premium_plan: newPlan, premium_expiry: newExpiry, ai_credits: newCredits })
+        .eq('id', userId);
+
+      if (error) throw error;
+      
+      setUsers(users.map(u => u.id === userId ? { ...u, premium_plan: newPlan, premium_expiry: newExpiry, ai_credits: newCredits } : u));
+      alert(`User plan updated to ${newPlan.toUpperCase()}`);
+    } catch (err: any) {
+      alert("Failed to update plan: " + err.message);
+    }
+  }
+
   const fetchItems = async () => {
     setLoadingItems(true)
     try {
@@ -1708,7 +1736,31 @@ export default function AdminDashboard() {
                     {u.age && <div className="text-gray-600"><span className="font-bold text-gray-500">Age:</span> {u.age}</div>}
                     {u.phone && <div className="text-gray-600"><span className="font-bold text-gray-500">Phone:</span> {u.phone}</div>}
                     {u.city && <div className="text-gray-600"><span className="font-bold text-gray-500">Location:</span> {u.city}</div>}
+                    
+                    <div className="pt-2 mt-2 border-t border-gray-200">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-gray-500">Plan:</span> 
+                        <span className={`font-black uppercase tracking-wider ${u.premium_plan && u.premium_plan !== 'free' ? 'text-emerald-600' : 'text-gray-400'}`}>
+                          {u.premium_plan || 'free'}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between mt-1">
+                        <span className="font-bold text-gray-500">Credits:</span> 
+                        <span className="font-bold text-gray-700">{u.ai_credits ?? 3}</span>
+                      </div>
+                    </div>
                   </div>
+
+                  <button 
+                    onClick={() => handleTogglePremium(u.id, u.premium_plan || 'free')}
+                    className={`mt-2 w-full py-2 text-[10px] font-black uppercase tracking-widest rounded-sm transition-colors ${
+                      u.premium_plan && u.premium_plan !== 'free' 
+                        ? 'bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200' 
+                        : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-200'
+                    }`}
+                  >
+                    {u.premium_plan && u.premium_plan !== 'free' ? 'Revoke Premium' : 'Grant Monthly Pro'}
+                  </button>
                 </div>
               ))}
             </div>

@@ -1,38 +1,16 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { ArrowLeft, Send, BrainCircuit, UserRound, ShieldAlert, FileText, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft, Send, BrainCircuit, UserRound, CheckCircle2, ShieldAlert } from 'lucide-react'
 import Link from 'next/link'
 import { chatWithDpInterview } from '@/app/actions/ai-dp-interview'
 
-// Type definitions for PIF
-interface PIFData {
-  name: string
-  age: string
-  height: string
-  weight: string
-  address: string
-  fatherDetails: string
-  fatherIncome: string
-  motherDetails: string
-  siblings: string
-  educationMatric: string
-  educationFsc: string
-  sportsAndHobbies: string
-  merits: string
-  demerits: string
-}
-
 export default function DPMockInterviewPage() {
-  // State 1: PIF Form
-  const [isPifFilled, setIsPifFilled] = useState(false)
-  const [pifData, setPifData] = useState<PIFData>({
-    name: '', age: '', height: '', weight: '', address: '',
-    fatherDetails: '', fatherIncome: '', motherDetails: '', siblings: '',
-    educationMatric: '', educationFsc: '', sportsAndHobbies: '', merits: '', demerits: ''
-  })
-
-  // State 2: Interview Chat
+  const [isClient, setIsClient] = useState(false)
+  const [pifData, setPifData] = useState<any>(null)
+  
+  // Chat State
+  const [interviewStarted, setInterviewStarted] = useState(false)
   const [messages, setMessages] = useState<{ role: 'user' | 'model', content: string }[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -47,16 +25,26 @@ export default function DPMockInterviewPage() {
   }
 
   useEffect(() => {
+    setIsClient(true)
+    const savedData = localStorage.getItem('issb_complete_pif')
+    if (savedData) {
+      try {
+        setPifData(JSON.parse(savedData))
+      } catch (e) {
+        console.error("Failed to parse PIF")
+      }
+    }
+  }, [])
+
+  useEffect(() => {
     scrollToBottom()
   }, [messages])
 
-  const handlePifSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsPifFilled(true)
-    
-    // Initial greeting from AI
+  const handleStartInterview = () => {
+    if (!pifData) return
+    setInterviewStarted(true)
     setMessages([
-      { role: 'model', content: `Good morning, ${pifData.name}. I have your Personal Information Form right here. Please take a seat, relax, and introduce yourself.` }
+      { role: 'model', content: \`Good morning, \${pifData.fullName || 'Candidate'}. I have reviewed your Personal Information Form extensively. Please take a seat, relax, and introduce yourself focusing on your family and academic background.\` }
     ])
     setQuestionCount(1)
   }
@@ -72,6 +60,7 @@ export default function DPMockInterviewPage() {
     setMessages(newMessages)
     setLoading(true)
 
+    // Ensure we are sending the massive PIF data to the AI action
     const res = await chatWithDpInterview(messages, userMessage, pifData, questionCount)
     
     if (res.error) {
@@ -91,69 +80,57 @@ export default function DPMockInterviewPage() {
     setLoading(false)
   }
 
-  if (!isPifFilled) {
+  if (!isClient) return null
+
+  if (!pifData) {
     return (
-      <div className="min-h-screen bg-slate-50 py-10 px-4 font-sans text-gray-900">
-        <div className="max-w-3xl mx-auto">
-          <Link href="/issb/dp-interview" className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-900 mb-6 transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Back to DP Hub
-          </Link>
-          
-          <div className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
-            <div className="bg-[#0A192F] p-8 sm:p-10 text-white relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-               <FileText className="w-10 h-10 text-amber-400 mb-4" />
-               <h1 className="text-2xl sm:text-3xl font-black uppercase tracking-tight">Official Bio-Data Form (PIF)</h1>
-               <p className="text-sm text-gray-300 mt-2 font-medium max-w-lg leading-relaxed">
-                 The Deputy President must review your file before the interview. Ensure all details are 100% accurate as you will be cross-questioned heavily on them.
-               </p>
-            </div>
-            
-            <form onSubmit={handlePifSubmit} className="p-8 sm:p-10 space-y-8">
-               
-               <div className="space-y-4">
-                 <h3 className="text-sm font-black uppercase text-amber-600 tracking-widest border-b border-gray-100 pb-2">1. Basic Details</h3>
-                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                   <input required type="text" placeholder="Full Name" className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm w-full focus:ring-2 focus:ring-amber-500 outline-none" value={pifData.name} onChange={e => setPifData({...pifData, name: e.target.value})} />
-                   <input required type="text" placeholder="Age (e.g., 19 Years 4 Months)" className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm w-full focus:ring-2 focus:ring-amber-500 outline-none" value={pifData.age} onChange={e => setPifData({...pifData, age: e.target.value})} />
-                   <input required type="text" placeholder="Height (e.g., 5' 9&quot;)" className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm w-full focus:ring-2 focus:ring-amber-500 outline-none" value={pifData.height} onChange={e => setPifData({...pifData, height: e.target.value})} />
-                   <input required type="text" placeholder="Weight (e.g., 68 KG)" className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm w-full focus:ring-2 focus:ring-amber-500 outline-none" value={pifData.weight} onChange={e => setPifData({...pifData, weight: e.target.value})} />
-                   <input required type="text" placeholder="Present Address / District" className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm w-full focus:ring-2 focus:ring-amber-500 outline-none sm:col-span-2" value={pifData.address} onChange={e => setPifData({...pifData, address: e.target.value})} />
-                 </div>
-               </div>
-
-               <div className="space-y-4">
-                 <h3 className="text-sm font-black uppercase text-amber-600 tracking-widest border-b border-gray-100 pb-2">2. Family Profile</h3>
-                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                   <input required type="text" placeholder="Father's Profession/Rank & Education" className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm w-full focus:ring-2 focus:ring-amber-500 outline-none" value={pifData.fatherDetails} onChange={e => setPifData({...pifData, fatherDetails: e.target.value})} />
-                   <input required type="text" placeholder="Father's Monthly Income" className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm w-full focus:ring-2 focus:ring-amber-500 outline-none" value={pifData.fatherIncome} onChange={e => setPifData({...pifData, fatherIncome: e.target.value})} />
-                   <input required type="text" placeholder="Mother's Profession (e.g., Housewife)" className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm w-full focus:ring-2 focus:ring-amber-500 outline-none sm:col-span-2" value={pifData.motherDetails} onChange={e => setPifData({...pifData, motherDetails: e.target.value})} />
-                   <textarea required placeholder="Siblings Order (e.g., I have 2 elder brothers, 1 younger sister. I am number 3)" className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm w-full h-24 resize-none focus:ring-2 focus:ring-amber-500 outline-none sm:col-span-2" value={pifData.siblings} onChange={e => setPifData({...pifData, siblings: e.target.value})} />
-                 </div>
-               </div>
-
-               <div className="space-y-4">
-                 <h3 className="text-sm font-black uppercase text-amber-600 tracking-widest border-b border-gray-100 pb-2">3. Academics & Interests</h3>
-                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                   <input required type="text" placeholder="Matric/O-Level Percentage" className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm w-full focus:ring-2 focus:ring-amber-500 outline-none" value={pifData.educationMatric} onChange={e => setPifData({...pifData, educationMatric: e.target.value})} />
-                   <input required type="text" placeholder="FSc/A-Level Percentage" className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm w-full focus:ring-2 focus:ring-amber-500 outline-none" value={pifData.educationFsc} onChange={e => setPifData({...pifData, educationFsc: e.target.value})} />
-                   <input required type="text" placeholder="Sports & Hobbies" className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm w-full focus:ring-2 focus:ring-amber-500 outline-none sm:col-span-2" value={pifData.sportsAndHobbies} onChange={e => setPifData({...pifData, sportsAndHobbies: e.target.value})} />
-                 </div>
-               </div>
-
-               <div className="space-y-4">
-                 <h3 className="text-sm font-black uppercase text-amber-600 tracking-widest border-b border-gray-100 pb-2">4. Self Appraisal</h3>
-                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                   <input required type="text" placeholder="Write 2 Merits" className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm w-full focus:ring-2 focus:ring-amber-500 outline-none" value={pifData.merits} onChange={e => setPifData({...pifData, merits: e.target.value})} />
-                   <input required type="text" placeholder="Write 2 Demerits" className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm w-full focus:ring-2 focus:ring-amber-500 outline-none" value={pifData.demerits} onChange={e => setPifData({...pifData, demerits: e.target.value})} />
-                 </div>
-               </div>
-
-               <button type="submit" className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm uppercase tracking-widest rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
-                 Submit File & Enter DP Room ➔
-               </button>
-            </form>
+      <div className="min-h-screen bg-slate-50 py-10 px-4 font-sans flex items-center justify-center">
+        <div className="max-w-md w-full bg-white rounded-3xl p-8 shadow-xl border border-gray-200 text-center space-y-5 animate-in fade-in zoom-in-95">
+          <div className="w-16 h-16 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-2">
+            <ShieldAlert className="w-8 h-8" />
           </div>
+          <h2 className="text-2xl font-black text-slate-900 uppercase">PIF Data Missing</h2>
+          <p className="text-sm text-gray-600 font-medium">
+            You must fill the complete official Personal Information Form (PIF) before entering the Deputy President's interview room.
+          </p>
+          <Link href="/issb/pif" className="block w-full py-4 bg-[#B8212E] hover:bg-[#961a25] text-white rounded-xl font-black uppercase text-sm tracking-widest shadow-md transition-all">
+            Fill Bio-Data Form ➔
+          </Link>
+          <Link href="/issb/deputy" className="block text-xs font-bold text-gray-400 hover:text-gray-800 uppercase tracking-widest pt-2">
+            ← Back to Hub
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  if (!interviewStarted) {
+    return (
+      <div className="min-h-screen bg-slate-50 py-10 px-4 font-sans flex items-center justify-center">
+        <div className="max-w-md w-full bg-white rounded-3xl p-8 shadow-xl border border-gray-200 text-center space-y-6 animate-in fade-in zoom-in-95">
+          <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-2 shadow-inner border border-emerald-200">
+            <UserRound className="w-10 h-10" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Ready for Interview</h2>
+            <p className="text-sm text-gray-600 font-medium mt-2 leading-relaxed">
+              Your official PIF has been submitted to the Deputy President. He has reviewed your family background, academics, and hobbies.
+            </p>
+          </div>
+          
+          <div className="bg-slate-50 p-4 rounded-2xl text-left border border-slate-100">
+             <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Candidate Profile Loaded</div>
+             <div className="font-bold text-slate-800 uppercase truncate">{pifData.fullName || 'Unknown'}</div>
+             <div className="text-xs text-slate-500 font-medium mt-0.5">{pifData.age} • {pifData.domicile} • {pifData.choiceOfService}</div>
+          </div>
+
+          <button onClick={handleStartInterview} className="w-full py-4 bg-[#0A192F] hover:bg-[#112644] text-white rounded-xl font-black uppercase text-sm tracking-widest shadow-md hover:shadow-lg transition-all animate-pulse">
+            Enter DP Room ➔
+          </button>
+          
+          <Link href="/issb/pif" className="block text-[11px] font-bold text-gray-400 hover:text-[#B8212E] uppercase tracking-widest pt-2 transition-colors">
+            ✏️ Edit Bio-Data First
+          </Link>
         </div>
       </div>
     )
@@ -166,7 +143,7 @@ export default function DPMockInterviewPage() {
         {/* Brand Header */}
         <div className="bg-white px-4 py-3 flex items-center justify-between shrink-0 z-10 shadow-sm border-b border-gray-200 sm:rounded-t-3xl">
           <div className="flex items-center gap-3">
-            <Link href="/issb/dp-interview" className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex items-center justify-center">
+            <Link href="/issb/deputy" className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex items-center justify-center">
               <ArrowLeft className="w-5 h-5 text-gray-500" />
             </Link>
             <div className="w-10 h-10 rounded-full bg-amber-600 flex items-center justify-center shrink-0 shadow-sm border border-amber-200">
@@ -189,18 +166,18 @@ export default function DPMockInterviewPage() {
           
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 scrollbar-hide">
             {messages.map((msg, idx) => (
-              <div key={idx} className={`flex gap-3 sm:gap-4 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div key={idx} className={\`flex gap-3 sm:gap-4 \${msg.role === 'user' ? 'justify-end' : 'justify-start'}\`}>
                 {msg.role === 'model' && (
                   <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-amber-600 text-white flex items-center justify-center shrink-0 shadow-sm border border-amber-200">
                     <BrainCircuit className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
                 )}
                 
-                <div className={`max-w-[85%] sm:max-w-[75%] rounded-2xl p-4 shadow-sm ${
+                <div className={\`max-w-[85%] sm:max-w-[75%] rounded-2xl p-4 shadow-sm \${
                   msg.role === 'user' 
                     ? 'bg-[#0A192F] text-white rounded-br-sm border border-[#1A2E4C]' 
                     : 'bg-white text-gray-800 border border-gray-200 rounded-bl-sm'
-                }`}>
+                }\`}>
                   <p className="text-sm font-medium leading-relaxed whitespace-pre-wrap">{msg.content}</p>
                 </div>
 
@@ -240,7 +217,7 @@ export default function DPMockInterviewPage() {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="bg-white p-4 rounded-2xl border border-emerald-200 flex flex-col items-center text-center">
                         <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-1">Verdict</span>
-                        <span className={`text-2xl font-black uppercase ${evaluation.evaluation?.toLowerCase() === 'pass' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                        <span className={\`text-2xl font-black uppercase \${evaluation.evaluation?.toLowerCase() === 'pass' ? 'text-emerald-600' : 'text-rose-600'}\`}>
                           {evaluation.evaluation}
                         </span>
                       </div>

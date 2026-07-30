@@ -26,6 +26,11 @@ export default function TatHubPage() {
           <p className="text-xs sm:text-sm md:text-base text-gray-300 font-medium leading-relaxed max-w-3xl">
             In Thematic Apperception Test (TAT), candidates observe black-and-white ambiguous character scenes for 30 seconds, then formulate a constructive hero-oriented action narrative within 3.5 minutes.
           </p>
+          <div className="pt-2">
+            <Link href="/issb/tat/ai-practice" className="inline-flex items-center gap-2 px-6 py-3.5 bg-[#B8212E] hover:bg-[#961a25] text-white font-black rounded-xl text-sm uppercase tracking-widest shadow-lg shadow-rose-900/20 transition-all active:scale-95">
+              🚀 Launch AI Simulator
+            </Link>
+          </div>
         </div>
 
         {/* Official Criteria Pills */}

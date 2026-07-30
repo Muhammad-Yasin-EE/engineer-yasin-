@@ -2,46 +2,66 @@
 
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
+// Use the standard API key (TAT is Psychologist dimension, not GTO)
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
 
-export async function evaluateTATStory(story: string) {
+export async function evaluateTATStory(story: string, imageNumber: number) {
   if (!process.env.GEMINI_API_KEY) {
-    return { error: 'GEMINI_API_KEY is not configured in the server environment.' }
+    return { error: 'GEMINI_API_KEY is not configured.' }
   }
 
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' })
     
-    const prompt = `You are a military psychologist evaluating a candidate's TAT (Thematic Apperception Test) or Picture Story.
-Analyze the following story written by the candidate for an armed forces initial test.
-Evaluate the story based on these three metrics out of 10:
-1. Leadership (Does the hero take initiative?)
-2. Confidence (Is the tone decisive and positive?)
-3. Positivity (Is the outcome optimistic and realistic?)
+    const prompt = `You are an expert Psychologist at ISSB (Inter Services Selection Board).
+A candidate was shown "TAT Scene ${imageNumber}" for 30 seconds and given 3.5 minutes to write a story.
+The candidate wrote the following story:
 
-Provide your response EXACTLY as a JSON object with this structure, and NOTHING ELSE:
+"${story}"
+
+Evaluate this story strictly based on standard TAT criteria:
+1. Did they identify a clear protagonist (Hero)?
+2. What led up to the event, what is happening, and what is the outcome?
+3. Is the tone optimistic, constructive, and action-oriented?
+4. What Officer Like Qualities (OLQs) are projected? (e.g., Initiative, Problem Solving, Courage, Social Adaptability).
+
+Return a JSON object EXACTLY in this format, with NO markdown formatting around it (no \`\`\`json):
 {
-  "scores": {
-    "leadership": number,
-    "confidence": number,
-    "positivity": number
-  },
-  "feedback": "A short, 2-3 sentence strict psychological feedback on what they did well and what they need to improve."
-}
+  "verdict": "Pass" or "Fail" or "Borderline",
+  "score": a number from 1 to 10,
+  "heroAnalysis": "Short sentence about the protagonist.",
+  "plotAnalysis": "Short sentence about the situation and outcome.",
+  "olqs": ["quality1", "quality2", "quality3"],
+  "feedback": "One sentence of constructive feedback."
+}`
 
-Candidate's Story:
-"${story}"`
-
-    const result = await model.generateContent(prompt)
-    const text = result.response.text()
+    const result = await model.generateContent({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: {
+        maxOutputTokens: 300,
+        temperature: 0.3,
+      }
+    })
     
-    // Clean up any markdown code blocks if the AI added them
-    const cleanedText = text.replace(/```json/g, '').replace(/```/g, '').trim()
+    const response = await result.response
+    let text = response.text()
     
-    return { success: true, data: JSON.parse(cleanedText) }
+    // Strip markdown JSON fences if any
+    text = text.replace(/```json/g, '').replace(/```/g, '').trim()
+    
+    try {
+      const data = JSON.parse(text)
+      return { success: true, data }
+    } catch (e) {
+      console.error("Failed to parse JSON", text)
+      return { error: 'Failed to parse AI response. Please try again.' }
+    }
 
   } catch (error: any) {
-    console.error('TAT Evaluator Error:', error)
-    return { error: error.message || 'An error occurred while evaluating the story.' }
+    console.error('TAT AI Error:', error)
+    if (error.message && error.message.includes('503')) {
+      return { error: 'The AI Psychologist is currently assessing another candidate due to high demand. Please wait a moment and try again.' }
+    }
+    return { error: 'Failed to evaluate TAT story. Please try again.' }
   }
 }

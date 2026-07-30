@@ -71,9 +71,10 @@ export function FreemiumModal({ isOpen, onClose }: { isOpen: boolean, onClose: (
                   <span className="font-black text-[#B8212E]">Rs. 550</span>
                 </div>
                 <p className="text-xs text-gray-500 mb-2">7 Days of Unlimited AI Evaluations</p>
-                <ul className="text-xs text-gray-600 space-y-1">
-                  <li className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3 text-green-500" /> Unlimited TAT Evaluator</li>
-                  <li className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3 text-green-500" /> Unlimited AI Psychologist</li>
+                <ul className="text-[11px] text-gray-600 space-y-1 font-semibold">
+                  <li className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-green-500 shrink-0" /> All Psychologist Tests (TAT, WAT, SCT)</li>
+                  <li className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-green-500 shrink-0" /> GTO Tasks Evaluator (Planning & Execution)</li>
+                  <li className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-green-500 shrink-0" /> Deputy President Interview Simulator</li>
                 </ul>
               </div>
 
@@ -87,9 +88,9 @@ export function FreemiumModal({ isOpen, onClose }: { isOpen: boolean, onClose: (
                   <span className="font-black text-[#B8212E]">Rs. 1600</span>
                 </div>
                 <p className="text-xs text-gray-500 mb-2">30 Days of Unlimited Everything</p>
-                <ul className="text-xs text-gray-600 space-y-1">
-                  <li className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3 text-green-500" /> All Weekly Pass Features</li>
-                  <li className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3 text-green-500" /> Priority Support & Mentorship</li>
+                <ul className="text-[11px] text-gray-600 space-y-1 font-semibold">
+                  <li className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-green-500 shrink-0" /> All Weekly Pass Features (TAT, WAT, SCT, GTO, Deputy)</li>
+                  <li className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-green-500 shrink-0" /> Priority Support & Future Beta Tests Access</li>
                 </ul>
               </div>
             </div>

@@ -11,7 +11,7 @@ import {
   Award, Users, Compass, MapPin, Star, Zap, MessageCircle, Flame, Shield
 } from 'lucide-react'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 3600
 
 // Helper to clean up raw database quiz names and categorize by branch
 function formatQuizDisplay(title: string = '', cat: string = '') {

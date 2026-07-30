@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Lock, X, LogIn, UserPlus, Shield } from 'lucide-react'
 
+import { checkIsAuthenticated } from '@/app/actions/check-auth'
+
 interface AuthGateButtonProps {
   href?: string
   onClick?: (e?: React.MouseEvent) => void
@@ -22,14 +24,9 @@ export default function AuthGateButton({ href, label, className, children }: Aut
     e.preventDefault()
     setChecking(true)
     try {
-      const supabase = createClient()
-      const { data: { session }, error } = await supabase.auth.getSession()
+      const isAuthenticated = await checkIsAuthenticated()
       
-      if (error) {
-        console.error("AuthGate Check Error:", error)
-      }
-      
-      if (session?.user) {
+      if (isAuthenticated) {
         if (onClick) onClick(e)
         else if (href) router.push(href)
       } else {

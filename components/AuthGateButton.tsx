@@ -21,14 +21,25 @@ export default function AuthGateButton({ href, label, className, children }: Aut
   const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault()
     setChecking(true)
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    setChecking(false)
-    if (user) {
-      if (onClick) onClick(e)
-      else if (href) router.push(href)
-    } else {
+    try {
+      const supabase = createClient()
+      const { data: { session }, error } = await supabase.auth.getSession()
+      
+      if (error) {
+        console.error("AuthGate Check Error:", error)
+      }
+      
+      if (session?.user) {
+        if (onClick) onClick(e)
+        else if (href) router.push(href)
+      } else {
+        setShowModal(true)
+      }
+    } catch (err) {
+      console.error("AuthGate Error:", err)
       setShowModal(true)
+    } finally {
+      setChecking(false)
     }
   }
 

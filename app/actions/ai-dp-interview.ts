@@ -85,6 +85,12 @@ Instead, drop the persona and output a final evaluation in EXACTLY this JSON for
 
   } catch (error: any) {
     console.error('DP AI Interview Error:', error)
+    
+    // Check if it's a 503 high demand error
+    if (error.message && error.message.includes('503')) {
+      return { error: 'The AI Deputy President is currently assessing another candidate due to high demand on Google servers. Please wait a few moments and try answering again.' }
+    }
+    
     return { error: error.message || 'An error occurred while connecting to the AI.' }
   }
 }

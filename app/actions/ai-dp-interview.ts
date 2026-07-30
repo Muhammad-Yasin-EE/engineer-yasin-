@@ -58,7 +58,7 @@ Instead, drop the persona and output a final evaluation in EXACTLY this JSON for
         }))
       ],
       generationConfig: {
-        maxOutputTokens: questionCount >= 15 ? 300 : 150, // Save tokens
+        maxOutputTokens: questionCount >= 15 ? 800 : 500, // Save tokens but give enough room
         temperature: 0.4,
       },
     })

@@ -139,7 +139,7 @@ export default function PifFormPage() {
             <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-100 -z-0 -translate-y-1/2 rounded-full hidden sm:block"></div>
             <div 
               className="absolute top-1/2 left-0 h-1 bg-emerald-500 -z-0 -translate-y-1/2 rounded-full transition-all duration-300 hidden sm:block"
-              style={{ width: \`\${((step - 1) / 4) * 100}%\` }}
+              style={{ width: `${((step - 1) / 4) * 100}%` }}
             ></div>
             
             {steps.map(s => {
@@ -148,10 +148,10 @@ export default function PifFormPage() {
               const isPassed = step > s.id;
               return (
                 <div key={s.id} className="relative z-10 flex flex-col items-center gap-2 cursor-pointer" onClick={() => setStep(s.id)}>
-                  <div className={\`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm border-2 \${isActive ? 'bg-[#B8212E] text-white border-[#B8212E]' : isPassed ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-white text-gray-400 border-gray-200'}\`}>
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm border-2 ${isActive ? 'bg-[#B8212E] text-white border-[#B8212E]' : isPassed ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-white text-gray-400 border-gray-200'}`}>
                     {isPassed ? <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" /> : <Icon className="w-5 h-5 sm:w-6 sm:h-6" />}
                   </div>
-                  <span className={\`text-[10px] sm:text-xs font-bold uppercase tracking-wider hidden sm:block \${isActive ? 'text-[#B8212E]' : isPassed ? 'text-emerald-600' : 'text-gray-400'}\`}>
+                  <span className={`text-[10px] sm:text-xs font-bold uppercase tracking-wider hidden sm:block ${isActive ? 'text-[#B8212E]' : isPassed ? 'text-emerald-600' : 'text-gray-400'}`}>
                     {s.title}
                   </span>
                 </div>
@@ -441,7 +441,7 @@ export default function PifFormPage() {
               <button 
                 type="button" 
                 onClick={() => setStep(prev => Math.max(1, prev - 1))}
-                className={\`px-4 sm:px-6 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all \${step === 1 ? 'opacity-0 pointer-events-none' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}\`}
+                className={`px-4 sm:px-6 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all ${step === 1 ? 'opacity-0 pointer-events-none' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
               >
                 ← Previous
               </button>

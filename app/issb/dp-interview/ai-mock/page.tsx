@@ -44,7 +44,7 @@ export default function DPMockInterviewPage() {
     if (!pifData) return
     setInterviewStarted(true)
     setMessages([
-      { role: 'model', content: \`Good morning, \${pifData.fullName || 'Candidate'}. I have reviewed your Personal Information Form extensively. Please take a seat, relax, and introduce yourself focusing on your family and academic background.\` }
+      { role: 'model', content: `Good morning, ${pifData.fullName || 'Candidate'}. I have reviewed your Personal Information Form extensively. Please take a seat, relax, and introduce yourself focusing on your family and academic background.` }
     ])
     setQuestionCount(1)
   }
@@ -166,18 +166,18 @@ export default function DPMockInterviewPage() {
           
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 scrollbar-hide">
             {messages.map((msg, idx) => (
-              <div key={idx} className={\`flex gap-3 sm:gap-4 \${msg.role === 'user' ? 'justify-end' : 'justify-start'}\`}>
+              <div key={idx} className={`flex gap-3 sm:gap-4 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {msg.role === 'model' && (
                   <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-amber-600 text-white flex items-center justify-center shrink-0 shadow-sm border border-amber-200">
                     <BrainCircuit className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
                 )}
                 
-                <div className={\`max-w-[85%] sm:max-w-[75%] rounded-2xl p-4 shadow-sm \${
+                <div className={`max-w-[85%] sm:max-w-[75%] rounded-2xl p-4 shadow-sm ${
                   msg.role === 'user' 
                     ? 'bg-[#0A192F] text-white rounded-br-sm border border-[#1A2E4C]' 
                     : 'bg-white text-gray-800 border border-gray-200 rounded-bl-sm'
-                }\`}>
+                }`}>
                   <p className="text-sm font-medium leading-relaxed whitespace-pre-wrap">{msg.content}</p>
                 </div>
 
@@ -217,7 +217,7 @@ export default function DPMockInterviewPage() {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="bg-white p-4 rounded-2xl border border-emerald-200 flex flex-col items-center text-center">
                         <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-1">Verdict</span>
-                        <span className={\`text-2xl font-black uppercase \${evaluation.evaluation?.toLowerCase() === 'pass' ? 'text-emerald-600' : 'text-rose-600'}\`}>
+                        <span className={`text-2xl font-black uppercase ${evaluation.evaluation?.toLowerCase() === 'pass' ? 'text-emerald-600' : 'text-rose-600'}`}>
                           {evaluation.evaluation}
                         </span>
                       </div>

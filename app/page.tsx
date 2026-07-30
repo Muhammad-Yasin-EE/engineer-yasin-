@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
+import AuthGateButton from '@/components/AuthGateButton'
 import LiveTrustTicker from '@/components/LiveTrustTicker'
 import EligibilityCalculator from '@/components/EligibilityCalculator'
 import { ForcesCalculators, SelectionCentersSection, FaqSection } from '@/components/ForcesCalculators'
@@ -280,20 +281,20 @@ export default async function Home() {
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 max-w-5xl mx-auto">
               {[
-                { title: "AI Psychologist", icon: "🧠", href: "/issb/ai-interview", bg: "hover:bg-emerald-50 hover:border-emerald-500 text-emerald-900" },
-                { title: "TAT AI Evaluator", icon: "🖼️", href: "/issb/tat-evaluator", bg: "hover:bg-blue-50 hover:border-blue-500 text-blue-900" },
+                { title: "Psychologist", icon: "🧠", href: "/issb/ai-interview", bg: "hover:bg-emerald-50 hover:border-emerald-500 text-emerald-900" },
+                { title: "TAT Evaluator", icon: "🖼️", href: "/issb/tat", bg: "hover:bg-blue-50 hover:border-blue-500 text-blue-900" },
                 { title: "Study Planner", icon: "📅", href: "/study-planner", bg: "hover:bg-amber-50 hover:border-amber-500 text-amber-900" },
                 { title: "Tinder Flashcards", icon: "🃏", href: "/flashcards", bg: "hover:bg-rose-50 hover:border-rose-500 text-rose-900" },
                 { title: "GTO Evaluator", icon: "🚩", href: "/issb/gto-evaluator", bg: "hover:bg-indigo-50 hover:border-indigo-500 text-indigo-900" }
               ].map((subj) => (
-                <Link
+                <AuthGateButton
                   key={subj.title}
                   href={subj.href}
-                  className={`p-4 rounded-2xl bg-white border-2 border-gray-200 shadow-sm transition-all duration-200 hover:shadow-lg hover:-translate-y-1 flex flex-col items-center justify-center gap-2 group ${subj.bg}`}
+                  className={`w-full h-full p-4 rounded-2xl bg-white border-2 border-gray-200 shadow-sm transition-all duration-200 hover:shadow-lg hover:-translate-y-1 flex flex-col items-center justify-center gap-2 group ${subj.bg}`}
                 >
                   <span className="text-2xl sm:text-3xl group-hover:scale-110 transition-transform">{subj.icon}</span>
                   <span className="text-[11px] sm:text-xs font-extrabold tracking-tight uppercase">{subj.title}</span>
-                </Link>
+                </AuthGateButton>
               ))}
             </div>
           </div>

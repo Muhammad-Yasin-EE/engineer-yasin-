@@ -2,6 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import AuthGateButton from '@/components/AuthGateButton';
 import { ArrowLeft, Users, Target, Award } from 'lucide-react';
 
 export default function GTOHubPage() {
@@ -82,12 +83,12 @@ export default function GTOHubPage() {
                 </div>
                 
                 {item.isReady ? (
-                  <Link
+                  <AuthGateButton
                     href={item.href || '#'}
                     className="w-full py-3 px-4 rounded-2xl bg-[#B8212E] hover:bg-[#961a25] active:scale-95 text-white font-black text-xs flex items-center justify-center gap-2 transition-all duration-150 uppercase tracking-wider shadow-md hover:shadow-rose-900/30 shrink-0"
                   >
                     🚀 Start Practice Now ➔
-                  </Link>
+                  </AuthGateButton>
                 ) : (
                   <div className="w-full py-3 px-4 rounded-2xl bg-slate-100 border border-slate-200 text-slate-400 font-extrabold text-[11px] flex items-center justify-center gap-1.5 uppercase tracking-wider cursor-not-allowed select-none shrink-0">
                     ⏳ Prep Module Coming Soon

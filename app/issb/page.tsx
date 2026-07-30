@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import AuthGateButton from '@/components/AuthGateButton';
 import IssbTimelineExplorer from '@/components/IssbTimelineExplorer';
 
 import {
@@ -307,19 +308,6 @@ export default function ISSBPage() {
 
   if (loading) {
     return <div className="flex items-center justify-center min-h-screen bg-white text-gray-800 font-medium">Loading...</div>;
-  }
-
-  if (!user) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-center p-6">
-        <h2 className="text-2xl font-bold mb-4">Please Sign In</h2>
-        <p className="mb-6">You need to log in or sign up to view the ISSB content and access the cards.</p>
-        <div className="flex gap-4 justify-center">
-          <Link href="/login" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-bold">Log In</Link>
-          <Link href="/signup" className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md font-bold">Sign Up</Link>
-        </div>
-      </div>
-    );
   }
 
   return (
@@ -661,7 +649,7 @@ export default function ISSBPage() {
             {[
               { title: "Psychologist Assessment", category: "Day 1 Tests", desc: "Access WAT, Sentence Completion, SRT, TAT, Pointer Stories, and Self-Description simulators.", icon: Brain, isReady: true, href: "/issb/psychologist", bg: "bg-purple-50/60 border-purple-200/80 hover:border-purple-500", tag: "bg-purple-100 text-purple-800", iconStyle: "bg-purple-100 text-purple-700 group-hover:bg-purple-600", image: "/images/issb-psychology.jpg" },
               { title: "Group Testing Officer (GTO)", category: "Day 2 & 3 Tasks", desc: "Access Group Discussions, Planning Exercises, Command Tasks, Obstacles, and Snake Race simulators.", icon: Users, isReady: true, href: "/issb/gto", bg: "bg-emerald-50/60 border-emerald-200/80 hover:border-emerald-500", tag: "bg-emerald-100 text-emerald-800", iconStyle: "bg-emerald-100 text-emerald-700 group-hover:bg-emerald-600", image: "/images/issb-gto.jpg" },
-              { title: "Deputy President Interview", category: "Day 3 & 4 Assessment", desc: "Fill your Bio-Data (PIF) and face a strict AI Deputy President in a high-pressure mock interview.", icon: Award, isReady: true, href: "/issb/deputy", bg: "bg-amber-50/60 border-amber-200/80 hover:border-amber-500", tag: "bg-amber-100 text-amber-900", iconStyle: "bg-amber-100 text-amber-700 group-hover:bg-amber-600", image: "/images/issb-deputy.jpg" }
+              { title: "Deputy President Interview", category: "Day 3 & 4 Assessment", desc: "Fill your Bio-Data (PIF) and face a strict Deputy President in a high-pressure mock interview.", icon: Award, isReady: true, href: "/issb/deputy", bg: "bg-amber-50/60 border-amber-200/80 hover:border-amber-500", tag: "bg-amber-100 text-amber-900", iconStyle: "bg-amber-100 text-amber-700 group-hover:bg-amber-600", image: "/images/issb-deputy.jpg" }
             ].map((item, idx) => {
               const Icon = item.icon;
               return (
@@ -708,12 +696,12 @@ export default function ISSBPage() {
                   </div>
                   
                   {item.isReady ? (
-                    <Link
+                    <AuthGateButton
                       href={item.href || '#'}
                       className="w-full py-3 px-4 rounded-2xl bg-[#B8212E] hover:bg-[#961a25] active:scale-95 text-white font-black text-xs flex items-center justify-center gap-2 transition-all duration-150 uppercase tracking-wider shadow-md hover:shadow-rose-900/30 shrink-0"
                     >
                       🚀 Start Practice Now ➔
-                    </Link>
+                    </AuthGateButton>
                   ) : (
                     <div className="w-full py-3 px-4 rounded-2xl bg-slate-100 border border-slate-200 text-slate-400 font-extrabold text-[11px] flex items-center justify-center gap-1.5 uppercase tracking-wider cursor-not-allowed select-none shrink-0">
                       ⏳ Prep Module Coming Soon

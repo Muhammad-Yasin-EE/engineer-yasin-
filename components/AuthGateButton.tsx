@@ -6,8 +6,9 @@ import { createClient } from '@/lib/supabase/client'
 import { Lock, X, LogIn, UserPlus, Shield } from 'lucide-react'
 
 interface AuthGateButtonProps {
-  href: string
-  label: string
+  href?: string
+  onClick?: (e?: React.MouseEvent) => void
+  label?: string
   className?: string
   children?: React.ReactNode
 }
@@ -24,7 +25,8 @@ export default function AuthGateButton({ href, label, className, children }: Aut
     const { data: { user } } = await supabase.auth.getUser()
     setChecking(false)
     if (user) {
-      router.push(href)
+      if (onClick) onClick(e)
+      else if (href) router.push(href)
     } else {
       setShowModal(true)
     }
@@ -32,14 +34,14 @@ export default function AuthGateButton({ href, label, className, children }: Aut
 
   return (
     <>
-      <button onClick={handleClick} disabled={checking} className={className} aria-label={label}>
+      <button onClick={handleClick} disabled={checking} className={className} aria-label={label || 'Secure action'}>
         {checking ? (
-          <span className="inline-flex items-center gap-1.5">
+          <span className="inline-flex items-center gap-1.5 opacity-80">
             <svg className="animate-spin h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
-            Checking...
+            <span className="hidden sm:inline">Checking...</span>
           </span>
         ) : (
           children || label

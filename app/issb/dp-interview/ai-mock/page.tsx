@@ -211,7 +211,10 @@ export default function DPMockInterviewPage() {
                 </h3>
                 
                 {evaluation.error ? (
-                   <p className="text-rose-600 font-bold">The AI encountered an error generating the final report. Please try again.</p>
+                   <div>
+                     <h3 className="font-bold text-gray-900 mb-1">Error</h3>
+                     <p className="text-rose-600 font-bold">The Deputy President encountered an error generating the final report. Please try again.</p>
+                   </div>
                 ) : (
                   <div className="space-y-5">
                     <div className="grid grid-cols-2 gap-4">

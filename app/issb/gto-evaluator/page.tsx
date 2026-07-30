@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { ArrowLeft, BrainCircuit, Image as ImageIcon, Send, ShieldAlert, Sparkles, Flag } from 'lucide-react'
 import Link from 'next/link'
+import AuthGateButton from '@/components/AuthGateButton'
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -151,10 +152,10 @@ export default function GTOEvaluatorPage() {
             </Link>
             <h1 className="text-2xl sm:text-4xl font-black text-[#0A192F] tracking-tight uppercase flex items-center gap-3">
               <Flag className="w-8 h-8 text-amber-500" />
-              GTO Command Task AI
+              GTO Command Task Evaluator
             </h1>
             <p className="text-gray-500 mt-2 font-medium max-w-2xl">
-              Analyze the obstacle course and write down your strategy to lead your team across. The AI GTO will evaluate your plan.
+              Analyze the obstacle course and write down your strategy to lead your team across. The GTO will evaluate your plan.
             </p>
           </div>
         </div>
@@ -219,7 +220,7 @@ export default function GTOEvaluatorPage() {
               
               {error && <p className="text-xs font-bold text-[#B8212E] mt-3">⚠️ {error}</p>}
               
-              <button
+              <AuthGateButton
                 onClick={handleEvaluate}
                 disabled={loading || !plan.trim() || scenarios.length === 0}
                 className="mt-4 w-full py-4 bg-[#0A192F] hover:bg-[#B8212E] disabled:bg-slate-300 text-white font-black rounded-2xl text-sm uppercase tracking-widest shadow-md transition-all flex items-center justify-center gap-2"
@@ -229,7 +230,7 @@ export default function GTOEvaluatorPage() {
                 ) : (
                   <><Sparkles className="w-5 h-5" /> Evaluate My Plan</>
                 )}
-              </button>
+              </AuthGateButton>
             </div>
 
             {/* Results Panel */}

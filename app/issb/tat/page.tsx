@@ -1,187 +1,322 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
-import { tatScenarios, TatScene } from '@/lib/data/issbRemainingData'
-import { ArrowLeft, MessageCircle, Eye, Shield, CheckCircle2, Award, Clock, BookOpen } from 'lucide-react'
+import { ArrowLeft, Clock, BookOpen, BrainCircuit, CheckCircle2, AlertTriangle, PenTool } from 'lucide-react'
+import AuthGateButton from '@/components/AuthGateButton'
+import { evaluateTATStory } from '@/app/actions/ai-tat'
 
-export default function TatHubPage() {
-  const [selectedScene, setSelectedScene] = useState<TatScene | null>(tatScenarios[0])
+type TestState = 'INTRO' | 'VIEWING' | 'WRITING' | 'EVALUATING' | 'RESULT'
 
-  return (
-    <div className="min-h-screen bg-slate-950 text-white font-sans selection:bg-[#B8212E] selection:text-white pb-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 space-y-12">
-        
-        {/* Header */}
-        <div className="space-y-4 max-w-4xl">
-          <Link href="/issb" className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-white transition-colors uppercase tracking-wider">
-            <ArrowLeft className="w-4 h-4" /> Return to ISSB Portal
+export default function TATPage() {
+  const [testState, setTestState] = useState<TestState>('INTRO')
+  const [imageNumber, setImageNumber] = useState<number>(1)
+  const [timeLeft, setTimeLeft] = useState<number>(0)
+  const [story, setStory] = useState('')
+  const [evaluation, setEvaluation] = useState<any>(null)
+  const [error, setError] = useState('')
+
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
+
+  const handleStart = () => {
+    // Pick random image 1-9
+    const randomImg = Math.floor(Math.random() * 9) + 1
+    setImageNumber(randomImg)
+    setTestState('VIEWING')
+    setTimeLeft(30) // 30 seconds
+  }
+
+  useEffect(() => {
+    if (testState === 'VIEWING' || testState === 'WRITING') {
+      timerRef.current = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            clearInterval(timerRef.current!)
+            handleTimeUp()
+            return 0
+          }
+          return prev - 1
+        })
+      }, 1000)
+    }
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+  }, [testState])
+
+  const handleTimeUp = () => {
+    if (testState === 'VIEWING') {
+      setTestState('WRITING')
+      setTimeLeft(210) // 3.5 minutes
+    } else if (testState === 'WRITING') {
+      handleSubmitStory(story)
+    }
+  }
+
+  const handleSubmitStory = async (submittedStory: string) => {
+    if (!submittedStory.trim()) {
+      setError('You must write a story to be evaluated.')
+      return
+    }
+    
+    if (timerRef.current) clearInterval(timerRef.current)
+    
+    setTestState('EVALUATING')
+    setError('')
+    
+    const res = await evaluateTATStory(submittedStory, imageNumber)
+    
+    if (res.error) {
+      setError(res.error)
+      setTestState('WRITING')
+    } else if (res.success) {
+      setEvaluation(res.data)
+      setTestState('RESULT')
+    }
+  }
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60)
+    const s = seconds % 60
+    return `${m}:${s < 10 ? '0' : ''}${s}`
+  }
+
+  if (testState === 'INTRO') {
+    return (
+      <div className="min-h-screen bg-slate-50 py-10 px-4 font-sans flex items-center justify-center">
+        <div className="max-w-2xl w-full bg-white rounded-3xl p-8 shadow-xl border border-gray-200">
+          <Link href="/issb/psychologist" className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-[#B8212E] transition-colors uppercase tracking-wider mb-6">
+            <ArrowLeft className="w-4 h-4" /> Back to Psychologist Hub
           </Link>
-          <span className="text-xs sm:text-sm font-black uppercase tracking-widest text-emerald-400 block">
-            Official ISSB Psychological Selection Tests
-          </span>
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight uppercase">
-            Picture Story <span className="text-amber-400">Writing (TAT)</span>
-          </h1>
-          <p className="text-xs sm:text-sm md:text-base text-gray-300 font-medium leading-relaxed max-w-3xl">
-            In Thematic Apperception Test (TAT), candidates observe black-and-white ambiguous character scenes for 30 seconds, then formulate a constructive hero-oriented action narrative within 3.5 minutes.
-          </p>
-          <div className="pt-2">
-            <Link href="/issb/tat/ai-practice" className="inline-flex items-center gap-2 px-6 py-3.5 bg-[#B8212E] hover:bg-[#961a25] text-white font-black rounded-xl text-sm uppercase tracking-widest shadow-lg shadow-rose-900/20 transition-all active:scale-95">
-              🚀 Launch AI Simulator
-            </Link>
-          </div>
-        </div>
-
-        {/* Official Criteria Pills */}
-        <div className="flex flex-wrap items-center gap-3 text-xs font-black uppercase tracking-wider">
-          <span className="px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center gap-1.5">
-            <Clock className="w-4 h-4 text-emerald-400 shrink-0" /> 30s View / 3.5 Min Writing
-          </span>
-          <span className="px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center gap-1.5">
-            <Award className="w-4 h-4 text-amber-400 shrink-0" /> 4-Part Narrative Structure
-          </span>
-          <span className="px-4 py-2 rounded-xl bg-sky-500/10 border border-sky-500/30 text-sky-300 flex items-center gap-1.5">
-            <Shield className="w-4 h-4 text-sky-400 shrink-0" /> Officer Leadership Traits
-          </span>
-        </div>
-
-        {/* Scenarios Grid & Viewer */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* Scene Selection List (Left Column) */}
-          <div className="lg:col-span-5 space-y-4">
-            <h3 className="text-sm font-black uppercase tracking-wider text-gray-400 px-1">
-              Select Official Practice Scene
-            </h3>
-            {tatScenarios.map((scene) => (
-              <button
-                key={scene.id}
-                onClick={() => setSelectedScene(scene)}
-                className={`w-full text-left p-5 sm:p-6 rounded-3xl border transition-all duration-300 flex flex-col justify-between space-y-3 shadow-xl ${
-                  selectedScene?.id === scene.id
-                    ? 'bg-gradient-to-r from-slate-900 to-emerald-950/40 border-emerald-500 shadow-emerald-900/30 scale-[1.02]'
-                    : 'bg-[#0A192F] hover:bg-slate-900 border-[#1A2E4C] text-gray-300'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-slate-950 text-amber-400 border border-slate-800">
-                    Scene #{scene.id}
-                  </span>
-                  <span className="text-[11px] font-bold text-emerald-400 uppercase">
-                    {scene.theme.split('&')[0]}
-                  </span>
-                </div>
-                {scene.imageUrl && (
-                  <div className="relative w-full h-36 sm:h-44 rounded-2xl overflow-hidden border border-slate-800 bg-slate-950/80 my-2">
-                    <img
-                      src={scene.imageUrl}
-                      alt={scene.title}
-                      className="w-full h-full object-contain p-2 hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                )}
-                <h4 className="text-base sm:text-lg font-extrabold text-white leading-snug">
-                  {scene.title}
-                </h4>
-                <div className="flex flex-wrap gap-1.5 pt-1">
-                  {scene.idealOfficerQualities.map((q, i) => (
-                    <span key={i} className="text-[10px] font-semibold bg-slate-900 px-2 py-0.5 rounded text-gray-400 border border-slate-800">
-                      #{q}
-                    </span>
-                  ))}
-                </div>
-              </button>
-            ))}
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-16 h-16 rounded-2xl bg-[#B8212E] flex items-center justify-center shadow-lg">
+              <BookOpen className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tight">TAT Evaluator</h1>
+              <p className="text-sm font-bold text-gray-500 uppercase tracking-widest">Picture Story Writing</p>
+            </div>
           </div>
 
-          {/* Model Officer Story Display (Right Column) */}
-          {selectedScene && (
-            <div className="lg:col-span-7 bg-[#0A192F]/90 border border-emerald-500/40 rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl space-y-8 flex flex-col justify-between relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-              
-              <div className="space-y-4 relative z-10 border-b border-slate-800 pb-6">
-                <div className="flex items-center justify-between">
-                  <span className="px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-black uppercase rounded-lg">
-                    Model Officer Solution
-                  </span>
-                  <span className="text-xs font-bold text-gray-400 flex items-center gap-1.5">
-                    <Eye className="w-4 h-4 text-emerald-400" /> Observation Target: 30s
-                  </span>
+          <div className="bg-amber-50 border-l-4 border-amber-500 p-5 rounded-r-xl mb-8">
+            <h3 className="font-black text-amber-900 flex items-center gap-2 mb-3 uppercase text-sm">
+              <AlertTriangle className="w-4 h-4" /> Official Testing Rules
+            </h3>
+            <ul className="space-y-3 text-sm font-medium text-amber-800">
+              <li>1. A random ambiguous picture will be shown for exactly <strong>30 seconds</strong>.</li>
+              <li>2. Observe the characters, setting, and mood carefully.</li>
+              <li>3. The picture will shrink, and you get <strong>3.5 minutes</strong> to write a story.</li>
+              <li>4. Your story MUST answer: What led to this? What is happening? What is the outcome?</li>
+              <li>5. The Psychologist will evaluate your Hero and projected OLQs instantly.</li>
+            </ul>
+          </div>
+
+          <AuthGateButton 
+            onClick={handleStart}
+            className="w-full py-4 bg-[#0A192F] hover:bg-[#112644] text-white rounded-xl font-black uppercase text-sm tracking-widest shadow-md transition-all active:scale-95"
+          >
+            Start Test ➔
+          </AuthGateButton>
+        </div>
+      </div>
+    )
+  }
+
+  if (testState === 'VIEWING') {
+    return (
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
+        <div className="max-w-4xl w-full space-y-6">
+          <div className="flex justify-between items-center bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-xl">
+            <h2 className="text-lg md:text-xl font-black text-white uppercase flex items-center gap-2 tracking-wide">
+              <BookOpen className="w-5 h-5 text-amber-500" /> Observation Phase
+            </h2>
+            <div className="flex items-center gap-2 px-5 py-2 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-400 font-black text-2xl tracking-widest">
+              <Clock className="w-6 h-6 animate-pulse" /> {formatTime(timeLeft)}
+            </div>
+          </div>
+          
+          <div className="relative w-full aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl border border-slate-800 animate-in zoom-in-95 duration-500">
+             <Image src={`/images/tat/scene-${imageNumber}.jpg`} alt="TAT Scene" fill className="object-contain" priority />
+          </div>
+          
+          <p className="text-center text-slate-400 font-bold uppercase tracking-widest text-sm animate-pulse">Focus on the image. Identify the hero, situation, and background.</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (testState === 'WRITING') {
+    return (
+      <div className="min-h-screen bg-slate-50 py-6 px-4 flex flex-col font-sans">
+        <div className="max-w-6xl mx-auto w-full flex-1 flex flex-col md:flex-row gap-6">
+          
+          <div className="w-full md:w-1/3 flex flex-col gap-4">
+            <div className="bg-white p-4 rounded-3xl shadow-sm border border-gray-200">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-black uppercase tracking-widest text-gray-500">Time Remaining</span>
+                <div className={`px-3 py-1 rounded-lg font-black tracking-widest ${timeLeft < 60 ? 'bg-rose-100 text-rose-700 animate-pulse' : 'bg-slate-100 text-slate-700'}`}>
+                  {formatTime(timeLeft)}
                 </div>
-                {selectedScene.imageUrl && (
-                  <div className="relative w-full h-64 sm:h-80 md:h-96 rounded-3xl overflow-hidden border border-emerald-500/40 bg-slate-950 shadow-2xl p-3 flex items-center justify-center">
-                    <img
-                      src={selectedScene.imageUrl}
-                      alt={selectedScene.title}
-                      className="w-full h-full object-contain p-4"
-                    />
-                  </div>
-                )}
-                <h2 className="text-2xl sm:text-3xl font-black text-white uppercase pt-2">
-                  {selectedScene.title}
-                </h2>
-                <p className="text-xs sm:text-sm text-sky-200 bg-sky-950/40 p-4 rounded-2xl border border-sky-500/20 font-medium italic">
-                  &ldquo;{selectedScene.description}&rdquo;
-                </p>
               </div>
-
-              <div className="space-y-6 relative z-10">
-                <div className="space-y-2 bg-slate-900/80 border border-slate-800 p-5 rounded-2xl">
-                  <span className="text-xs font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
-                    1️⃣ Past / Background Context:
-                  </span>
-                  <p className="text-xs sm:text-sm text-gray-200 font-medium leading-relaxed">
-                    {selectedScene.sampleStory.background}
-                  </p>
-                </div>
-
-                <div className="space-y-2 bg-emerald-950/30 border border-emerald-500/30 p-5 rounded-2xl">
-                  <span className="text-xs font-black text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
-                    2️⃣ Current Constructive Action (Hero Role):
-                  </span>
-                  <p className="text-xs sm:text-sm text-white font-bold leading-relaxed">
-                    {selectedScene.sampleStory.currentAction}
-                  </p>
-                </div>
-
-                <div className="space-y-2 bg-slate-900/80 border border-slate-800 p-5 rounded-2xl">
-                  <span className="text-xs font-black text-sky-400 uppercase tracking-wider flex items-center gap-1.5">
-                    3️⃣ Positive Resolution &amp; Outcome:
-                  </span>
-                  <p className="text-xs sm:text-sm text-gray-200 font-medium leading-relaxed">
-                    {selectedScene.sampleStory.positiveOutcome}
-                  </p>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-slate-800 relative z-10 flex items-center justify-between text-xs text-gray-400 font-extrabold uppercase">
-                <span>🛡️ Assessed Qualities: {selectedScene.idealOfficerQualities.join(', ')}</span>
-                <span className="text-emerald-400">Official Standard ✓</span>
+              <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-gray-200 opacity-60 hover:opacity-100 transition-opacity bg-slate-900">
+                <Image src={`/images/tat/scene-${imageNumber}.jpg`} alt="TAT Scene Ref" fill className="object-contain" />
               </div>
             </div>
-          )}
+            
+            <div className="bg-blue-50 p-5 rounded-3xl border border-blue-100 flex-1">
+              <h3 className="font-black text-blue-900 text-sm uppercase mb-4 flex items-center gap-2 tracking-wide">
+                <PenTool className="w-4 h-4" /> Story Guidelines
+              </h3>
+              <ul className="space-y-3 text-sm font-bold text-blue-800/80">
+                <li>• Who are the characters?</li>
+                <li>• What led up to this situation?</li>
+                <li>• What are they thinking/feeling?</li>
+                <li>• What is the final logical outcome?</li>
+              </ul>
+            </div>
+          </div>
 
-        </div>
+          <div className="w-full md:w-2/3 bg-white rounded-3xl shadow-sm border border-gray-200 flex flex-col overflow-hidden">
+            <div className="p-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+               <span className="font-black text-gray-800 uppercase tracking-tight">Write Your Story</span>
+               <button 
+                  onClick={() => handleSubmitStory(story)}
+                  className="px-4 py-1.5 bg-[#B8212E] hover:bg-[#961a25] text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-sm transition-colors"
+               >
+                 Submit Early
+               </button>
+            </div>
+            
+            {error && (
+              <div className="bg-rose-50 text-rose-600 p-3 text-sm font-bold border-b border-rose-100 text-center">
+                {error}
+              </div>
+            )}
 
-        {/* WhatsApp Evaluation Banner */}
-        <div className="bg-gradient-to-r from-[#0A192F] to-[#112240] border border-[#1A2E4C] rounded-3xl p-8 sm:p-10 text-center max-w-4xl mx-auto space-y-5 shadow-2xl">
-          <h3 className="text-2xl sm:text-3xl font-black text-white uppercase">Want Your TAT Stories Evaluated?</h3>
-          <p className="text-xs sm:text-sm text-gray-300 font-medium max-w-2xl mx-auto leading-relaxed">
-            Write your spontaneous picture stories on an answer copy and share them directly on WhatsApp with Engineer Yasin for detailed psychological feedback!
-          </p>
-          <div className="pt-2">
-            <a
-              href="https://chat.whatsapp.com/IzPd4vwXbrjGhAkanhYvTp?s=cl&p=a&ilr=0"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-[#25D366] hover:bg-[#1EBE5D] text-white font-black rounded-2xl text-xs sm:text-sm uppercase tracking-wider shadow-2xl transition-all border border-emerald-400/20"
-            >
-              <MessageCircle className="w-5 h-5 fill-current" /> Send Stories on WhatsApp ➔
-            </a>
+            <textarea
+              value={story}
+              onChange={(e) => setStory(e.target.value)}
+              placeholder="Start your story here..."
+              className="flex-1 w-full p-6 focus:outline-none resize-none font-medium text-gray-800 leading-relaxed placeholder-gray-300 text-base md:text-lg"
+              autoFocus
+            />
           </div>
         </div>
+      </div>
+    )
+  }
 
+  if (testState === 'EVALUATING') {
+    return (
+      <div className="min-h-screen bg-slate-50 py-10 px-4 flex items-center justify-center font-sans">
+        <div className="max-w-md w-full bg-white rounded-3xl p-10 shadow-xl border border-gray-200 text-center flex flex-col items-center">
+          <div className="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center shadow-inner mb-6 relative">
+            <BrainCircuit className="w-12 h-12 text-amber-600 animate-pulse" />
+            <div className="absolute inset-0 border-4 border-amber-400 rounded-full animate-ping opacity-20"></div>
+          </div>
+          <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight mb-3">Psychologist is Evaluating</h2>
+          <p className="text-gray-500 font-medium text-sm leading-relaxed">Analyzing hero projection, emotional tone, and officer-like qualities based on ISSB standards...</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50 py-8 px-4 font-sans">
+      <div className="max-w-4xl mx-auto space-y-6">
+        <Link href="/issb/psychologist" className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
+          <ArrowLeft className="w-4 h-4" /> Back to Psychologist Hub
+        </Link>
+        
+        <div className="bg-white rounded-3xl overflow-hidden shadow-xl border border-gray-200 animate-in slide-in-from-bottom-8 duration-500">
+          <div className="bg-slate-900 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center border border-white/20 shadow-inner">
+                <CheckCircle2 className={`w-8 h-8 ${evaluation?.verdict === 'Pass' ? 'text-emerald-400' : evaluation?.verdict === 'Borderline' ? 'text-amber-400' : 'text-rose-400'}`} />
+              </div>
+              <div>
+                <span className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-1">Psychologist Verdict</span>
+                <h2 className={`text-3xl font-black uppercase tracking-tight ${evaluation?.verdict === 'Pass' ? 'text-emerald-400' : evaluation?.verdict === 'Borderline' ? 'text-amber-400' : 'text-rose-400'}`}>
+                  {evaluation?.verdict || 'Unknown'}
+                </h2>
+              </div>
+            </div>
+            
+            <div className="text-center sm:text-right bg-black/20 px-6 py-3 rounded-2xl border border-white/10">
+              <span className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-1">Score</span>
+              <div className="text-4xl font-black text-white">{evaluation?.score}<span className="text-xl text-slate-500">/10</span></div>
+            </div>
+          </div>
+
+          <div className="p-6 sm:p-8 space-y-8">
+            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 shadow-sm relative">
+               <div className="absolute top-4 right-4 w-16 h-12 rounded-lg overflow-hidden opacity-50 bg-slate-900">
+                  <Image src={`/images/tat/scene-${imageNumber}.jpg`} alt="ref" fill className="object-contain" />
+               </div>
+               <h3 className="text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Your Story</h3>
+               <p className="text-sm font-medium text-gray-800 italic leading-relaxed whitespace-pre-wrap pr-20">"{story}"</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-6">
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                  <h3 className="text-xs font-black text-[#B8212E] uppercase tracking-widest mb-3 flex items-center gap-2">
+                    Hero Analysis
+                  </h3>
+                  <p className="text-sm font-bold text-gray-700 leading-relaxed">{evaluation?.heroAnalysis}</p>
+                </div>
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                  <h3 className="text-xs font-black text-indigo-600 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    Plot & Outcome
+                  </h3>
+                  <p className="text-sm font-bold text-gray-700 leading-relaxed">{evaluation?.plotAnalysis}</p>
+                </div>
+              </div>
+              
+              <div className="space-y-6">
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                  <h3 className="text-xs font-black text-emerald-600 uppercase tracking-widest mb-4 flex items-center gap-2">
+                    Projected OLQs
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {evaluation?.olqs?.map((olq: string, idx: number) => (
+                      <span key={idx} className="px-3 py-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-black uppercase tracking-wider rounded-lg shadow-sm">
+                        {olq}
+                      </span>
+                    ))}
+                    {(!evaluation?.olqs || evaluation.olqs.length === 0) && (
+                       <span className="text-sm text-gray-400 italic font-medium">No clear OLQs detected.</span>
+                    )}
+                  </div>
+                </div>
+                <div className="bg-amber-50 rounded-2xl border border-amber-200 shadow-sm p-5">
+                  <h3 className="text-xs font-black text-amber-700 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <BrainCircuit className="w-4 h-4" /> Psychologist Feedback
+                  </h3>
+                  <p className="text-sm font-bold text-amber-900 leading-relaxed">
+                    {evaluation?.feedback}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-8 border-t border-gray-100 flex justify-center">
+              <button 
+                onClick={() => {
+                  setStory('')
+                  setEvaluation(null)
+                  setTestState('INTRO')
+                }}
+                className="px-8 py-4 bg-[#0A192F] hover:bg-[#112644] text-white font-black uppercase text-sm tracking-widest rounded-xl shadow-lg transition-all active:scale-95 flex items-center gap-2"
+              >
+                Try Another Picture ↺
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

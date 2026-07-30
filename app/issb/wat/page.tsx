@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import AuthGateButton from '@/components/AuthGateButton'
 import { watSets } from '@/lib/data/watData'
 import { ArrowLeft, Brain, Clock, ShieldCheck, Sparkles, Search, CheckCircle2, ChevronRight, FileText, Target, Award } from 'lucide-react'
 
@@ -138,12 +139,12 @@ export default function WatIndexPage() {
                   </div>
 
                   <div className="pt-6 relative z-10">
-                    <Link
+                    <AuthGateButton
                       href={`/issb/wat/${set.id}`}
                       className="w-full py-4 bg-[#B8212E] hover:bg-[#961a25] active:scale-95 text-white font-black text-sm uppercase tracking-wider rounded-2xl shadow-lg hover:shadow-rose-900/40 transition-all flex items-center justify-center gap-2"
                     >
                       ⚡ Start Test <ChevronRight className="w-4 h-4" />
-                    </Link>
+                    </AuthGateButton>
                   </div>
                 </div>
               )

@@ -38,16 +38,14 @@ Return a JSON object EXACTLY in this format, with NO markdown formatting around 
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       generationConfig: {
-        maxOutputTokens: 300,
-        temperature: 0.3,
+        maxOutputTokens: 500,
+        temperature: 0.2,
+        responseMimeType: "application/json",
       }
     })
     
     const response = await result.response
-    let text = response.text()
-    
-    // Strip markdown JSON fences if any
-    text = text.replace(/```json/g, '').replace(/```/g, '').trim()
+    const text = response.text()
     
     try {
       const data = JSON.parse(text)

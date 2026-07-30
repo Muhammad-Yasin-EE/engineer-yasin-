@@ -2,15 +2,15 @@
 
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY_GTO || process.env.GEMINI_API_KEY || '')
 
 export async function evaluateGPEPlan(scenario: string, priorities: string, plan: string) {
-  if (!process.env.GEMINI_API_KEY) {
+  if (!process.env.GEMINI_API_KEY_GTO && !process.env.GEMINI_API_KEY) {
     return { error: 'GEMINI_API_KEY is not configured.' }
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' })
     
     const prompt = `You are a strict GTO evaluating a Group Planning Exercise (GPE/MOP) at ISSB.
 Scenario Narrative: "${scenario}"

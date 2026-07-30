@@ -2,10 +2,10 @@
 
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY_GTO || process.env.GEMINI_API_KEY || '')
 
 export async function evaluateGTOPlan(plan: string, objective: string, constraints: string[]) {
-  if (!process.env.GEMINI_API_KEY) {
+  if (!process.env.GEMINI_API_KEY_GTO && !process.env.GEMINI_API_KEY) {
     return { error: 'GEMINI_API_KEY is not configured.' }
   }
 

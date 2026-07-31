@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Play, Square, Clock, ShieldAlert, CheckCircle2, ChevronRight } from 'lucide-react';
+import { Play, Square, Clock, ShieldAlert, CheckCircle2, ChevronRight, AlertCircle } from 'lucide-react';
 import { evaluateTATStory } from '@/app/actions/ai-tat';
 
 const TEST_DURATION_MS = 4 * 60 * 1000; // 4 minutes per story

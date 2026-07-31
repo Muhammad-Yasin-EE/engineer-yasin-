@@ -2,6 +2,7 @@
 
 import { checkAndDeductAICredits } from '@/lib/ai/credits'
 import { advancedNLPCheck } from '@/lib/ai/nlp-rules'
+import { saveTestResult, getPsychometricConsistency } from '@/lib/ai/logger'
 
 const positiveFeedbacks = [
   "Excellent display of teamwork and high-energy leadership.",
@@ -38,7 +39,7 @@ function getRandomItem(arr: string[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-export async function evaluateSnakeRacePlan(scenario: string, plan: string) {
+export async function evaluateSnakeRacePlan(scenario: string, plan: string, timeTakenMs?: number) {
   const creditCheck = await checkAndDeductAICredits()
   if (!creditCheck.allowed) {
     if (creditCheck.reason === 'not_logged_in') return { error: 'Please sign in to continue.' }
@@ -48,7 +49,7 @@ export async function evaluateSnakeRacePlan(scenario: string, plan: string) {
   try {
     await new Promise(resolve => setTimeout(resolve, 700 + Math.random() * 700));
 
-    const nlpCheck = advancedNLPCheck(plan, true);
+    const nlpCheck = advancedNLPCheck(plan, true, undefined, timeTakenMs);
     if (nlpCheck.fatalError || nlpCheck.isSpam) {
       return { 
         success: true, 
@@ -79,6 +80,22 @@ export async function evaluateSnakeRacePlan(scenario: string, plan: string) {
 
     score = Math.max(1, Math.min(10, score));
 
+    // Apply Psychometric Traits Adjustment
+    score += nlpCheck.traitsAdjustment.practicalIntelligence;
+    score += nlpCheck.traitsAdjustment.speedOfDecision;
+    score += nlpCheck.traitsAdjustment.integrity;
+
+    let consistencyPenalty = 0;
+    let consistencyReason = null;
+    if (creditCheck.userId) {
+      const consistency = await getPsychometricConsistency(creditCheck.userId, 'SNAKE_RACE');
+      consistencyPenalty = consistency.penalty;
+      consistencyReason = consistency.reason;
+    }
+    score -= consistencyPenalty;
+
+    score = Math.max(1, Math.min(10, score));
+
     const verdict = score >= 6 ? "Pass" : "Fail";
     
     let feedback = "";
@@ -98,6 +115,10 @@ export async function evaluateSnakeRacePlan(scenario: string, plan: string) {
       if (!cons.includes(c)) cons.push(c);
     });
 
+    if (consistencyReason) {
+      cons.push(consistencyReason);
+    }
+
     const data = {
       verdict,
       score,
@@ -105,6 +126,10 @@ export async function evaluateSnakeRacePlan(scenario: string, plan: string) {
       cons: cons.slice(0, 3),
       feedback
     };
+
+    if (creditCheck.userId) {
+      await saveTestResult(creditCheck.userId, 'SNAKE_RACE', score, verdict, feedback, undefined, plan);
+    }
 
     return { success: true, data }
   } catch (error: any) {

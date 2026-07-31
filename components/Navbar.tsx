@@ -231,6 +231,7 @@ export default function Navbar() {
                 <div className="absolute left-0 mt-0 w-60 bg-white border border-gray-150 shadow-xl py-2 z-50 animate-scale-in">
                   <Link href="/issb" prefetch={false} className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] font-bold transition-colors">ISSB Information</Link>
                   <Link href="/issb" prefetch={false} className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] font-bold transition-colors">Free ISSB Prep</Link>
+                  <Link href="/issb/mock-exam" prefetch={false} className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] font-bold transition-colors">ISSB Mock Exam</Link>
                   <Link href="/issb/coaching" prefetch={false} className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] font-bold transition-colors">ISSB Coaching &amp; Training</Link>
                 </div>
               )}
@@ -305,7 +306,7 @@ export default function Navbar() {
             {session ? (
               <div className="flex items-center gap-2">
                 <Link
-                  href="/account"
+                  href="/dashboard"
                   className="hidden sm:flex items-center gap-1 px-4.5 py-1.5 rounded-md border border-gray-200 hover:border-[#B8212E] text-xs font-bold text-gray-600 hover:text-[#B8212E] shadow-sm transition-all bg-white"
                 >
                   <User className="w-3.5 h-3.5" />
@@ -363,7 +364,7 @@ export default function Navbar() {
             {session ? (
               <div className="flex gap-2 w-full justify-between">
                 <Link
-                  href="/account"
+                  href="/dashboard"
                   onClick={() => setMobileMenuOpen(false)}
                   prefetch={false}
                   className="px-4 py-2 rounded-md border border-gray-200 text-xs font-bold text-gray-700 bg-white text-center flex-grow"
@@ -419,6 +420,7 @@ export default function Navbar() {
               <div className="pl-4 flex flex-col gap-2 mt-1 pb-1 font-bold text-gray-500 capitalize">
                 <Link href="/issb" onClick={() => setMobileMenuOpen(false)}>ISSB Information</Link>
                 <Link href="/issb" onClick={() => setMobileMenuOpen(false)}>Free ISSB Prep</Link>
+                <Link href="/issb/mock-exam" onClick={() => setMobileMenuOpen(false)}>ISSB Mock Exam</Link>
                 <Link href="/issb/coaching" onClick={() => setMobileMenuOpen(false)}>ISSB Coaching &amp; Training</Link>
               </div>
             </details>

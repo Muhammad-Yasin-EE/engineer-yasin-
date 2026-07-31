@@ -2,6 +2,7 @@
 
 import { checkAndDeductAICredits } from '@/lib/ai/credits'
 import { advancedNLPCheck } from '@/lib/ai/nlp-rules'
+import { saveTestResult, getPsychometricConsistency } from '@/lib/ai/logger'
 
 const positiveFeedbacks = [
   "A very logical and energy-efficient sequence.",
@@ -38,7 +39,7 @@ function getRandomItem(arr: string[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-export async function evaluateIOPlan(obstacleOrder: string) {
+export async function evaluateIOPlan(obstacleOrder: string, timeTakenMs?: number) {
   const creditCheck = await checkAndDeductAICredits()
   if (!creditCheck.allowed) {
     if (creditCheck.reason === 'not_logged_in') return { error: 'Please sign in to continue.' }
@@ -48,7 +49,7 @@ export async function evaluateIOPlan(obstacleOrder: string) {
   try {
     await new Promise(resolve => setTimeout(resolve, 600 + Math.random() * 600));
 
-    const nlpCheck = advancedNLPCheck(obstacleOrder, false);
+    const nlpCheck = advancedNLPCheck(obstacleOrder, false, undefined, timeTakenMs);
     if (nlpCheck.fatalError || nlpCheck.isSpam) {
       return { 
         success: true, 
@@ -76,6 +77,22 @@ export async function evaluateIOPlan(obstacleOrder: string) {
 
     score = Math.max(1, Math.min(10, score));
 
+    // Apply Psychometric Traits Adjustment
+    score += nlpCheck.traitsAdjustment.practicalIntelligence;
+    score += nlpCheck.traitsAdjustment.speedOfDecision;
+    score += nlpCheck.traitsAdjustment.integrity;
+
+    let consistencyPenalty = 0;
+    let consistencyReason = null;
+    if (creditCheck.userId) {
+      const consistency = await getPsychometricConsistency(creditCheck.userId, 'IO');
+      consistencyPenalty = consistency.penalty;
+      consistencyReason = consistency.reason;
+    }
+    score -= consistencyPenalty;
+
+    score = Math.max(1, Math.min(10, score));
+
     const verdict = score >= 6 ? "Pass" : "Fail";
     
     let feedback = "";
@@ -90,6 +107,10 @@ export async function evaluateIOPlan(obstacleOrder: string) {
       if (!cons.includes(c)) cons.push(c);
     });
 
+    if (consistencyReason) {
+      cons.push(consistencyReason);
+    }
+
     const data = {
       verdict,
       score,
@@ -97,6 +118,10 @@ export async function evaluateIOPlan(obstacleOrder: string) {
       cons: cons.slice(0, 3),
       feedback
     };
+
+    if (creditCheck.userId && !isSimulation) {
+      await saveTestResult(creditCheck.userId, 'IO', score, verdict, feedback, undefined, obstacleOrder);
+    }
 
     return { success: true, data }
   } catch (error: any) {

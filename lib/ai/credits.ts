@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 
 export type AICreditCheckResult = 
-  | { allowed: true; isPremium: boolean; creditsRemaining: number }
+  | { allowed: true; isPremium: boolean; creditsRemaining: number; userId: string }
   | { allowed: false; reason: 'not_logged_in' | 'no_credits' | 'plan_expired' }
 
 export async function checkAndDeductAICredits(): Promise<AICreditCheckResult> {
@@ -27,7 +27,7 @@ export async function checkAndDeductAICredits(): Promise<AICreditCheckResult> {
 
   // Admin Lifetime Free Access Bypass
   if (profile.is_admin) {
-    return { allowed: true, isPremium: true, creditsRemaining: 9999 }
+    return { allowed: true, isPremium: true, creditsRemaining: 9999, userId: user.id }
   }
 
   // 3. Check if they have an active premium plan
@@ -45,7 +45,7 @@ export async function checkAndDeductAICredits(): Promise<AICreditCheckResult> {
       }
     }
     // Premium is active, allow unlimited access
-    return { allowed: true, isPremium: true, creditsRemaining: profile.ai_credits || 0 }
+    return { allowed: true, isPremium: true, creditsRemaining: profile.ai_credits || 0, userId: user.id }
   }
 
   // 4. If not premium, check if they have free credits
@@ -61,7 +61,7 @@ export async function checkAndDeductAICredits(): Promise<AICreditCheckResult> {
       console.error("Error deducting AI credit:", updateError)
     }
 
-    return { allowed: true, isPremium: false, creditsRemaining: credits - 1 }
+    return { allowed: true, isPremium: false, creditsRemaining: credits - 1, userId: user.id }
   }
 
   // 5. Out of credits

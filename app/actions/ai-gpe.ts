@@ -2,6 +2,7 @@
 
 import { checkAndDeductAICredits } from '@/lib/ai/credits'
 import { advancedNLPCheck } from '@/lib/ai/nlp-rules'
+import { saveTestResult, getPsychometricConsistency } from '@/lib/ai/logger'
 
 const positiveFeedbacks = [
   "A solid and workable plan demonstrating good command over resources.",
@@ -40,7 +41,7 @@ function getRandomItem(arr: string[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-export async function evaluateGPEPlan(scenario: string, priorities: string, plan: string) {
+export async function evaluateGPEPlan(scenario: string, priorities: string, plan: string, timeTakenMs?: number) {
   const creditCheck = await checkAndDeductAICredits()
   if (!creditCheck.allowed) {
     if (creditCheck.reason === 'not_logged_in') return { error: 'Please sign in to continue.' }
@@ -51,7 +52,7 @@ export async function evaluateGPEPlan(scenario: string, priorities: string, plan
     await new Promise(resolve => setTimeout(resolve, 900 + Math.random() * 800));
 
     const combinedText = priorities + " " + plan;
-    const nlpCheck = advancedNLPCheck(combinedText, true);
+    const nlpCheck = advancedNLPCheck(combinedText, true, scenario, timeTakenMs);
 
     if (nlpCheck.fatalError || nlpCheck.isSpam) {
       return { 
@@ -69,18 +70,32 @@ export async function evaluateGPEPlan(scenario: string, priorities: string, plan
     const words = plan.trim().split(/\s+/);
     const wordCount = words.length;
     const lowerPlan = plan.toLowerCase();
-    const lowerPriorities = priorities.toLowerCase();
 
-    const hasLifePriority = [/\blife\b/, /\bsave\b/, /\bhurt\b/, /\binjury\b/, /\binjured\b/, /\bhospital\b/].some(regex => regex.test(lowerPriorities) || regex.test(lowerPlan));
+    const hasLifePriority = [/\blife\b/, /\bsave\b/, /\bhurt\b/, /\binjury\b/, /\binjured\b/, /\bhospital\b/].some(regex => regex.test(lowerPlan));
     const hasStructure = [/\bfirst\b/, /\bthen\b/, /\bafter\b/, /\bnext\b/, /\bfinally\b/, /\bteam\b/, /\bdivide\b/, /\bgroup\b/].some(regex => regex.test(lowerPlan));
+    const hasDistanceTime = [/\bmiles\b/, /\bkm\b/, /\bhours\b/, /\bminutes\b/, /\btime\b/, /\bdistance\b/].some(regex => regex.test(lowerPlan));
     
     let score = 4 - nlpCheck.scorePenalty;
     
     if (wordCount >= 40) score += 2;
-    else if (wordCount < 20) score -= 2;
-
     if (hasStructure) score += 2;
+    if (hasDistanceTime) score += 2;
+    
+    if (wordCount < 15) score -= 3;
     if (hasLifePriority) score += 2;
+
+    score += nlpCheck.traitsAdjustment.practicalIntelligence;
+    score += nlpCheck.traitsAdjustment.speedOfDecision;
+    score += nlpCheck.traitsAdjustment.integrity;
+
+    let consistencyPenalty = 0;
+    let consistencyReason = null;
+    if (creditCheck.userId) {
+      const consistency = await getPsychometricConsistency(creditCheck.userId, 'GPE');
+      consistencyPenalty = consistency.penalty;
+      consistencyReason = consistency.reason;
+    }
+    score -= consistencyPenalty;
 
     score = Math.max(1, Math.min(10, score));
 
@@ -104,6 +119,10 @@ export async function evaluateGPEPlan(scenario: string, priorities: string, plan
       if (!cons.includes(c)) cons.push(c);
     });
 
+    if (consistencyReason) {
+      cons.push(consistencyReason);
+    }
+
     const data = {
       verdict,
       score,
@@ -111,6 +130,10 @@ export async function evaluateGPEPlan(scenario: string, priorities: string, plan
       cons: cons.slice(0, 3),
       feedback
     };
+
+    if (creditCheck.userId && !isSimulation) {
+      await saveTestResult(creditCheck.userId, 'GPE', score, verdict, feedback, pros, plan);
+    }
 
     return { success: true, data }
   } catch (error: any) {

@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { ShieldCheck, ShieldAlert, Layers, BookMarked, Plus, Edit, Trash2, Check, X, Upload, ExternalLink, RefreshCw, FileText, Users, Mail, Award, MessageSquare, GraduationCap, Briefcase } from 'lucide-react'
+import { ShieldCheck, ShieldAlert, Layers, BookMarked, Plus, Edit, Trash2, Check, X, Upload, ExternalLink, RefreshCw, FileText, Users, Mail, Award, MessageSquare, GraduationCap, Briefcase, ClipboardList } from 'lucide-react'
 import PortalContentManager from '@/components/admin/PortalContentManager'
+import UserEvaluationsPanel from '@/components/admin/UserEvaluationsPanel'
 
 const CATEGORIES = [
   "Academic Books", "Test Preparation", "Programming Books", "AI Books", "Engineering Books", 
@@ -76,8 +77,8 @@ export default function AdminDashboard() {
   const [loadingSubscribers, setLoadingSubscribers] = useState(false)
   // Users / Profiles states
   const [users, setUsers] = useState<any[]>([])
-  const [loadingUsers, setLoadingUsers] = useState(false)
   const [selectedUser, setSelectedUser] = useState<any>(null)
+  const [showEvaluationsPanel, setShowEvaluationsPanel] = useState(false)
   
   const [loadingOrders, setLoadingOrders] = useState(false)
   const [loadingItems, setLoadingItems] = useState(false)
@@ -1116,6 +1117,17 @@ export default function AdminDashboard() {
               ))}
             </div>
           )}
+          
+          {showEvaluationsPanel && selectedUser && (
+            <UserEvaluationsPanel 
+              userId={selectedUser.id} 
+              onClose={() => {
+                setShowEvaluationsPanel(false)
+                setSelectedUser(null)
+              }} 
+            />
+          )}
+
         </div>
       )}
 

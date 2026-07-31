@@ -2,6 +2,7 @@
 
 import { checkAndDeductAICredits } from '@/lib/ai/credits'
 import { advancedNLPCheck } from '@/lib/ai/nlp-rules'
+import { saveTestResult, getPsychometricConsistency } from '@/lib/ai/logger'
 
 const positiveFeedbacks = [
   "A pragmatic and well-structured approach highlighting functional leadership.",
@@ -42,7 +43,7 @@ function getRandomItem(arr: string[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-export async function evaluateTATStory(story: string, imageNumber: number) {
+export async function evaluateTATStory(story: string, imageNumber: number, timeTakenMs?: number) {
   const creditCheck = await checkAndDeductAICredits()
   if (!creditCheck.allowed) {
     if (creditCheck.reason === 'not_logged_in') return { error: 'Please sign in to evaluate tests.' }
@@ -53,7 +54,7 @@ export async function evaluateTATStory(story: string, imageNumber: number) {
     await new Promise(resolve => setTimeout(resolve, 1200 + Math.random() * 1000));
 
     // Advanced NLP Checks
-    const nlpCheck = advancedNLPCheck(story, false);
+    const nlpCheck = advancedNLPCheck(story, false, undefined, timeTakenMs);
     if (nlpCheck.fatalError || nlpCheck.isSpam) {
       return { 
         success: true, 
@@ -91,6 +92,20 @@ export async function evaluateTATStory(story: string, imageNumber: number) {
     if (hasPositiveKeywords) score += 2;
     if (hasNegativeKeywords) score -= 3;
 
+    // Apply Psychometric Traits Adjustment
+    score += nlpCheck.traitsAdjustment.practicalIntelligence;
+    score += nlpCheck.traitsAdjustment.speedOfDecision;
+    score += nlpCheck.traitsAdjustment.integrity;
+
+    let consistencyPenalty = 0;
+    let consistencyReason = null;
+    if (creditCheck.userId) {
+      const consistency = await getPsychometricConsistency(creditCheck.userId, 'TAT');
+      consistencyPenalty = consistency.penalty;
+      consistencyReason = consistency.reason;
+    }
+    score -= consistencyPenalty;
+
     score = Math.max(1, Math.min(10, score));
 
     if (score >= 7) verdict = "Pass";
@@ -109,6 +124,10 @@ export async function evaluateTATStory(story: string, imageNumber: number) {
     else if (verdict === "Fail") feedback = getRandomItem(negativeFeedbacks);
     else feedback = getRandomItem(borderlineFeedbacks);
 
+    if (consistencyReason) {
+      feedback += ` ${consistencyReason}`;
+    }
+
     const olqCount = verdict === "Pass" ? 3 : (verdict === "Fail" ? 1 : 2);
     const assignedOlqs = getRandomItems(olqsList, olqCount);
 
@@ -120,6 +139,10 @@ export async function evaluateTATStory(story: string, imageNumber: number) {
       olqs: assignedOlqs,
       feedback
     };
+
+    if (creditCheck.userId) {
+      await saveTestResult(creditCheck.userId, 'TAT', score, verdict, feedback, assignedOlqs, story);
+    }
 
     return { success: true, data }
   } catch (error: any) {

@@ -37,6 +37,15 @@ function getRandomItem(arr: string[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+function isRepetitiveSpam(text: string): boolean {
+  const words = text.toLowerCase().trim().split(/\s+/);
+  if (words.length < 10) return false;
+  
+  const uniqueWords = new Set(words);
+  const ratio = uniqueWords.size / words.length;
+  return ratio < 0.4;
+}
+
 export async function evaluateIOPlan(obstacleOrder: string) {
   const creditCheck = await checkAndDeductAICredits()
   if (!creditCheck.allowed) {
@@ -45,18 +54,29 @@ export async function evaluateIOPlan(obstacleOrder: string) {
   }
 
   try {
-    await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 600));
+    await new Promise(resolve => setTimeout(resolve, 600 + Math.random() * 600));
+
+    if (isRepetitiveSpam(obstacleOrder) || obstacleOrder.toLowerCase().includes("analyze the obstacle") || obstacleOrder.toLowerCase().includes("write down your strategy")) {
+      return { 
+        success: true, 
+        data: {
+          verdict: "Fail",
+          score: 1,
+          pros: ["None"],
+          cons: ["Irrelevant text provided"],
+          feedback: "Spam or copied prompt text detected."
+        }
+      }
+    }
 
     const words = obstacleOrder.trim().split(/\s+/);
     const wordCount = words.length;
     
     let score = 5;
     
-    // Check if they listed at least a few items
     if (wordCount >= 10) score += 2;
     else if (wordCount < 5) score -= 3;
 
-    // A simple heuristic for ordering (numbers, commas, arrows)
     if (obstacleOrder.includes(',') || obstacleOrder.includes('-') || obstacleOrder.includes('>')) {
        score += 2;
     }

@@ -2,7 +2,6 @@
 
 import { checkAndDeductAICredits } from '@/lib/ai/credits'
 
-// Authentic sounding feedback templates
 const positiveFeedbacks = [
   "A solid and workable plan demonstrating good command over resources.",
   "Excellent utilization of constraints and logical step-by-step execution.",
@@ -40,8 +39,16 @@ function getRandomItem(arr: string[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+function isRepetitiveSpam(text: string): boolean {
+  const words = text.toLowerCase().trim().split(/\s+/);
+  if (words.length < 10) return false;
+  
+  const uniqueWords = new Set(words);
+  const ratio = uniqueWords.size / words.length;
+  return ratio < 0.4;
+}
+
 export async function evaluateGTOPlan(plan: string, objective: string, constraints: string[]) {
-  // 1. Check credits first
   const creditCheck = await checkAndDeductAICredits()
   if (!creditCheck.allowed) {
     if (creditCheck.reason === 'not_logged_in') return { error: 'Please sign in to continue.' }
@@ -49,26 +56,38 @@ export async function evaluateGTOPlan(plan: string, objective: string, constrain
   }
 
   try {
-    // Artificial delay to mimic AI processing time
-    await new Promise(resolve => setTimeout(resolve, 600 + Math.random() * 800));
+    await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 800));
 
     const words = plan.trim().split(/\s+/);
     const wordCount = words.length;
+    
+    // Spam Check
+    if (isRepetitiveSpam(plan) || plan.toLowerCase().includes("analyze the obstacle") || plan.toLowerCase().includes("write down your strategy")) {
+      return { 
+        success: true, 
+        data: {
+          verdict: "Fail",
+          score: 1,
+          pros: ["None"],
+          cons: ["Irrelevant text provided", "Failed to construct a genuine plan"],
+          feedback: "Spam or copied prompt text detected. Please write your own plan."
+        }
+      }
+    }
+
     const lowerPlan = plan.toLowerCase();
 
-    // Heuristics
-    const hasStructure = ['first', 'then', 'after', 'next', 'finally', 'step', '1', '2', 'bridge', 'tie', 'cross'].some(k => lowerPlan.includes(k));
-    const hasResources = ['rope', 'plank', 'drum', 'wood', 'bamboo', 'material', 'load'].some(k => lowerPlan.includes(k));
+    const hasStructure = [/\bfirst\b/, /\bthen\b/, /\bafter\b/, /\bnext\b/, /\bfinally\b/, /\bstep\b/, /\b1\b/, /\b2\b/, /\bbridge\b/, /\btie\b/, /\bcross\b/].some(regex => regex.test(lowerPlan));
+    const hasResources = [/\brope\b/, /\bplank\b/, /\bdrum\b/, /\bwood\b/, /\bbamboo\b/, /\bmaterial\b/, /\bload\b/].some(regex => regex.test(lowerPlan));
     
-    let score = 5;
+    let score = 4;
     
     if (wordCount >= 30) score += 2;
     else score -= 2;
 
     if (hasStructure) score += 2;
-    if (hasResources) score += 1;
+    if (hasResources) score += 2;
     
-    // Penalize if it's exceptionally short
     if (wordCount < 15) score -= 3;
 
     score = Math.max(1, Math.min(10, score));
@@ -85,7 +104,6 @@ export async function evaluateGTOPlan(plan: string, objective: string, constrain
     const pros = getRandomItems(prosList, prosCount);
     const cons = getRandomItems(consList, consCount);
 
-    // Contextualize slightly
     if (!hasResources && verdict === "Fail") {
       cons[0] = "Failed to explicitly mention use of available helping materials.";
     }
@@ -97,7 +115,7 @@ export async function evaluateGTOPlan(plan: string, objective: string, constrain
       verdict,
       score,
       pros,
-      cons: cons.slice(0, 2), // Keep to 2 max
+      cons: cons.slice(0, 2),
       feedback
     };
 

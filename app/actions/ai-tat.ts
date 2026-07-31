@@ -42,6 +42,17 @@ function getRandomItem(arr: string[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+// Helper to check for repeating spam
+function isRepetitiveSpam(text: string): boolean {
+  const words = text.toLowerCase().trim().split(/\s+/);
+  if (words.length < 10) return false;
+  
+  const uniqueWords = new Set(words);
+  const ratio = uniqueWords.size / words.length;
+  // If less than 40% of the words are unique, it's likely copy-pasted spam
+  return ratio < 0.4;
+}
+
 export async function evaluateTATStory(story: string, imageNumber: number) {
   // 1. Check credits first
   const creditCheck = await checkAndDeductAICredits()
@@ -51,37 +62,55 @@ export async function evaluateTATStory(story: string, imageNumber: number) {
   }
 
   try {
-    // Artificial delay to mimic AI processing time (gives authentic feel)
-    await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1000));
+    await new Promise(resolve => setTimeout(resolve, 1200 + Math.random() * 1000));
 
     const words = story.trim().split(/\s+/);
     const wordCount = words.length;
     
+    // 1. Spam / Copy-Paste Detection
+    if (isRepetitiveSpam(story) || story.toLowerCase().includes("analyze the obstacle course")) {
+      return { 
+        success: true, 
+        data: {
+          verdict: "Fail",
+          score: 1,
+          heroAnalysis: "No protagonist found. Irrelevant or copied text detected.",
+          plotAnalysis: "The narrative does not form a coherent story.",
+          olqs: ["None"],
+          feedback: "Spam or irrelevant text detected. Please write a genuine story based on the image."
+        }
+      }
+    }
+
     const lowerStory = story.toLowerCase();
     
-    // Simple heuristic checks
-    const hasHeroKeywords = ['he ', 'she ', 'they ', 'decided', 'planned', 'led', 'managed', 'helped', 'friend'].some(k => lowerStory.includes(k));
-    const hasPositiveKeywords = ['success', 'solved', 'happy', 'completed', 'achieved', 'saved', 'better', 'resolved', 'agreed', 'together'].some(k => lowerStory.includes(k));
-    const hasNegativeKeywords = ['died', 'killed', 'depressed', 'failed', 'lost', 'hopeless', 'sad', 'accident', 'murder', 'suicide'].some(k => lowerStory.includes(k));
+    // Use word boundaries \b to prevent "the" from matching "he"
+    const hasHeroKeywords = [/\bhe\b/, /\bshe\b/, /\bthey\b/, /\bdecided\b/, /\bplanned\b/, /\bled\b/, /\bmanaged\b/, /\bhelped\b/, /\bfriend\b/]
+      .some(regex => regex.test(lowerStory));
+      
+    const hasPositiveKeywords = [/\bsuccess\b/, /\bsolved\b/, /\bhappy\b/, /\bcompleted\b/, /\bachieved\b/, /\bsaved\b/, /\bbetter\b/, /\bresolved\b/, /\bagreed\b/, /\btogether\b/]
+      .some(regex => regex.test(lowerStory));
+      
+    const hasNegativeKeywords = [/\bdied\b/, /\bkilled\b/, /\bdepressed\b/, /\bfailed\b/, /\blost\b/, /\bhopeless\b/, /\bsad\b/, /\baccident\b/, /\bmurder\b/, /\bsuicide\b/]
+      .some(regex => regex.test(lowerStory));
 
-    let score = 5;
+    let score = 4;
     let verdict = "Borderline";
     
     // Scoring Logic
-    if (wordCount >= 40 && wordCount <= 180) score += 2;
-    else if (wordCount < 40) score -= 3;
+    if (wordCount >= 50 && wordCount <= 200) score += 2;
+    else if (wordCount < 30) score -= 4;
 
-    if (hasHeroKeywords) score += 1;
+    if (hasHeroKeywords) score += 2;
     if (hasPositiveKeywords) score += 2;
     if (hasNegativeKeywords) score -= 3;
 
-    // Ensure bounds
     score = Math.max(1, Math.min(10, score));
 
     if (score >= 7) verdict = "Pass";
     else if (score <= 4) verdict = "Fail";
 
-    // Dynamic Analysis Generation
+    // Dynamic Analysis
     const heroAnalysis = score >= 6 
       ? "The protagonist is clearly identified and takes charge of the situation proactively."
       : (hasHeroKeywords ? "A central figure is present but their actions could be more decisive." : "The narrative lacks a strong, active central protagonist.");
@@ -95,7 +124,6 @@ export async function evaluateTATStory(story: string, imageNumber: number) {
     else if (verdict === "Fail") feedback = getRandomItem(negativeFeedbacks);
     else feedback = getRandomItem(borderlineFeedbacks);
 
-    // Randomize slightly so similar scores get different OLQs
     const olqCount = verdict === "Pass" ? 3 : (verdict === "Fail" ? 1 : 2);
     const assignedOlqs = getRandomItems(olqsList, olqCount);
 

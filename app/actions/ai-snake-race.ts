@@ -37,6 +37,15 @@ function getRandomItem(arr: string[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+function isRepetitiveSpam(text: string): boolean {
+  const words = text.toLowerCase().trim().split(/\s+/);
+  if (words.length < 10) return false;
+  
+  const uniqueWords = new Set(words);
+  const ratio = uniqueWords.size / words.length;
+  return ratio < 0.4;
+}
+
 export async function evaluateSnakeRacePlan(scenario: string, plan: string) {
   const creditCheck = await checkAndDeductAICredits()
   if (!creditCheck.allowed) {
@@ -45,18 +54,31 @@ export async function evaluateSnakeRacePlan(scenario: string, plan: string) {
   }
 
   try {
-    await new Promise(resolve => setTimeout(resolve, 600 + Math.random() * 700));
+    await new Promise(resolve => setTimeout(resolve, 700 + Math.random() * 700));
+
+    if (isRepetitiveSpam(plan) || plan.toLowerCase().includes("analyze the obstacle") || plan.toLowerCase().includes("write down your strategy")) {
+      return { 
+        success: true, 
+        data: {
+          verdict: "Fail",
+          score: 1,
+          pros: ["None"],
+          cons: ["Irrelevant text provided"],
+          feedback: "Spam or copied prompt text detected."
+        }
+      }
+    }
 
     const words = plan.trim().split(/\s+/);
     const wordCount = words.length;
     const lowerPlan = plan.toLowerCase();
     
-    let score = 5;
+    let score = 4;
     
-    const hasTeamwork = ['team', 'together', 'help', 'push', 'pull', 'motivate', 'shout', 'cheer', 'group'].some(k => lowerPlan.includes(k));
-    const hasSnakeRule = ['snake', 'hold', 'touch', 'carry'].some(k => lowerPlan.includes(k));
+    const hasTeamwork = [/\bteam\b/, /\btogether\b/, /\bhelp\b/, /\bpush\b/, /\bpull\b/, /\bmotivate\b/, /\bshout\b/, /\bcheer\b/, /\bgroup\b/].some(regex => regex.test(lowerPlan));
+    const hasSnakeRule = [/\bsnake\b/, /\bhold\b/, /\btouch\b/, /\bcarry\b/].some(regex => regex.test(lowerPlan));
 
-    if (wordCount >= 20) score += 1;
+    if (wordCount >= 20) score += 2;
     else if (wordCount < 10) score -= 2;
 
     if (hasTeamwork) score += 2;

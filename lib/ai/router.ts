@@ -50,9 +50,9 @@ export class AIRouter {
         const result = await task(ai)
         return result
       } catch (error: any) {
-        // If it's a rate limit error (429) or quota exceeded, switch key and retry
-        if (error?.message?.includes("429") || error?.message?.includes("quota") || error?.status === 429) {
-          console.warn(`API Limit reached on Key #${this.currentIndex + 1}. Switching keys...`)
+        // Switch key and retry on rate limit (429), quota, or model not found (404 / 400)
+        if (error?.message?.includes("429") || error?.message?.includes("quota") || error?.status === 429 || error?.message?.includes("404") || error?.status === 404 || error?.message?.includes("400")) {
+          console.warn(`API Error on Key #${this.currentIndex + 1}. Switching keys...`)
           this.switchKey()
           retries++
           continue

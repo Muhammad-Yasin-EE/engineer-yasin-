@@ -16,13 +16,18 @@ export async function checkAndDeductAICredits(): Promise<AICreditCheckResult> {
   // 2. Fetch the user's profile to check credits and premium status
   const { data: profile, error } = await supabase
     .from('profiles')
-    .select('ai_credits, premium_plan, premium_expiry')
+    .select('ai_credits, premium_plan, premium_expiry, is_admin')
     .eq('id', user.id)
     .single()
 
   if (error || !profile) {
     console.error("Error fetching profile for credits:", error)
     return { allowed: false, reason: 'no_credits' } // Safe fallback
+  }
+
+  // Admin Lifetime Free Access Bypass
+  if (profile.is_admin) {
+    return { allowed: true, isPremium: true, creditsRemaining: 9999 }
   }
 
   // 3. Check if they have an active premium plan

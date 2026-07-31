@@ -1,7 +1,7 @@
 -- RUN THIS SCRIPT IN SUPABASE SQL EDITOR
 
 ALTER TABLE public.profiles
-ADD COLUMN IF NOT EXISTS ai_credits INTEGER DEFAULT 3,
+ADD COLUMN IF NOT EXISTS ai_credits INTEGER DEFAULT 5,
 ADD COLUMN IF NOT EXISTS premium_plan TEXT DEFAULT 'free',
 ADD COLUMN IF NOT EXISTS premium_expiry TIMESTAMP WITH TIME ZONE;
 
@@ -23,9 +23,15 @@ BEGIN
       WHEN new.email = 'engineeryasin2029@gmail.com' OR new.email = 'yasinofficial03098158572@gmail.com' OR new.email = 'engineeryasinlab@gmail.com' THEN true 
       ELSE false 
     END,
-    3, -- Give 3 free credits
+    5, -- Give 5 free credits
     'free'
   );
   RETURN new;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- ONE TIME MIGRATION: Update existing users from 3 to 5 credits if they haven't used any
+-- Or just give everyone on the free plan 5 credits (if they were at 3 or less)
+UPDATE public.profiles 
+SET ai_credits = 5 
+WHERE ai_credits <= 3 AND premium_plan = 'free';

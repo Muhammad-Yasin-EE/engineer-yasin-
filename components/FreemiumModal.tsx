@@ -56,7 +56,7 @@ export function FreemiumModal({ isOpen, onClose }: { isOpen: boolean, onClose: (
               </div>
               <h2 className="text-2xl font-black mb-2 tracking-tight">Free Limit Reached!</h2>
               <p className="text-sm text-blue-100 font-medium leading-relaxed">
-                You have exhausted your 3 free AI evaluations. Upgrade to Premium to continue your preparation.
+                You have exhausted your 5 free AI evaluations. Upgrade to Premium to continue your preparation.
               </p>
             </div>
 

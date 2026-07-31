@@ -1774,6 +1774,15 @@ export default function AdminDashboard() {
                   >
                     {u.premium_plan && u.premium_plan !== 'free' ? 'Revoke Premium' : 'Grant Monthly Pro'}
                   </button>
+                  <button
+                      onClick={() => {
+                        setSelectedUser(u)
+                        setShowEvaluationsPanel(true)
+                      }}
+                      className="mt-2 w-full py-2 text-[10px] font-black uppercase tracking-widest rounded-sm transition-colors bg-[#0A192F] hover:bg-slate-800 text-white flex items-center justify-center gap-1.5"
+                    >
+                      <ClipboardList className="w-3.5 h-3.5" /> View ISSB Tests
+                  </button>
                 </div>
               ))}
             </div>

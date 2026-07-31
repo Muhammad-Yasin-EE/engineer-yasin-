@@ -207,16 +207,16 @@ export default async function Home() {
 
             {/* Right Content - Interactive Hero Showcase */}
             <div className="flex-1 w-full max-w-md lg:max-w-none relative">
-              <div className="relative aspect-square sm:aspect-[4/3] lg:aspect-square w-full sm:w-4/5 lg:w-full mx-auto">
-                <div className="absolute inset-0 bg-gradient-to-tr from-amber-100 to-rose-100 rounded-3xl blur-2xl opacity-70"></div>
+              <div className="relative aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4] w-full sm:w-4/5 lg:w-full mx-auto">
+                <div className="absolute inset-0 bg-gradient-to-tr from-emerald-100 to-sky-100 rounded-3xl blur-2xl opacity-70"></div>
                 
                 <div className="relative z-10 w-full h-full rounded-3xl overflow-hidden border-2 border-gray-200 shadow-xl bg-white group">
                   <Image 
-                    src="/images/real-forces-illustration.jpg" 
-                    alt="Official Armed Forces and Engineering Excellence" 
+                    src="/images/hero-armed-forces.jpg" 
+                    alt="Salute to the Armed Forces of Pakistan" 
                     fill
                     priority
-                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-90"></div>
 

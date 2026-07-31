@@ -1118,16 +1118,7 @@ export default function AdminDashboard() {
               ))}
             </div>
           )}
-          
-          {showEvaluationsPanel && selectedUser && (
-            <UserEvaluationsPanel 
-              userId={selectedUser.id} 
-              onClose={() => {
-                setShowEvaluationsPanel(false)
-                setSelectedUser(null)
-              }} 
-            />
-          )}
+
 
         </div>
       )}
@@ -1786,6 +1777,15 @@ export default function AdminDashboard() {
                 </div>
               ))}
             </div>
+          )}
+          {showEvaluationsPanel && selectedUser && (
+            <UserEvaluationsPanel 
+              userId={selectedUser.id} 
+              onClose={() => {
+                setShowEvaluationsPanel(false)
+                setSelectedUser(null)
+              }} 
+            />
           )}
         </div>
       )}

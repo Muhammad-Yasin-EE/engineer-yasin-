@@ -30,9 +30,21 @@ export async function generateMetadata(
   else if (cat.includes('army') || tit.includes('army') || tit.includes('pma')) image = '/images/exam-army-bg.jpg'
   else if (cat.includes('public') || tit.includes('psc')) image = '/images/public-service-header.jpg'
 
+  const keywords = [
+    data.title, 
+    data.category, 
+    `${data.category} online test`, 
+    `${data.title} practice online`,
+    'Armed Forces initial test',
+    'Pakistan Armed Forces preparation',
+    `${data.category} mock test`,
+    'Engineer Yasin Prep'
+  ].filter(Boolean) as string[]
+
   return {
     title,
     description,
+    keywords,
     openGraph: {
       title,
       description,

@@ -18,7 +18,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/track',
     '/blog',
     '/login',
-    '/signup'
+    '/signup',
+    '/issb',
+    '/army',
+    '/navy',
+    '/paf',
+    '/bpsc'
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
@@ -76,5 +81,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('Sitemap custom pages fetch failure:', err)
   }
 
-  return [...routes, ...itemsUrls, ...blogUrls, ...customPageUrls]
+  // 4. Fetch dynamic quizzes
+  let quizUrls: any[] = []
+  try {
+    const { data } = await adminSupabase.from('quizzes').select('id, created_at')
+    if (data) {
+      quizUrls = data.map((quiz) => ({
+        url: `${baseUrl}/prep/quiz/${quiz.id}`,
+        lastModified: quiz.created_at ? new Date(quiz.created_at) : new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.9 // High priority for Armed forces quizzes
+      }))
+    }
+  } catch (err) {
+    console.error('Sitemap quizzes fetch failure:', err)
+  }
+
+  return [...routes, ...itemsUrls, ...blogUrls, ...customPageUrls, ...quizUrls]
 }

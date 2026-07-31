@@ -16,7 +16,15 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://www.engineeryasin.xyz"),
   title: "Engineer Yasin | Premier Armed Forces & Cadet Colleges Portal",
   description: "Official portal of Engineer Yasin Digital Prep Portal. Access premium Pakistan Armed Forces (PMA Long Course, PAF, Navy) initial practice tests, ISSB guidance, and Cadet Colleges preparation.",
-  keywords: ["Engineer Yasin", "Engineer Yasin Forces Portal", "Engineer Yasin Prep Hub", "PMA Long Course Preparation", "ISSB Preparation", "PAF GD Pilot Test", "PN Cadet Test", "Cadet Colleges Entry Test", "Forces MCQs Online", "BPSC Quetta", "FPSC", "PPSC"],
+  keywords: [
+    "Engineer Yasin", "Engineer Yasin Forces Portal", "Engineer Yasin Prep Hub", "PMA Long Course Preparation", 
+    "ISSB Preparation", "PAF GD Pilot Test", "PN Cadet Test", "Cadet Colleges Entry Test", "Forces MCQs Online", 
+    "BPSC Quetta", "FPSC", "PPSC", "Pakistan Army Initial Test", "Join Pak Army", "Join PAF", "Join Pak Navy",
+    "AFNS Preparation", "TCC Technical Cadet Course", "LCC Lady Cadet Course", "Army Medical College AMC Test",
+    "PAF Airmen Test", "PAF Aeronautical Engineering", "Navy Sailor Test", "Pak Marines Test",
+    "ISSB Psychological Tests", "OPI Test Online", "WAT Word Association Test", "TAT Picture Story Writing",
+    "GTO Tasks Pakistan", "Deputy President Interview ISSB", "Armed Forces Intelligence Test", "Verbal Non Verbal Intelligence"
+  ],
   authors: [{ name: "Engineer Yasin" }],
   openGraph: {
     title: "Engineer Yasin | Premier Armed Forces & Cadet Colleges Portal",

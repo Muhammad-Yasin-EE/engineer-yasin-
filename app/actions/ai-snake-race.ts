@@ -10,7 +10,7 @@ export async function evaluateSnakeRacePlan(scenario: string, plan: string) {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' })
     
     const prompt = `You are a strict GTO evaluating a Snake Race (Group Obstacle Race) response at ISSB.
 Scenario: "${scenario}"

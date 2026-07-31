@@ -13,7 +13,7 @@ export async function evaluateGTOPlan(plan: string, objective: string, constrain
 
   try {
     return await AIRouter.executeWithFailover(async (ai) => {
-      const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash' })
+      const model = ai.getGenerativeModel({ model: 'gemini-3.5-flash' })
       
       const prompt = `You are a strict GTO (Group Testing Officer) at ISSB.
 A candidate has submitted an execution plan for a Command Task/Group Task.

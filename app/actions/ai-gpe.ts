@@ -10,7 +10,7 @@ export async function evaluateGPEPlan(scenario: string, priorities: string, plan
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
     
     const prompt = `You are a strict GTO evaluating a Group Planning Exercise (GPE/MOP) at ISSB.
 Scenario Narrative: "${scenario}"

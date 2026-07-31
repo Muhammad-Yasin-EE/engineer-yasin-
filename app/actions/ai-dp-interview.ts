@@ -15,7 +15,7 @@ export async function chatWithDpInterview(
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
     
     // Extract PIF data to a readable string for the prompt
     const pifString = JSON.stringify(pifData, null, 2)

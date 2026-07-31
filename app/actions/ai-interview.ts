@@ -13,7 +13,7 @@ export async function chatWithISSBPsychologist(messageHistory: { role: 'user' | 
 
   try {
     return await AIRouter.executeWithFailover(async (ai) => {
-      const model = ai.getGenerativeModel({ model: 'gemini-pro' })
+      const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash' })
       
       const systemPrompt = `You are an expert, highly critical, and strict ISSB (Inter Services Selection Board) Psychologist for the Pakistan Armed Forces. 
 Your primary goal is to heavily scrutinize the candidate, put them under immense pressure, and constantly cross-question them based EXACTLY on their previous answers. 

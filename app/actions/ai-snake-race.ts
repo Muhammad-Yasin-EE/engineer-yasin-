@@ -1,6 +1,7 @@
 'use server'
 
 import { checkAndDeductAICredits } from '@/lib/ai/credits'
+import { advancedNLPCheck } from '@/lib/ai/nlp-rules'
 
 const positiveFeedbacks = [
   "Excellent display of teamwork and high-energy leadership.",
@@ -37,15 +38,6 @@ function getRandomItem(arr: string[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function isRepetitiveSpam(text: string): boolean {
-  const words = text.toLowerCase().trim().split(/\s+/);
-  if (words.length < 10) return false;
-  
-  const uniqueWords = new Set(words);
-  const ratio = uniqueWords.size / words.length;
-  return ratio < 0.4;
-}
-
 export async function evaluateSnakeRacePlan(scenario: string, plan: string) {
   const creditCheck = await checkAndDeductAICredits()
   if (!creditCheck.allowed) {
@@ -56,7 +48,8 @@ export async function evaluateSnakeRacePlan(scenario: string, plan: string) {
   try {
     await new Promise(resolve => setTimeout(resolve, 700 + Math.random() * 700));
 
-    if (isRepetitiveSpam(plan) || plan.toLowerCase().includes("analyze the obstacle") || plan.toLowerCase().includes("write down your strategy")) {
+    const nlpCheck = advancedNLPCheck(plan, true);
+    if (nlpCheck.fatalError || nlpCheck.isSpam) {
       return { 
         success: true, 
         data: {
@@ -64,7 +57,7 @@ export async function evaluateSnakeRacePlan(scenario: string, plan: string) {
           score: 1,
           pros: ["None"],
           cons: ["Irrelevant text provided"],
-          feedback: "Spam or copied prompt text detected."
+          feedback: nlpCheck.fatalError || "Spam or copied prompt text detected."
         }
       }
     }
@@ -73,7 +66,7 @@ export async function evaluateSnakeRacePlan(scenario: string, plan: string) {
     const wordCount = words.length;
     const lowerPlan = plan.toLowerCase();
     
-    let score = 4;
+    let score = 4 - nlpCheck.scorePenalty;
     
     const hasTeamwork = [/\bteam\b/, /\btogether\b/, /\bhelp\b/, /\bpush\b/, /\bpull\b/, /\bmotivate\b/, /\bshout\b/, /\bcheer\b/, /\bgroup\b/].some(regex => regex.test(lowerPlan));
     const hasSnakeRule = [/\bsnake\b/, /\bhold\b/, /\btouch\b/, /\bcarry\b/].some(regex => regex.test(lowerPlan));
@@ -101,11 +94,15 @@ export async function evaluateSnakeRacePlan(scenario: string, plan: string) {
         cons[0] = "Forgot to explicitly state holding/carrying the snake.";
     }
 
+    nlpCheck.consToAdd.forEach(c => {
+      if (!cons.includes(c)) cons.push(c);
+    });
+
     const data = {
       verdict,
       score,
       pros: getRandomItems(prosList, prosCount),
-      cons,
+      cons: cons.slice(0, 3),
       feedback
     };
 

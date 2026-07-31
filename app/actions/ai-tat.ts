@@ -1,8 +1,8 @@
 'use server'
 
 import { checkAndDeductAICredits } from '@/lib/ai/credits'
+import { advancedNLPCheck } from '@/lib/ai/nlp-rules'
 
-// Authentic sounding feedback templates
 const positiveFeedbacks = [
   "A pragmatic and well-structured approach highlighting functional leadership.",
   "Demonstrates strong situational awareness and a constructive outcome.",
@@ -42,19 +42,7 @@ function getRandomItem(arr: string[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// Helper to check for repeating spam
-function isRepetitiveSpam(text: string): boolean {
-  const words = text.toLowerCase().trim().split(/\s+/);
-  if (words.length < 10) return false;
-  
-  const uniqueWords = new Set(words);
-  const ratio = uniqueWords.size / words.length;
-  // If less than 40% of the words are unique, it's likely copy-pasted spam
-  return ratio < 0.4;
-}
-
 export async function evaluateTATStory(story: string, imageNumber: number) {
-  // 1. Check credits first
   const creditCheck = await checkAndDeductAICredits()
   if (!creditCheck.allowed) {
     if (creditCheck.reason === 'not_logged_in') return { error: 'Please sign in to evaluate tests.' }
@@ -64,27 +52,26 @@ export async function evaluateTATStory(story: string, imageNumber: number) {
   try {
     await new Promise(resolve => setTimeout(resolve, 1200 + Math.random() * 1000));
 
-    const words = story.trim().split(/\s+/);
-    const wordCount = words.length;
-    
-    // 1. Spam / Copy-Paste Detection
-    if (isRepetitiveSpam(story) || story.toLowerCase().includes("analyze the obstacle course")) {
+    // Advanced NLP Checks
+    const nlpCheck = advancedNLPCheck(story, false);
+    if (nlpCheck.fatalError || nlpCheck.isSpam) {
       return { 
         success: true, 
         data: {
           verdict: "Fail",
           score: 1,
-          heroAnalysis: "No protagonist found. Irrelevant or copied text detected.",
+          heroAnalysis: "No protagonist found due to irrelevant or nonsensical text.",
           plotAnalysis: "The narrative does not form a coherent story.",
           olqs: ["None"],
-          feedback: "Spam or irrelevant text detected. Please write a genuine story based on the image."
+          feedback: nlpCheck.fatalError || "Spam or irrelevant text detected. Please write a genuine story based on the image."
         }
       }
     }
 
+    const words = story.trim().split(/\s+/);
+    const wordCount = words.length;
     const lowerStory = story.toLowerCase();
     
-    // Use word boundaries \b to prevent "the" from matching "he"
     const hasHeroKeywords = [/\bhe\b/, /\bshe\b/, /\bthey\b/, /\bdecided\b/, /\bplanned\b/, /\bled\b/, /\bmanaged\b/, /\bhelped\b/, /\bfriend\b/]
       .some(regex => regex.test(lowerStory));
       
@@ -94,10 +81,9 @@ export async function evaluateTATStory(story: string, imageNumber: number) {
     const hasNegativeKeywords = [/\bdied\b/, /\bkilled\b/, /\bdepressed\b/, /\bfailed\b/, /\blost\b/, /\bhopeless\b/, /\bsad\b/, /\baccident\b/, /\bmurder\b/, /\bsuicide\b/]
       .some(regex => regex.test(lowerStory));
 
-    let score = 4;
+    let score = 4 - nlpCheck.scorePenalty;
     let verdict = "Borderline";
     
-    // Scoring Logic
     if (wordCount >= 50 && wordCount <= 200) score += 2;
     else if (wordCount < 30) score -= 4;
 
@@ -110,7 +96,6 @@ export async function evaluateTATStory(story: string, imageNumber: number) {
     if (score >= 7) verdict = "Pass";
     else if (score <= 4) verdict = "Fail";
 
-    // Dynamic Analysis
     const heroAnalysis = score >= 6 
       ? "The protagonist is clearly identified and takes charge of the situation proactively."
       : (hasHeroKeywords ? "A central figure is present but their actions could be more decisive." : "The narrative lacks a strong, active central protagonist.");

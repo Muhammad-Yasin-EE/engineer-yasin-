@@ -1,6 +1,7 @@
 'use server'
 
 import { checkAndDeductAICredits } from '@/lib/ai/credits'
+import { advancedNLPCheck } from '@/lib/ai/nlp-rules'
 
 const positiveFeedbacks = [
   "A solid and workable plan demonstrating good command over resources.",
@@ -39,15 +40,6 @@ function getRandomItem(arr: string[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function isRepetitiveSpam(text: string): boolean {
-  const words = text.toLowerCase().trim().split(/\s+/);
-  if (words.length < 10) return false;
-  
-  const uniqueWords = new Set(words);
-  const ratio = uniqueWords.size / words.length;
-  return ratio < 0.4;
-}
-
 export async function evaluateGPEPlan(scenario: string, priorities: string, plan: string) {
   const creditCheck = await checkAndDeductAICredits()
   if (!creditCheck.allowed) {
@@ -59,7 +51,9 @@ export async function evaluateGPEPlan(scenario: string, priorities: string, plan
     await new Promise(resolve => setTimeout(resolve, 900 + Math.random() * 800));
 
     const combinedText = priorities + " " + plan;
-    if (isRepetitiveSpam(combinedText) || combinedText.toLowerCase().includes("analyze the obstacle") || combinedText.toLowerCase().includes("write down your strategy")) {
+    const nlpCheck = advancedNLPCheck(combinedText, true);
+
+    if (nlpCheck.fatalError || nlpCheck.isSpam) {
       return { 
         success: true, 
         data: {
@@ -67,7 +61,7 @@ export async function evaluateGPEPlan(scenario: string, priorities: string, plan
           score: 1,
           pros: ["None"],
           cons: ["Irrelevant text provided", "Failed to construct a genuine plan"],
-          feedback: "Spam or copied prompt text detected. Please write your own plan."
+          feedback: nlpCheck.fatalError || "Spam or copied prompt text detected. Please write your own plan."
         }
       }
     }
@@ -80,7 +74,7 @@ export async function evaluateGPEPlan(scenario: string, priorities: string, plan
     const hasLifePriority = [/\blife\b/, /\bsave\b/, /\bhurt\b/, /\binjury\b/, /\binjured\b/, /\bhospital\b/].some(regex => regex.test(lowerPriorities) || regex.test(lowerPlan));
     const hasStructure = [/\bfirst\b/, /\bthen\b/, /\bafter\b/, /\bnext\b/, /\bfinally\b/, /\bteam\b/, /\bdivide\b/, /\bgroup\b/].some(regex => regex.test(lowerPlan));
     
-    let score = 4;
+    let score = 4 - nlpCheck.scorePenalty;
     
     if (wordCount >= 40) score += 2;
     else if (wordCount < 20) score -= 2;
@@ -106,11 +100,15 @@ export async function evaluateGPEPlan(scenario: string, priorities: string, plan
       cons[0] = "Failed to prioritize human life (the most critical objective).";
     }
 
+    nlpCheck.consToAdd.forEach(c => {
+      if (!cons.includes(c)) cons.push(c);
+    });
+
     const data = {
       verdict,
       score,
       pros,
-      cons: cons.slice(0, 2),
+      cons: cons.slice(0, 3),
       feedback
     };
 

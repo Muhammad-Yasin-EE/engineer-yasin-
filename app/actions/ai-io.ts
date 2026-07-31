@@ -1,6 +1,7 @@
 'use server'
 
 import { checkAndDeductAICredits } from '@/lib/ai/credits'
+import { advancedNLPCheck } from '@/lib/ai/nlp-rules'
 
 const positiveFeedbacks = [
   "A very logical and energy-efficient sequence.",
@@ -37,15 +38,6 @@ function getRandomItem(arr: string[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function isRepetitiveSpam(text: string): boolean {
-  const words = text.toLowerCase().trim().split(/\s+/);
-  if (words.length < 10) return false;
-  
-  const uniqueWords = new Set(words);
-  const ratio = uniqueWords.size / words.length;
-  return ratio < 0.4;
-}
-
 export async function evaluateIOPlan(obstacleOrder: string) {
   const creditCheck = await checkAndDeductAICredits()
   if (!creditCheck.allowed) {
@@ -56,7 +48,8 @@ export async function evaluateIOPlan(obstacleOrder: string) {
   try {
     await new Promise(resolve => setTimeout(resolve, 600 + Math.random() * 600));
 
-    if (isRepetitiveSpam(obstacleOrder) || obstacleOrder.toLowerCase().includes("analyze the obstacle") || obstacleOrder.toLowerCase().includes("write down your strategy")) {
+    const nlpCheck = advancedNLPCheck(obstacleOrder, false);
+    if (nlpCheck.fatalError || nlpCheck.isSpam) {
       return { 
         success: true, 
         data: {
@@ -64,7 +57,7 @@ export async function evaluateIOPlan(obstacleOrder: string) {
           score: 1,
           pros: ["None"],
           cons: ["Irrelevant text provided"],
-          feedback: "Spam or copied prompt text detected."
+          feedback: nlpCheck.fatalError || "Spam or copied prompt text detected."
         }
       }
     }
@@ -72,7 +65,7 @@ export async function evaluateIOPlan(obstacleOrder: string) {
     const words = obstacleOrder.trim().split(/\s+/);
     const wordCount = words.length;
     
-    let score = 5;
+    let score = 5 - nlpCheck.scorePenalty;
     
     if (wordCount >= 10) score += 2;
     else if (wordCount < 5) score -= 3;
@@ -92,11 +85,16 @@ export async function evaluateIOPlan(obstacleOrder: string) {
     const prosCount = verdict === "Pass" ? 2 : 1;
     const consCount = verdict === "Fail" ? 2 : 1;
 
+    const cons = getRandomItems(consList, consCount);
+    nlpCheck.consToAdd.forEach(c => {
+      if (!cons.includes(c)) cons.push(c);
+    });
+
     const data = {
       verdict,
       score,
       pros: getRandomItems(prosList, prosCount),
-      cons: getRandomItems(consList, consCount),
+      cons: cons.slice(0, 3),
       feedback
     };
 

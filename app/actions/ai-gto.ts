@@ -1,6 +1,7 @@
 'use server'
 
 import { checkAndDeductAICredits } from '@/lib/ai/credits'
+import { advancedNLPCheck } from '@/lib/ai/nlp-rules'
 
 const positiveFeedbacks = [
   "A solid and workable plan demonstrating good command over resources.",
@@ -21,7 +22,8 @@ const negativeFeedbacks = [
 const prosList = [
   "Clear step-by-step logic", "Good resource utilization", "Safety protocols observed",
   "Effective delegation implied", "Quick execution timeline", "Pragmatic approach",
-  "Addressed the main obstacle", "Good use of available materials"
+  "Addressed the main obstacle", "Good use of available materials",
+  "Used cantilever principles", "Understood bridging effectively"
 ];
 
 const consList = [
@@ -39,15 +41,6 @@ function getRandomItem(arr: string[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function isRepetitiveSpam(text: string): boolean {
-  const words = text.toLowerCase().trim().split(/\s+/);
-  if (words.length < 10) return false;
-  
-  const uniqueWords = new Set(words);
-  const ratio = uniqueWords.size / words.length;
-  return ratio < 0.4;
-}
-
 export async function evaluateGTOPlan(plan: string, objective: string, constraints: string[]) {
   const creditCheck = await checkAndDeductAICredits()
   if (!creditCheck.allowed) {
@@ -58,11 +51,8 @@ export async function evaluateGTOPlan(plan: string, objective: string, constrain
   try {
     await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 800));
 
-    const words = plan.trim().split(/\s+/);
-    const wordCount = words.length;
-    
-    // Spam Check
-    if (isRepetitiveSpam(plan) || plan.toLowerCase().includes("analyze the obstacle") || plan.toLowerCase().includes("write down your strategy")) {
+    const nlpCheck = advancedNLPCheck(plan, true);
+    if (nlpCheck.fatalError || nlpCheck.isSpam) {
       return { 
         success: true, 
         data: {
@@ -70,17 +60,19 @@ export async function evaluateGTOPlan(plan: string, objective: string, constrain
           score: 1,
           pros: ["None"],
           cons: ["Irrelevant text provided", "Failed to construct a genuine plan"],
-          feedback: "Spam or copied prompt text detected. Please write your own plan."
+          feedback: nlpCheck.fatalError || "Spam or copied prompt text detected. Please write your own plan."
         }
       }
     }
 
+    const words = plan.trim().split(/\s+/);
+    const wordCount = words.length;
     const lowerPlan = plan.toLowerCase();
 
     const hasStructure = [/\bfirst\b/, /\bthen\b/, /\bafter\b/, /\bnext\b/, /\bfinally\b/, /\bstep\b/, /\b1\b/, /\b2\b/, /\bbridge\b/, /\btie\b/, /\bcross\b/].some(regex => regex.test(lowerPlan));
-    const hasResources = [/\brope\b/, /\bplank\b/, /\bdrum\b/, /\bwood\b/, /\bbamboo\b/, /\bmaterial\b/, /\bload\b/].some(regex => regex.test(lowerPlan));
+    const hasResources = [/\brope\b/, /\bplank\b/, /\bdrum\b/, /\bwood\b/, /\bbamboo\b/, /\bmaterial\b/, /\bload\b/, /\bcantilever\b/, /\bfulcrum\b/, /\blash\b/].some(regex => regex.test(lowerPlan));
     
-    let score = 4;
+    let score = 4 - nlpCheck.scorePenalty;
     
     if (wordCount >= 30) score += 2;
     else score -= 2;
@@ -111,11 +103,16 @@ export async function evaluateGTOPlan(plan: string, objective: string, constrain
       cons.push("Execution sequence is poorly structured.");
     }
 
+    // Add NLP cons (like individualistic penalty)
+    nlpCheck.consToAdd.forEach(c => {
+      if (!cons.includes(c)) cons.push(c);
+    });
+
     const data = {
       verdict,
       score,
       pros,
-      cons: cons.slice(0, 2),
+      cons: cons.slice(0, 3), // Max 3 cons
       feedback
     };
 

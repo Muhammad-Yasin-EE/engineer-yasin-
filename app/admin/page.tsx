@@ -77,6 +77,7 @@ export default function AdminDashboard() {
   const [loadingSubscribers, setLoadingSubscribers] = useState(false)
   // Users / Profiles states
   const [users, setUsers] = useState<any[]>([])
+  const [loadingUsers, setLoadingUsers] = useState(false)
   const [selectedUser, setSelectedUser] = useState<any>(null)
   const [showEvaluationsPanel, setShowEvaluationsPanel] = useState(false)
   

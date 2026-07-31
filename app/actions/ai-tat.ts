@@ -13,7 +13,7 @@ export async function evaluateTATStory(story: string, imageNumber: number) {
 
   try {
     return await AIRouter.executeWithFailover(async (ai) => {
-      const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' })
+      const model = ai.getGenerativeModel({ model: 'gemini-pro' })
       
       const prompt = `You are an expert Psychologist at ISSB (Inter Services Selection Board).
 A candidate was shown "TAT Scene ${imageNumber}" for 30 seconds and given 3.5 minutes to write a story.
@@ -42,7 +42,7 @@ Return a JSON object EXACTLY in this format, with NO markdown formatting around 
         generationConfig: {
           maxOutputTokens: 500,
           temperature: 0.2,
-          responseMimeType: "application/json",
+          
         }
       })
       

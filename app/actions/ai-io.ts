@@ -10,7 +10,7 @@ export async function evaluateIOPlan(obstacleOrder: string) {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
     
     const prompt = `You are a strict GTO evaluating an Individual Obstacles (IO) route plan at ISSB.
 The candidate has 3 minutes to tackle 10 obstacles worth 55 marks.

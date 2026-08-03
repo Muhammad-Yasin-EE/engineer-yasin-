@@ -50,7 +50,7 @@ function formatQuizDisplay(title: string = '', cat: string = '') {
 }
 
 export default async function Home() {
-  const supabase = createClient()
+  const supabase = await createClient()
   
   let quizzes: any[] = []
   let errorMsg: string | null = null

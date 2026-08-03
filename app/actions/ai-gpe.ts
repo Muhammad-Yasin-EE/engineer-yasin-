@@ -131,7 +131,7 @@ export async function evaluateGPEPlan(scenario: string, priorities: string, plan
       feedback
     };
 
-    if (creditCheck.userId && !isSimulation) {
+    if (creditCheck.userId) {
       await saveTestResult(creditCheck.userId, 'GPE', score, verdict, feedback, pros, plan);
     }
 

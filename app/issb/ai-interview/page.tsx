@@ -37,7 +37,7 @@ export default function AIInterviewPage() {
 
     const res = await chatWithISSBPsychologist(messages, userMessage)
     
-    if (res.error) {
+    if ('error' in res && res.error) {
       if (res.error === 'insufficient_credits') {
         setShowFreemiumModal(true)
       } else {
@@ -46,7 +46,7 @@ export default function AIInterviewPage() {
       // Revert the last user message if there's an error so they can try again
       setMessages(messages)
       setInput(userMessage)
-    } else if (res.success && res.text) {
+    } else if ('success' in res && res.success && 'text' in res && res.text) {
       setMessages([...newMessages, { role: 'model', content: res.text }])
     }
     

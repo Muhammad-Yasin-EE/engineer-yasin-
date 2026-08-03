@@ -13,12 +13,14 @@ interface AuthGateButtonProps {
   label?: string
   className?: string
   children?: React.ReactNode
+  disabled?: boolean
 }
 
-export default function AuthGateButton({ href, label, className, children, onClick }: AuthGateButtonProps) {
+export default function AuthGateButton({ href, label, className, children, onClick, disabled }: AuthGateButtonProps) {
   const router = useRouter()
 
   const handleClick = (e: React.MouseEvent) => {
+    if (disabled) return
     if (onClick) {
       onClick(e)
     } else if (href) {
@@ -28,7 +30,7 @@ export default function AuthGateButton({ href, label, className, children, onCli
   }
 
   return (
-    <button onClick={handleClick} className={className} aria-label={label || 'Action'}>
+    <button onClick={handleClick} className={className} disabled={disabled} aria-label={label || 'Action'}>
       {children || label}
     </button>
   )

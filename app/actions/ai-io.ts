@@ -114,13 +114,13 @@ export async function evaluateIOPlan(obstacleOrder: string, timeTakenMs?: number
     const data = {
       verdict,
       score,
-      pros: getRandomItems(prosList, prosCount),
+      pros,
       cons: cons.slice(0, 3),
       feedback
     };
 
-    if (creditCheck.userId && !isSimulation) {
-      await saveTestResult(creditCheck.userId, 'IO', score, verdict, feedback, undefined, obstacleOrder);
+    if (creditCheck.userId) {
+      await saveTestResult(creditCheck.userId, 'IO', score, verdict, feedback, pros, obstacleOrder);
     }
 
     return { success: true, data }

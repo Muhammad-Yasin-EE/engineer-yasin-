@@ -136,8 +136,8 @@ export async function evaluateGTOPlan(plan: string, objective: string, constrain
       feedback
     };
 
-    if (creditCheck.userId && !isSimulation) {
-      await saveTestResult(creditCheck.userId, 'GTO', score, verdict, feedback, pros, plan);
+    if (creditCheck.userId) {
+      await saveTestResult(creditCheck.userId, 'GTO', score, verdict, feedback, pros, '');
     }
 
     return { success: true, data }

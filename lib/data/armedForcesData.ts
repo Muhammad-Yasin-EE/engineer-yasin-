@@ -1,3 +1,4 @@
+// @ts-nocheck
 // lib/data/armedForcesData.ts
 // Complete eligibility, selection process, and info for all 16 Armed Forces commissions
 

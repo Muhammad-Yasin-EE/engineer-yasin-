@@ -4,13 +4,18 @@ export type AICreditCheckResult =
   | { allowed: true; isPremium: boolean; creditsRemaining: number; userId: string }
   | { allowed: false; reason: 'not_logged_in' | 'no_credits' | 'plan_expired' }
 
-export async function checkAndDeductAICredits(): Promise<AICreditCheckResult> {
+export async function checkAndDeductAICredits(action: 'start' | 'submit' = 'start'): Promise<AICreditCheckResult> {
   const supabase = await createClient()
   
   // 1. Get the current user
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
     return { allowed: false, reason: 'not_logged_in' }
+  }
+
+  // If this is a submit action, the credit was already deducted on test start.
+  if (action === 'submit') {
+    return { allowed: true, isPremium: false, creditsRemaining: 0, userId: user.id }
   }
 
   // 2. Fetch the user's profile to check credits and premium status

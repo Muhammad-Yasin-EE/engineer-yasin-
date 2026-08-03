@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { BrainCircuit, Flag, ShieldAlert, Sparkles, Users } from 'lucide-react'
+import { FreemiumModal } from '@/components/FreemiumModal'
 
 const fallbackSnakeScenarios = [
   {
@@ -18,6 +19,7 @@ export default function SnakeRaceAiSimulator() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [result, setResult] = useState<{ verdict: string, score: number, pros: string[], cons: string[], feedback: string } | null>(null)
+  const [showFreemiumModal, setShowFreemiumModal] = useState(false)
 
   const handleEvaluate = async () => {
     if (plan.length < 20) {
@@ -34,7 +36,11 @@ export default function SnakeRaceAiSimulator() {
       const res = await evaluateSnakeRacePlan(scenarios[currentIdx].narrative, plan)
       
       if (res.error) {
-        setError(res.error)
+        if (res.error === 'insufficient_credits') {
+          setShowFreemiumModal(true)
+        } else {
+          setError(res.error)
+        }
       } else if (res.success && res.data) {
         setResult(res.data)
       }
@@ -47,6 +53,7 @@ export default function SnakeRaceAiSimulator() {
 
   return (
     <div className="w-full mt-16 bg-[#0A192F] rounded-3xl p-6 md:p-10 border border-[#1A2E4C] shadow-2xl">
+      <FreemiumModal isOpen={showFreemiumModal} onClose={() => setShowFreemiumModal(false)} />
       <div className="mb-8">
         <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight uppercase flex items-center gap-3">
           <Users className="w-8 h-8 text-amber-500" />

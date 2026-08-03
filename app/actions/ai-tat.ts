@@ -44,7 +44,7 @@ function getRandomItem(arr: string[]) {
 }
 
 export async function evaluateTATStory(story: string, imageNumber: number, timeTakenMs?: number) {
-  const creditCheck = await checkAndDeductAICredits()
+  const creditCheck = await checkAndDeductAICredits('submit')
   if (!creditCheck.allowed) {
     if (creditCheck.reason === 'not_logged_in') return { error: 'Please sign in to evaluate tests.' }
     return { error: 'insufficient_credits', reason: creditCheck.reason }

@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { ArrowLeft, Clock, BookOpen, BrainCircuit, CheckCircle2, AlertTriangle, PenTool } from 'lucide-react'
 import AuthGateButton from '@/components/AuthGateButton'
 import { FreemiumModal } from '@/components/FreemiumModal'
+import { deductCreditForTest } from '@/app/actions/deduct-credit'
 import { evaluateTATStory } from '@/app/actions/ai-tat'
 
 type TestState = 'INTRO' | 'VIEWING' | 'WRITING' | 'EVALUATING' | 'RESULT'
@@ -21,7 +22,14 @@ export default function TATPage() {
 
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
-  const handleStart = () => {
+  const handleStart = async () => {
+    const res = await deductCreditForTest()
+    if (!res.allowed) {
+      if (res.reason === 'not_logged_in') setError('Please sign in to start the test.')
+      else setShowFreemiumModal(true)
+      return
+    }
+
     // Pick random image 1-9
     const randomImg = Math.floor(Math.random() * 9) + 1
     setImageNumber(randomImg)

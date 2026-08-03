@@ -51,8 +51,11 @@ export async function checkAndDeductAICredits(): Promise<AICreditCheckResult> {
   // 4. If not premium, check if they have free credits
   const credits = profile.ai_credits || 0
   if (credits > 0) {
-    // Deduct 1 credit
-    const { error: updateError } = await supabase
+    // Deduct 1 credit using admin client to bypass RLS
+    const { createAdminClient } = await import('@/lib/supabase/admin')
+    const adminSupabase = createAdminClient()
+    
+    const { error: updateError } = await adminSupabase
       .from('profiles')
       .update({ ai_credits: credits - 1 })
       .eq('id', user.id)

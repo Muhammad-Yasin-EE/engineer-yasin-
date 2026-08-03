@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { ShieldCheck, ShieldAlert, Layers, BookMarked, Plus, Edit, Trash2, Check, X, Upload, ExternalLink, RefreshCw, FileText, Users, Mail, Award, MessageSquare, GraduationCap, Briefcase, ClipboardList } from 'lucide-react'
+import { ShieldCheck, ShieldAlert, Layers, BookMarked, Plus, Edit, Trash2, Check, X, Upload, ExternalLink, RefreshCw, FileText, Users, Mail, Award, MessageSquare, GraduationCap, Briefcase, ClipboardList, Download } from 'lucide-react'
 import PortalContentManager from '@/components/admin/PortalContentManager'
 import UserEvaluationsPanel from '@/components/admin/UserEvaluationsPanel'
+import OrderStatusBadge from '@/components/OrderStatusBadge'
 
 const CATEGORIES = [
   "Academic Books", "Test Preparation", "Programming Books", "AI Books", "Engineering Books", 

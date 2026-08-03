@@ -201,6 +201,37 @@ export default function AdminDashboard() {
     }
   }
 
+  const handleExportUsers = () => {
+    if (!users || users.length === 0) {
+      alert("No users to export");
+      return;
+    }
+    const headers = ["ID", "Email", "Name", "Role", "Credits", "Premium Plan", "Expiry"];
+    const csvRows = [headers.join(',')];
+    
+    users.forEach(u => {
+      const row = [
+        u.id, 
+        u.email || '', 
+        `"${(u.full_name || '').replace(/"/g, '""')}"`, 
+        u.is_admin ? 'Admin' : 'User', 
+        u.ai_credits ?? 0,
+        u.premium_plan || 'free',
+        u.premium_expiry || ''
+      ];
+      csvRows.push(row.join(','));
+    });
+    
+    const csvString = csvRows.join('\n');
+    const blob = new Blob([csvString], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `users_export_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   const fetchItems = async () => {
     setLoadingItems(true)
     try {
@@ -1701,6 +1732,12 @@ export default function AdminDashboard() {
         <div className="space-y-6">
           <div className="flex items-center justify-between border-b border-gray-150 pb-4">
             <h2 className="text-xs font-bold text-gray-450 uppercase tracking-widest">Registered User Profiles ({users.length})</h2>
+            <button 
+              onClick={handleExportUsers}
+              className="px-4 py-2 bg-[#107c41] text-white text-[10px] font-bold uppercase tracking-wider rounded flex items-center gap-2 hover:bg-[#0c5e31] transition-colors"
+            >
+              <Download className="w-3.5 h-3.5" /> Export to CSV
+            </button>
           </div>
 
           {loadingUsers ? (

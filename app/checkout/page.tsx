@@ -8,10 +8,10 @@ import { createClient } from '@/lib/supabase/client'
 import { Clipboard, Check, ShieldAlert, Upload, CreditCard, Sparkles, CheckCircle2, ChevronRight } from 'lucide-react'
 
 const MOBILE_WALLETS = [
-  { brand: 'JazzCash', name: 'Muhammad Yasin', number: '0309-8158572', emoji: '📱', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/3b/JazzCash_Logo.png', color: 'border-red-200 text-red-600 bg-red-50/50' },
+  { brand: 'JazzCash', name: 'Muhammad Yasin', number: '0311-6826552', emoji: '📱', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/3b/JazzCash_Logo.png', color: 'border-red-200 text-red-600 bg-red-50/50' },
   { brand: 'EasyPaisa', name: 'Muhammad Yasin', number: '0331-9731598', emoji: '🟢', logoUrl: 'https://logo.clearbit.com/easypaisa.com.pk', color: 'border-emerald-200 text-emerald-600 bg-emerald-50/50' },
-  { brand: 'NayaPay', name: 'Muhammad Yasin', number: '0309-8158572', emoji: '🔵', logoUrl: 'https://logo.clearbit.com/nayapay.com', color: 'border-blue-200 text-blue-600 bg-blue-50/50' },
-  { brand: 'SadaPay', name: 'Muhammad Yasin', number: '0309-8158572', emoji: '🟠', logoUrl: 'https://logo.clearbit.com/sadapay.pk', color: 'border-orange-200 text-orange-600 bg-orange-50/50' }
+  { brand: 'NayaPay', name: 'Muhammad Yasin', number: '0311-6826552', emoji: '🔵', logoUrl: 'https://logo.clearbit.com/nayapay.com', color: 'border-blue-200 text-blue-600 bg-blue-50/50' },
+  { brand: 'SadaPay', name: 'Muhammad Yasin', number: '0311-6826552', emoji: '🟠', logoUrl: 'https://logo.clearbit.com/sadapay.pk', color: 'border-orange-200 text-orange-600 bg-orange-50/50' }
 ]
 
 const BANK_TRANSFERS = [
@@ -377,10 +377,10 @@ export default function CheckoutPage() {
                   className="w-full bg-white border border-gray-200 rounded-full py-3 px-4 text-gray-700 focus:outline-none focus:border-[#B8212E] focus:ring-1 focus:ring-[#B8212E]/20 font-semibold"
                 >
                   <option value="" disabled>-- Select Payment Method --</option>
-                  <option value="JazzCash">JazzCash (0309-8158572)</option>
+                  <option value="JazzCash">JazzCash (0311-6826552)</option>
                   <option value="EasyPaisa">EasyPaisa (0331-9731598)</option>
-                  <option value="NayaPay">NayaPay (0309-8158572)</option>
-                  <option value="SadaPay">SadaPay (0309-8158572)</option>
+                  <option value="NayaPay">NayaPay (0311-6826552)</option>
+                  <option value="SadaPay">SadaPay (0311-6826552)</option>
                   <option value="ABL Bank">ABL Bank (57690010139951020017)</option>
                 </select>
               </div>

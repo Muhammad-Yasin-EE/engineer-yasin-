@@ -261,7 +261,7 @@ export default function IssbCoachingPage() {
 
                   {/* Phone Call Option */}
                   <a 
-                    href="tel:+923098158572"
+                    href="tel:+923116826552"
                     className="flex items-center justify-between p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl transition-all group/contact"
                   >
                     <div className="flex items-center gap-3">
@@ -280,7 +280,7 @@ export default function IssbCoachingPage() {
 
                   {/* Email Option */}
                   <a 
-                    href={`mailto:yasinofficial03098158572@gmail.com?subject=Enrollment%20Request:%20${encodeURIComponent(selectedProgram.title)}&body=${encodeURIComponent(selectedProgram.whatsappText)}`}
+                    href={`mailto:yasinofficial03116826552@gmail.com?subject=Enrollment%20Request:%20${encodeURIComponent(selectedProgram.title)}&body=${encodeURIComponent(selectedProgram.whatsappText)}`}
                     className="flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all group/contact"
                   >
                     <div className="flex items-center gap-3">

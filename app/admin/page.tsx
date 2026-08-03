@@ -176,15 +176,13 @@ export default function AdminDashboard() {
     }
   }
 
-  const handleTogglePremium = async (userId: string, currentPlan: string) => {
-    let newPlan = 'free';
+  const handleGrantPremium = async (userId: string, duration: 'weekly' | 'monthly' | 'free') => {
     let newExpiry = null;
-    let newCredits = 3;
+    let newCredits = 5; // Default free credits
 
-    if (currentPlan === 'free') {
-      newPlan = 'monthly';
+    if (duration !== 'free') {
       const expiry = new Date();
-      expiry.setDate(expiry.getDate() + 30);
+      expiry.setDate(expiry.getDate() + (duration === 'weekly' ? 7 : 30));
       newExpiry = expiry.toISOString();
       newCredits = 999; // unlimited equivalent
     }
@@ -192,15 +190,14 @@ export default function AdminDashboard() {
     try {
       const { error } = await supabase
         .from('profiles')
-        .update({ premium_plan: newPlan, premium_expiry: newExpiry, ai_credits: newCredits })
+        .update({ premium_plan: duration, premium_expiry: newExpiry, ai_credits: newCredits })
         .eq('id', userId);
 
       if (error) throw error;
       
-      setUsers(users.map(u => u.id === userId ? { ...u, premium_plan: newPlan, premium_expiry: newExpiry, ai_credits: newCredits } : u));
-      alert(`User plan updated to ${newPlan.toUpperCase()}`);
+      setUsers(users.map(u => u.id === userId ? { ...u, premium_plan: duration, premium_expiry: newExpiry, ai_credits: newCredits } : u));
     } catch (err: any) {
-      alert("Failed to update plan: " + err.message);
+      alert('Failed to update premium status: ' + err.message);
     }
   }
 
@@ -1755,16 +1752,29 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  <button 
-                    onClick={() => handleTogglePremium(u.id, u.premium_plan || 'free')}
-                    className={`mt-2 w-full py-2 text-[10px] font-black uppercase tracking-widest rounded-sm transition-colors ${
-                      u.premium_plan && u.premium_plan !== 'free' 
-                        ? 'bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200' 
-                        : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-200'
-                    }`}
-                  >
-                    {u.premium_plan && u.premium_plan !== 'free' ? 'Revoke Premium' : 'Grant Monthly Pro'}
-                  </button>
+                  {u.premium_plan && u.premium_plan !== 'free' ? (
+                    <button 
+                      onClick={() => handleGrantPremium(u.id, 'free')}
+                      className="mt-2 w-full py-2 text-[10px] font-black uppercase tracking-widest rounded-sm transition-colors bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200"
+                    >
+                      Revoke Premium
+                    </button>
+                  ) : (
+                    <div className="flex gap-2 mt-2">
+                      <button 
+                        onClick={() => handleGrantPremium(u.id, 'weekly')}
+                        className="w-full py-2 text-[10px] font-black uppercase tracking-widest rounded-sm transition-colors bg-amber-50 text-amber-600 hover:bg-amber-100 border border-amber-200"
+                      >
+                        Grant Weekly
+                      </button>
+                      <button 
+                        onClick={() => handleGrantPremium(u.id, 'monthly')}
+                        className="w-full py-2 text-[10px] font-black uppercase tracking-widest rounded-sm transition-colors bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-200"
+                      >
+                        Grant Monthly
+                      </button>
+                    </div>
+                  )}
                   <button
                       onClick={() => {
                         setSelectedUser(u)

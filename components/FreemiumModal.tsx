@@ -21,7 +21,7 @@ export function FreemiumModal({ isOpen, onClose }: { isOpen: boolean, onClose: (
 
   const handleWhatsAppClick = () => {
     const message = encodeURIComponent("Assalam o Alaikum! I want to purchase the Premium ISSB AI Plan to unlock unlimited evaluations.")
-    window.open(`https://wa.me/923098158572?text=${message}`, '_blank')
+    window.open(`https://wa.me/923116826552?text=${message}`, '_blank')
   }
 
   return (

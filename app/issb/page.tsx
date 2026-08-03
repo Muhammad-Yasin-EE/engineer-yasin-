@@ -897,7 +897,7 @@ export default function ISSBPage() {
 
                     {/* Phone Call Option */}
                     <a 
-                      href="tel:+923098158572"
+                      href="tel:+923116826552"
                       className="flex items-center justify-between p-4 bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 rounded-2xl transition-all group/contact"
                     >
                       <div className="flex items-center gap-3">

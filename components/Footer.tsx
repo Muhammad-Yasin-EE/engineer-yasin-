@@ -92,17 +92,17 @@ export default function Footer() {
               We verify custom checkout claims (JazzCash, EasyPaisa, NayaPay, SadaPay, and ABL Bank) within 1-12 hours.
             </p>
             <div className="space-y-2.5 text-xs text-gray-500 font-semibold">
-              <a href="mailto:yasinofficial03098158572@gmail.com" className="flex items-center gap-2 hover:text-[#B8212E] transition-colors">
+              <a href="mailto:yasinofficial03116826552@gmail.com" className="flex items-center gap-2 hover:text-[#B8212E] transition-colors">
                 <Mail className="w-4 h-4 text-rose-500 shrink-0" />
-                <span className="truncate">yasinofficial03098158572@gmail.com</span>
+                <span className="truncate">yasinofficial03116826552@gmail.com</span>
               </a>
               <a href="https://wa.me/923116826552" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-emerald-600 transition-colors">
                 <MessageCircle className="w-4 h-4 text-emerald-500 shrink-0" />
                 <span>WhatsApp: +92 311 6826552</span>
               </a>
-              <a href="tel:+923098158572" className="flex items-center gap-2 hover:text-blue-600 transition-colors">
+              <a href="tel:+923116826552" className="flex items-center gap-2 hover:text-blue-600 transition-colors">
                 <Phone className="w-4 h-4 text-blue-500 shrink-0" />
-                <span>Call: +923098158572</span>
+                <span>Call: +923116826552</span>
               </a>
             </div>
           </div>

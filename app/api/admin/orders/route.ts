@@ -121,7 +121,7 @@ export async function POST(request: Request) {
                 </ul>
                 <p style="margin-top: 25px;">You can also access your downloads at any time by logging into your account library at <a href="${appUrl}/account" style="color: #B8212E;">engineeryasin.com/account</a>.</p>
                 <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
-                <p style="font-size: 11px; color: #64748b; text-align: center;">For assistance, please reply to this email or contact yasinofficial03098158572@gmail.com.</p>
+                <p style="font-size: 11px; color: #64748b; text-align: center;">For assistance, please reply to this email or contact yasinofficial03116826552@gmail.com.</p>
               </div>
             `,
           })
@@ -167,9 +167,9 @@ export async function POST(request: Request) {
                   <strong>Rejection Reason:</strong><br/>
                   ${reasonStr}
                 </p>
-                <p>If you believe this is a mistake, or if you need to submit correct transaction details, please re-submit your receipt or contact our support team at <strong style="color: #B8212E;">yasinofficial03098158572@gmail.com</strong> with your transaction ID and order number.</p>
+                <p>If you believe this is a mistake, or if you need to submit correct transaction details, please re-submit your receipt or contact our support team at <strong style="color: #B8212E;">yasinofficial03116826552@gmail.com</strong> with your transaction ID and order number.</p>
                 <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
-                <p style="font-size: 11px; color: #64748b; text-align: center;">This is an automated notification. For assistance, contact yasinofficial03098158572@gmail.com.</p>
+                <p style="font-size: 11px; color: #64748b; text-align: center;">This is an automated notification. For assistance, contact yasinofficial03116826552@gmail.com.</p>
               </div>
             `,
           })

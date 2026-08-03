@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/hero-illustration.jpg",
+        url: "/logo.jpg",
         width: 1200,
         height: 630,
         alt: "Engineer Yasin Pakistan Premier Forces & Public Service Portal",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Engineer Yasin | Premier Armed Forces & Cadet Colleges Portal",
     description: "Access premium Pakistan Armed Forces initial practice tests, ISSB preparation, Public Service job updates and online mock quizzes.",
-    images: ["/images/hero-illustration.jpg"],
+    images: ["/logo.jpg"],
   },
   robots: {
     index: true,

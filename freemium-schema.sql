@@ -1,7 +1,7 @@
 -- RUN THIS SCRIPT IN SUPABASE SQL EDITOR
 
 ALTER TABLE public.profiles
-ADD COLUMN IF NOT EXISTS ai_credits INTEGER DEFAULT 5,
+ADD COLUMN IF NOT EXISTS ai_credits INTEGER DEFAULT 7,
 ADD COLUMN IF NOT EXISTS premium_plan TEXT DEFAULT 'free',
 ADD COLUMN IF NOT EXISTS premium_expiry TIMESTAMP WITH TIME ZONE;
 
@@ -23,7 +23,7 @@ BEGIN
       WHEN new.email = 'engineeryasin2029@gmail.com' OR new.email = 'yasinofficial03098158572@gmail.com' OR new.email = 'engineeryasinlab@gmail.com' THEN true 
       ELSE false 
     END,
-    5, -- Give 5 free credits
+    7, -- Give 7 free credits
     'free'
   );
   RETURN new;

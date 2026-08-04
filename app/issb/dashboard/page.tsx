@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -22,14 +23,24 @@ export default function DashboardPage() {
       }
       setUser(user);
 
-      const { data } = await supabase
-        .from('test_results')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+      const [resultsRes, profileRes] = await Promise.all([
+        supabase
+          .from('test_results')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('profiles')
+          .select('ai_credits, is_admin, premium_plan')
+          .eq('id', user.id)
+          .single()
+      ]);
 
-      if (data) {
-        setResults(data);
+      if (resultsRes.data) {
+        setResults(resultsRes.data);
+      }
+      if (profileRes.data) {
+        setProfile(profileRes.data);
       }
       setLoading(false);
     }
@@ -82,13 +93,19 @@ export default function DashboardPage() {
             <h1 className="text-3xl md:text-4xl font-black mb-1">Performance Dashboard</h1>
             <p className="text-slate-400 text-sm font-medium">Welcome back, {user?.email?.split('@')[0]}</p>
           </div>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap justify-center gap-4">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center min-w-[100px]">
+              <div className="text-3xl font-black text-amber-500">
+                {profile?.is_admin || profile?.premium_plan !== 'free' ? '∞' : (profile?.ai_credits || 0)}
+              </div>
+              <div className="text-[10px] uppercase tracking-wider font-bold text-slate-400 mt-1">AI Credits</div>
+            </div>
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center min-w-[100px]">
               <div className="text-3xl font-black text-emerald-400">{totalTests}</div>
               <div className="text-[10px] uppercase tracking-wider font-bold text-slate-400 mt-1">Tests Taken</div>
             </div>
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center min-w-[100px]">
-              <div className="text-3xl font-black text-amber-400">{avgScore}</div>
+              <div className="text-3xl font-black text-blue-400">{avgScore}</div>
               <div className="text-[10px] uppercase tracking-wider font-bold text-slate-400 mt-1">Avg Score</div>
             </div>
           </div>

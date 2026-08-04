@@ -20,6 +20,7 @@ export default async function AccountPage() {
   let purchases: any[] = []
   let orders: any[] = []
   let userScores: any[] = []
+  let aiTestsCount = 0
   let errorMsg = null
 
   try {
@@ -29,6 +30,12 @@ export default async function AccountPage() {
       .eq('id', user.id)
       .single()
     profile = profileData
+
+    const { count } = await supabase
+      .from('test_results')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+    aiTestsCount = count || 0
 
     const { data: purchaseData } = await supabase
       .from('purchases')
@@ -139,12 +146,22 @@ export default async function AccountPage() {
         </div>
 
         <div className="bg-gradient-to-br from-amber-50 to-amber-100 border border-amber-200 p-6 rounded-xl shadow-sm flex flex-col justify-center items-center text-center">
-          <h4 className="text-[10px] uppercase font-black tracking-widest text-amber-800 mb-1">Available AI Credits</h4>
-          <div className="text-4xl font-black text-amber-600">
-            {profile?.is_admin || profile?.premium_plan !== 'free' ? '∞' : (profile?.ai_credits || 0)}
+          <div className="grid grid-cols-2 gap-4 w-full">
+            <div>
+              <h4 className="text-[9px] uppercase font-black tracking-widest text-amber-800/70 mb-1">Used Credits</h4>
+              <div className="text-2xl font-black text-amber-900/80">
+                {aiTestsCount}
+              </div>
+            </div>
+            <div>
+              <h4 className="text-[9px] uppercase font-black tracking-widest text-amber-800/70 mb-1">Remaining</h4>
+              <div className="text-2xl font-black text-amber-600">
+                {profile?.is_admin || (profile?.premium_plan && profile.premium_plan !== 'free') ? '∞' : (profile?.ai_credits || 0)}
+              </div>
+            </div>
           </div>
-          <p className="text-xs font-bold text-amber-700/70 mt-2">
-            {profile?.is_admin || profile?.premium_plan !== 'free' ? 'Unlimited Premium Access' : 'Credits remaining for free AI prep'}
+          <p className="text-[10px] font-bold text-amber-700/70 mt-3 border-t border-amber-200/50 pt-3">
+            {profile?.is_admin || (profile?.premium_plan && profile.premium_plan !== 'free') ? 'Unlimited Premium Access' : 'Credits remaining for free AI prep'}
           </p>
         </div>
       </div>

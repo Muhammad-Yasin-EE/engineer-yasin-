@@ -96,13 +96,13 @@ export default function DashboardPage() {
           <div className="flex flex-wrap justify-center gap-4">
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center min-w-[100px]">
               <div className="text-3xl font-black text-amber-500">
-                {profile?.is_admin || profile?.premium_plan !== 'free' ? '∞' : (profile?.ai_credits || 0)}
+                {profile?.is_admin || (profile?.premium_plan && profile.premium_plan !== 'free') ? '∞' : (profile?.ai_credits || 0)}
               </div>
-              <div className="text-[10px] uppercase tracking-wider font-bold text-slate-400 mt-1">AI Credits</div>
+              <div className="text-[10px] uppercase tracking-wider font-bold text-slate-400 mt-1">Remaining Credits</div>
             </div>
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center min-w-[100px]">
               <div className="text-3xl font-black text-emerald-400">{totalTests}</div>
-              <div className="text-[10px] uppercase tracking-wider font-bold text-slate-400 mt-1">Tests Taken</div>
+              <div className="text-[10px] uppercase tracking-wider font-bold text-slate-400 mt-1">Credits Used (Tests)</div>
             </div>
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center min-w-[100px]">
               <div className="text-3xl font-black text-blue-400">{avgScore}</div>

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/public'
 import AuthGateButton from '@/components/AuthGateButton'
 import LiveTrustTicker from '@/components/LiveTrustTicker'
 import EligibilityCalculator from '@/components/EligibilityCalculator'
@@ -50,7 +50,7 @@ function formatQuizDisplay(title: string = '', cat: string = '') {
 }
 
 export default async function Home() {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   
   let quizzes: any[] = []
   let errorMsg: string | null = null

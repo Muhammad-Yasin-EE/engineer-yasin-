@@ -150,7 +150,7 @@ export default async function AccountPage() {
             <div>
               <h4 className="text-[9px] uppercase font-black tracking-widest text-amber-800/70 mb-1">Used Credits</h4>
               <div className="text-2xl font-black text-amber-900/80">
-                {aiTestsCount}
+                {profile?.is_admin || (profile?.premium_plan && profile.premium_plan !== 'free') ? '0' : Math.max(0, 7 - (profile?.ai_credits || 0))}
               </div>
             </div>
             <div>

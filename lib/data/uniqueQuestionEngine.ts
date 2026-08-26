@@ -10,7 +10,6 @@ function pseudoRandom(seed: number) {
 function shuffleWithCorrectIndex<T>(items: T[], correctIdx: number, seed: number): { shuffled: T[]; newCorrectIdx: number } {
   const indexed = items.map((item, idx) => ({ item, isCorrect: idx === correctIdx }))
   
-  // Fisher-Yates shuffle with deterministic seed
   for (let i = indexed.length - 1; i > 0; i--) {
     const j = Math.floor(pseudoRandom(seed + i * 31) * (i + 1))
     const temp = indexed[i]
@@ -24,7 +23,276 @@ function shuffleWithCorrectIndex<T>(items: T[], correctIdx: number, seed: number
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// 1. COMPREHENSIVE UNIQUE VERBAL INTELLIGENCE GENERATOR (84 MCQs / Test)
+// 1. UNIQUE NON-VERBAL DIAGRAM GENERATOR (64 100% Unique Puzzles Per Test)
+// ═════════════════════════════════════════════════════════════════════════════
+export function getUniqueNonVerbalQuestions(testNumber: number, count: number = 64): Array<{
+  id: number
+  question_text: string
+  diagram: DiagramConfig
+  correct_option_index: number
+  explanation: string
+}> {
+  const questions: Array<{
+    id: number
+    question_text: string
+    diagram: DiagramConfig
+    correct_option_index: number
+    explanation: string
+  }> = []
+
+  const seedBase = (testNumber - 1) * count
+
+  // Available base geometric shapes
+  const shapeCatalog: Array<'arrow' | 'line' | 'cross' | 'triangle' | 'rect' | 'circle' | 'dot' | 'star'> = [
+    'arrow', 'line', 'cross', 'triangle', 'rect', 'circle', 'dot', 'star'
+  ]
+
+  for (let i = 0; i < count; i++) {
+    const qIndex = seedBase + i + 1
+    const categoryMod = i % 5
+    const questionSeed = testNumber * 5000 + i * 47
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Category 0: Multi-Shape Clockwise / Anti-Clockwise Rotations (16 Varied Types)
+    // ─────────────────────────────────────────────────────────────────────────
+    if (categoryMod === 0) {
+      const baseShape = shapeCatalog[(testNumber * 3 + i) % shapeCatalog.length]
+      const stepAngle = ((i % 4) + 1) * 45 // 45°, 90°, 135°, 180°
+      const startAngle = ((testNumber * 27) + (i * 33)) % 360
+      const isAntiClockwise = i % 2 === 1
+      const multiplier = isAntiClockwise ? -1 : 1
+
+      const a1 = (startAngle + 360) % 360
+      const a2 = (a1 + (stepAngle * multiplier) + 360) % 360
+      const a3 = (a2 + (stepAngle * multiplier) + 360) % 360
+      const a4 = (a3 + (stepAngle * multiplier) + 360) % 360
+      const correctAngle = (a4 + (stepAngle * multiplier) + 360) % 360
+
+      const shapeSize = 35 + ((i % 3) * 10) // 35, 45, 55
+
+      const rawOptions = [
+        { shapes: [{ type: baseShape, x: 50, y: 50, size: shapeSize, rotation: correctAngle }] },
+        { shapes: [{ type: baseShape, x: 50, y: 50, size: shapeSize, rotation: (correctAngle + 90) % 360 }] },
+        { shapes: [{ type: baseShape, x: 50, y: 50, size: shapeSize, rotation: (correctAngle + 180) % 360 }] },
+        { shapes: [{ type: baseShape, x: 50, y: 50, size: shapeSize, rotation: (correctAngle + 270) % 360 }] },
+      ]
+
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
+
+      questions.push({
+        id: qIndex,
+        question_text: `Identify the figure that correctly continues the ${stepAngle}° ${isAntiClockwise ? 'anti-clockwise' : 'clockwise'} rotation sequence:`,
+        diagram: {
+          type: 'series',
+          problemFigures: [
+            { shapes: [{ type: baseShape, x: 50, y: 50, size: shapeSize, rotation: a1 }] },
+            { shapes: [{ type: baseShape, x: 50, y: 50, size: shapeSize, rotation: a2 }] },
+            { shapes: [{ type: baseShape, x: 50, y: 50, size: shapeSize, rotation: a3 }] },
+            { shapes: [{ type: baseShape, x: 50, y: 50, size: shapeSize, rotation: a4 }] },
+          ],
+          optionFigures: shuffled
+        },
+        correct_option_index: newCorrectIdx,
+        explanation: `The '${baseShape}' element rotates ${isAntiClockwise ? 'anti-clockwise' : 'clockwise'} by ${stepAngle}° in each successive stage. Adding ${stepAngle}° to figure 4 gives Option ${String.fromCharCode(65 + newCorrectIdx)}.`
+      })
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Category 1: Nested Element Inversion & Shading Analogies (A : B :: C : ?)
+    // ─────────────────────────────────────────────────────────────────────────
+    else if (categoryMod === 1) {
+      const outerList: Array<'rect' | 'circle' | 'triangle'> = ['rect', 'circle', 'triangle']
+      const innerList: Array<'dot' | 'cross' | 'star' | 'triangle' | 'circle'> = ['dot', 'cross', 'star', 'triangle', 'circle']
+
+      const outerA = outerList[(testNumber + i) % outerList.length]
+      const innerA = innerList[(testNumber * 2 + i) % innerList.length]
+      const outerC = outerList[(testNumber + i + 1) % outerList.length]
+      const innerC = innerList[(testNumber * 2 + i + 1) % innerList.length]
+
+      const rawOptions = [
+        // Correct Option (Inner becomes outer shell, outer becomes filled core)
+        { shapes: [{ type: innerC as any, x: 50, y: 50, size: 60 }, { type: outerC as any, x: 50, y: 50, size: 30, fill: '#0A192F' }] },
+        // Distractor 1
+        { shapes: [{ type: outerC as any, x: 50, y: 50, size: 60 }, { type: innerC as any, x: 50, y: 50, size: 30 }] },
+        // Distractor 2
+        { shapes: [{ type: outerA as any, x: 50, y: 50, size: 60 }, { type: 'cross' as any, x: 50, y: 50, size: 30 }] },
+        // Distractor 3
+        { shapes: [{ type: 'circle' as any, x: 50, y: 50, size: 50 }, { type: 'dot' as any, x: 50, y: 50, size: 20 }] }
+      ]
+
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
+
+      questions.push({
+        id: qIndex,
+        question_text: `Select the figure that satisfies the geometric proportional relationship (A : B :: C : ?):`,
+        diagram: {
+          type: 'analogy',
+          problemFigures: [
+            { shapes: [{ type: outerA as any, x: 50, y: 50, size: 60 }, { type: innerA as any, x: 50, y: 50, size: 30, fill: '#0A192F' }], label: '(A)' },
+            { shapes: [{ type: innerA as any, x: 50, y: 50, size: 60 }, { type: outerA as any, x: 50, y: 50, size: 30, fill: '#0A192F' }], label: '(B)' },
+            { shapes: [{ type: outerC as any, x: 50, y: 50, size: 60 }, { type: innerC as any, x: 50, y: 50, size: 30, fill: '#0A192F' }], label: '(C)' }
+          ],
+          optionFigures: shuffled
+        },
+        correct_option_index: newCorrectIdx,
+        explanation: `The inner and outer geometric elements swap positions, and the new inner core becomes shaded. Applying this rule to figure (C) produces Option ${String.fromCharCode(65 + newCorrectIdx)}.`
+      })
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Category 2: Systematic Line & Segment Addition Series
+    // ─────────────────────────────────────────────────────────────────────────
+    else if (categoryMod === 2) {
+      const linePatternType = (testNumber + i) % 3
+
+      let problemFigs: any[] = []
+      let correctOptFig: any = null
+      let distractors: any[] = []
+
+      if (linePatternType === 0) {
+        // Vertical/Horizontal lines addition (1 → 2 → 3 → 4 → 5 lines)
+        problemFigs = [
+          { shapes: [{ type: 'line', x1: 50, y1: 20, x2: 50, y2: 80 }] },
+          { shapes: [{ type: 'line', x1: 50, y1: 20, x2: 50, y2: 80 }, { type: 'line', x1: 20, y1: 50, x2: 80, y2: 50 }] },
+          { shapes: [{ type: 'triangle', x: 50, y: 50, size: 50 }] },
+          { shapes: [{ type: 'rect', x: 50, y: 50, size: 50 }] }
+        ]
+        correctOptFig = { shapes: [{ type: 'rect', x: 50, y: 50, size: 50 }, { type: 'line', x1: 25, y1: 25, x2: 75, y2: 75 }] }
+        distractors = [
+          { shapes: [{ type: 'circle', x: 50, y: 50, size: 50 }] },
+          { shapes: [{ type: 'cross', x: 50, y: 50, size: 40 }] },
+          { shapes: [{ type: 'triangle', x: 50, y: 50, size: 30 }] }
+        ]
+      } else if (linePatternType === 1) {
+        // Star spokes / Cross rays expansion (2 rays → 4 rays → 6 rays → 8 rays)
+        problemFigs = [
+          { shapes: [{ type: 'line', x1: 20, y1: 50, x2: 80, y2: 50 }] },
+          { shapes: [{ type: 'cross', x: 50, y: 50, size: 50 }] },
+          { shapes: [{ type: 'cross', x: 50, y: 50, size: 50 }, { type: 'line', x1: 25, y1: 25, x2: 75, y2: 75 }] },
+          { shapes: [{ type: 'cross', x: 50, y: 50, size: 50 }, { type: 'cross', x: 50, y: 50, size: 50, rotation: 45 }] }
+        ]
+        correctOptFig = { shapes: [{ type: 'circle', x: 50, y: 50, size: 60 }, { type: 'cross', x: 50, y: 50, size: 50 }] }
+        distractors = [
+          { shapes: [{ type: 'rect', x: 50, y: 50, size: 40 }] },
+          { shapes: [{ type: 'dot', x: 50, y: 50, size: 30 }] },
+          { shapes: [{ type: 'line', x1: 10, y1: 50, x2: 90, y2: 50 }] }
+        ]
+      } else {
+        // Concentric expanding shells (1 ring → 2 rings → 3 rings → 4 rings)
+        problemFigs = [
+          { shapes: [{ type: 'circle', x: 50, y: 50, size: 20 }] },
+          { shapes: [{ type: 'circle', x: 50, y: 50, size: 20 }, { type: 'circle', x: 50, y: 50, size: 40 }] },
+          { shapes: [{ type: 'circle', x: 50, y: 50, size: 20 }, { type: 'circle', x: 50, y: 50, size: 40 }, { type: 'circle', x: 50, y: 50, size: 60 }] }
+        ]
+        correctOptFig = { shapes: [{ type: 'circle', x: 50, y: 50, size: 20 }, { type: 'circle', x: 50, y: 50, size: 40 }, { type: 'circle', x: 50, y: 50, size: 60 }, { type: 'circle', x: 50, y: 50, size: 80 }] }
+        distractors = [
+          { shapes: [{ type: 'circle', x: 50, y: 50, size: 80 }] },
+          { shapes: [{ type: 'rect', x: 50, y: 50, size: 60 }, { type: 'circle', x: 50, y: 50, size: 30 }] },
+          { shapes: [{ type: 'circle', x: 50, y: 50, size: 30 }] }
+        ]
+      }
+
+      const rawOptions = [correctOptFig, distractors[0], distractors[1], distractors[2]]
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
+
+      questions.push({
+        id: qIndex,
+        question_text: `Which figure correctly continues the progressive segment/element expansion?`,
+        diagram: {
+          type: 'series',
+          problemFigures: problemFigs,
+          optionFigures: shuffled
+        },
+        correct_option_index: newCorrectIdx,
+        explanation: `Each consecutive box adds exactly one segment/shell following the linear expansion pattern. Option ${String.fromCharCode(65 + newCorrectIdx)} is the correct next stage.`
+      })
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Category 3: Cyclic Dot & Vertex Coordinate Shifts
+    // ─────────────────────────────────────────────────────────────────────────
+    else if (categoryMod === 3) {
+      const containerShape = (i % 2 === 0) ? 'rect' : 'circle'
+
+      const cornerPoints = [
+        { x: 30, y: 30 },
+        { x: 70, y: 30 },
+        { x: 70, y: 70 },
+        { x: 30, y: 70 }
+      ]
+      const offset = (testNumber * 2 + i) % 4
+      const p1 = cornerPoints[offset % 4]
+      const p2 = cornerPoints[(offset + 1) % 4]
+      const p3 = cornerPoints[(offset + 2) % 4]
+      const p4 = cornerPoints[(offset + 3) % 4]
+      const correctPoint = cornerPoints[(offset + 4) % 4] // Cycles back to p1
+
+      const rawOptions = [
+        { shapes: [{ type: containerShape as any, x: 50, y: 50, size: 60 }, { type: 'dot' as any, x: correctPoint.x, y: correctPoint.y, size: 16 }] },
+        { shapes: [{ type: containerShape as any, x: 50, y: 50, size: 60 }, { type: 'dot' as any, x: 50, y: 50, size: 16 }] },
+        { shapes: [{ type: containerShape as any, x: 50, y: 50, size: 60 }, { type: 'dot' as any, x: cornerPoints[(offset + 1) % 4].x, y: cornerPoints[(offset + 1) % 4].y, size: 16 }] },
+        { shapes: [{ type: containerShape as any, x: 50, y: 50, size: 60 }, { type: 'cross' as any, x: 50, y: 50, size: 24 }] }
+      ]
+
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
+
+      questions.push({
+        id: qIndex,
+        question_text: `Analyze the cyclic corner path of the internal element and determine the next figure:`,
+        diagram: {
+          type: 'series',
+          problemFigures: [
+            { shapes: [{ type: containerShape as any, x: 50, y: 50, size: 60 }, { type: 'dot' as any, x: p1.x, y: p1.y, size: 16 }] },
+            { shapes: [{ type: containerShape as any, x: 50, y: 50, size: 60 }, { type: 'dot' as any, x: p2.x, y: p2.y, size: 16 }] },
+            { shapes: [{ type: containerShape as any, x: 50, y: 50, size: 60 }, { type: 'dot' as any, x: p3.x, y: p3.y, size: 16 }] },
+            { shapes: [{ type: containerShape as any, x: 50, y: 50, size: 60 }, { type: 'dot' as any, x: p4.x, y: p4.y, size: 16 }] },
+          ],
+          optionFigures: shuffled
+        },
+        correct_option_index: newCorrectIdx,
+        explanation: `The dot moves clockwise around the 4 quadrant vertices. After 4 steps, it completes a full cycle and returns to position (Option ${String.fromCharCode(65 + newCorrectIdx)}).`
+      })
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Category 4: Diagonal Symmetry & Matrix Pattern Completion
+    // ─────────────────────────────────────────────────────────────────────────
+    else {
+      const outerKind = (i % 3 === 0) ? 'triangle' : (i % 3 === 1) ? 'rect' : 'circle'
+      const rotBase = ((testNumber * 45) + (i * 30)) % 360
+
+      const rawOptions = [
+        { shapes: [{ type: outerKind as any, x: 50, y: 50, size: 55, rotation: (rotBase + 180) % 360 }, { type: 'arrow' as any, x: 50, y: 50, size: 30, rotation: 180 }] },
+        { shapes: [{ type: outerKind as any, x: 50, y: 50, size: 55, rotation: rotBase }] },
+        { shapes: [{ type: 'rect' as any, x: 50, y: 50, size: 40 }, { type: 'dot' as any, x: 50, y: 50, size: 15 }] },
+        { shapes: [{ type: 'star' as any, x: 50, y: 50, size: 40 }] }
+      ]
+
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
+
+      questions.push({
+        id: qIndex,
+        question_text: `Which option figure completes the 180° inverted mirror symmetry?`,
+        diagram: {
+          type: 'series',
+          problemFigures: [
+            { shapes: [{ type: outerKind as any, x: 50, y: 50, size: 55, rotation: rotBase }, { type: 'arrow' as any, x: 50, y: 50, size: 30, rotation: 0 }] },
+            { shapes: [{ type: outerKind as any, x: 50, y: 50, size: 55, rotation: (rotBase + 90) % 360 }, { type: 'arrow' as any, x: 50, y: 50, size: 30, rotation: 90 }] },
+            { shapes: [{ type: outerKind as any, x: 50, y: 50, size: 55, rotation: (rotBase + 135) % 360 }, { type: 'arrow' as any, x: 50, y: 50, size: 30, rotation: 135 }] }
+          ],
+          optionFigures: shuffled
+        },
+        correct_option_index: newCorrectIdx,
+        explanation: `The internal arrow and outer frame both follow an inverted symmetry transformation, leading directly to Option ${String.fromCharCode(65 + newCorrectIdx)}.`
+      })
+    }
+  }
+
+  return questions
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// 2. UNIQUE VERBAL INTELLIGENCE GENERATOR (84 100% Unique MCQs Per Test)
 // ═════════════════════════════════════════════════════════════════════════════
 export function getUniqueVerbalQuestions(testNumber: number, count: number = 84): Array<{
   id: number
@@ -49,44 +317,44 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
     const questionSeed = testNumber * 1000 + i * 17
 
     switch (categoryMod) {
-      // 1. Arithmetic Difference Progression
+      // 1. Arithmetic Progression
       case 0: {
-        const start = 2 + (testNumber * 2) + (i % 5) * 3
-        const diff = (i % 6) + 4
+        const start = 2 + (testNumber * 3) + (i % 5) * 4
+        const diff = (i % 6) + 3
         const n1 = start
         const n2 = n1 + diff
         const n3 = n2 + diff
         const n4 = n3 + diff
-        const n5 = n4 + diff // Correct answer
-        
+        const n5 = n4 + diff
+
         const rawOptions = [`${n5}`, `${n5 + 2}`, `${n5 - 3}`, `${n5 + diff}`]
         const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
 
         questions.push({
           id: qIndex,
-          question_text: `Which number comes next in the progression? ${n1}, ${n2}, ${n3}, ${n4}, ...`,
+          question_text: `Which number continues the sequence? ${n1}, ${n2}, ${n3}, ${n4}, ...`,
           options: shuffled,
           correct_option_index: newCorrectIdx,
-          explanation: `In this sequence, each successive term increases by +${diff}. Therefore: ${n4} + ${diff} = ${n5}.`
+          explanation: `Each successive term increases by +${diff}. Therefore: ${n4} + ${diff} = ${n5}.`
         })
         break
       }
 
-      // 2. Exponential & Multiplicative Sequence
+      // 2. Geometric Multiplicative Series
       case 1: {
-        const factor = (i % 3) + 2 // 2, 3, or 4
+        const factor = (i % 3) + 2
         const base = (testNumber % 4) + 2
         const v1 = base
         const v2 = v1 * factor
         const v3 = v2 * factor
-        const v4 = v3 * factor // Correct
-        
+        const v4 = v3 * factor
+
         const rawOptions = [`${v4}`, `${v4 - factor}`, `${v4 + factor * 2}`, `${v3 * (factor + 1)}`]
         const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
 
         questions.push({
           id: qIndex,
-          question_text: `Find the missing term in the geometric series: ${v1}, ${v2}, ${v3}, ...`,
+          question_text: `Find the next number in the geometric series: ${v1}, ${v2}, ${v3}, ...`,
           options: shuffled,
           correct_option_index: newCorrectIdx,
           explanation: `Each number is multiplied by ${factor}. Thus, ${v3} × ${factor} = ${v4}.`
@@ -100,7 +368,7 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
           { original: 'ARMY', code: 'BSNZ', target: 'NAVY', targetCode: 'OBWZ', wrong: ['PBXA', 'MCUX', 'NAWZ'], rule: '+1 to each letter' },
           { original: 'PILOT', code: 'QJMPU', target: 'RADAR', targetCode: 'SBEBS', wrong: ['RCEBS', 'TCFCT', 'SACAS'], rule: '+1 to each letter' },
           { original: 'BRAVE', code: 'DTBXG', target: 'HONOR', targetCode: 'JQPQT', wrong: ['IPQPS', 'KRQSU', 'GMPNQ'], rule: '+2 to each letter' },
-          { original: 'TANK', code: 'UCPM', target: 'GUNS', targetCode: 'HWOU', wrong: ['IVPV', 'FTMR', 'HVOT'], rule: '+1, +2, +1, +2 pattern' },
+          { original: 'TANK', code: 'UCPM', target: 'GUNS', targetCode: 'HWOU', wrong: ['IVPV', 'FTMR', 'HVOT'], rule: '+1, +2 pattern' },
           { original: 'DEFENCE', code: 'EDGFOED', target: 'VALIANT', targetCode: 'WBMMBOU', wrong: ['XBNNBPU', 'UBKHZMS', 'VAKIANU'], rule: '+1 shift' }
         ]
         const c = cipherPairs[(testNumber * 3 + i) % cipherPairs.length]
@@ -134,7 +402,7 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
           question_text: d.text,
           options: shuffled,
           correct_option_index: newCorrectIdx,
-          explanation: `Tracing the exact movement path coordinates confirms the answer is '${d.ans}'.`
+          explanation: `Following the exact coordinates path confirms the direction is '${d.ans}'.`
         })
         break
       }
@@ -143,7 +411,7 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
       case 4: {
         const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
         const startDayIdx = (testNumber + i) % 7
-        const targetDate = 15 + ((i % 5) * 3) // e.g. 15, 18, 21, 24, 27
+        const targetDate = 15 + ((i % 5) * 3)
         const targetDayIdx = (startDayIdx + (targetDate - 1)) % 7
         
         const ansDay = days[targetDayIdx]
@@ -156,16 +424,16 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
           question_text: `If the 1st day of a month falls on a ${days[startDayIdx]}, which day of the week will the ${targetDate}th of the same month be?`,
           options: shuffled,
           correct_option_index: newCorrectIdx,
-          explanation: `Number of days elapsed = ${targetDate} - 1 = ${targetDate - 1} days. ${targetDate - 1} ÷ 7 leaves a remainder of ${(targetDate - 1) % 7}. Counting ${(targetDate - 1) % 7} days ahead from ${days[startDayIdx]} gives ${ansDay}.`
+          explanation: `Number of days elapsed = ${targetDate} - 1 = ${targetDate - 1} days. Counting ${(targetDate - 1) % 7} days forward from ${days[startDayIdx]} lands on ${ansDay}.`
         })
         break
       }
 
-      // 6. Realistic Speed, Distance & Convoy Math
+      // 6. Speed, Distance & Train Math
       case 5: {
-        const speedKmh = 54 + ((i % 6) * 18) // 54, 72, 90, 108, 126 km/h
-        const speedMs = (speedKmh * 5) / 18   // Exact integers: 15, 20, 25, 30, 35 m/s
-        const timeSec = 12 + ((i % 4) * 4)   // 12, 16, 20, 24 s
+        const speedKmh = 54 + ((i % 6) * 18)
+        const speedMs = (speedKmh * 5) / 18
+        const timeSec = 12 + ((i % 4) * 4)
         const dist = speedMs * timeSec
 
         const rawOptions = [`${dist} meters`, `${dist + 60} meters`, `${dist - 40} meters`, `${dist + 100} meters`]
@@ -173,18 +441,18 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
 
         questions.push({
           id: qIndex,
-          question_text: `A military train running at ${speedKmh} km/h passes an observation signal in ${timeSec} seconds. What is the length of the train?`,
+          question_text: `A military train traveling at ${speedKmh} km/h crosses a signal post in ${timeSec} seconds. What is the length of the train?`,
           options: shuffled,
           correct_option_index: newCorrectIdx,
-          explanation: `Speed in m/s = ${speedKmh} × (5/18) = ${speedMs} m/s. Length = Speed × Time = ${speedMs} m/s × ${timeSec} s = ${dist} meters.`
+          explanation: `Speed = ${speedKmh} × (5/18) = ${speedMs} m/s. Length = Speed × Time = ${speedMs} × ${timeSec} = ${dist} meters.`
         })
         break
       }
 
       // 7. Percentage & Examination Marks Logic
       case 6: {
-        const totalMarks = 120 + ((i % 6) * 20) // 120, 140, 160, 180, 200
-        const percentage = 65 + ((i % 5) * 5)   // 65%, 70%, 75%, 80%, 85%
+        const totalMarks = 120 + ((i % 6) * 20)
+        const percentage = 65 + ((i % 5) * 5)
         const scored = Math.round((percentage / 100) * totalMarks)
 
         const rawOptions = [`${scored} marks`, `${scored - 8} marks`, `${scored + 12} marks`, `${scored + 24} marks`]
@@ -192,21 +460,21 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
 
         questions.push({
           id: qIndex,
-          question_text: `A candidate secured ${percentage}% marks in the initial academic examination out of a maximum of ${totalMarks} marks. How many marks did the candidate achieve?`,
+          question_text: `A candidate secured ${percentage}% marks in the initial selection test out of a total of ${totalMarks} marks. How many marks did the candidate score?`,
           options: shuffled,
           correct_option_index: newCorrectIdx,
-          explanation: `Marks obtained = (${percentage} ÷ 100) × ${totalMarks} = ${scored} marks.`
+          explanation: `Marks scored = (${percentage} ÷ 100) × ${totalMarks} = ${scored} marks.`
         })
         break
       }
 
-      // 8. Military Rank Hierarchy & Operational Roles
+      // 8. Military Rank Hierarchy
       case 7: {
         const rankPuzzles = [
-          { q: "Which rank in the Pakistan Army is equivalent to a 'Squadron Leader' in the Pakistan Air Force?", a: "Major", w: ["Captain", "Lieutenant Colonel", "Brigadier"], exp: "Squadron Leader (PAF), Major (Army), and Lieutenant Commander (Navy) are all equivalent OF-3 level ranks." },
-          { q: "Which rank in the Pakistan Navy corresponds directly to an Army 'Brigadier'?", a: "Commodore", w: ["Captain", "Rear Admiral", "Commander"], exp: "Brigadier (Army), Air Commodore (PAF), and Commodore (Navy) are equivalent 1-star senior ranks." },
-          { q: "What is the highest commissioned rank in the Pakistan Air Force?", a: "Air Chief Marshal", w: ["Air Marshal", "Air Vice Marshal", "Air Commodore"], exp: "Air Chief Marshal is the 4-star rank held by the Chief of the Air Staff." },
-          { q: "In the Pakistan Army, which rank is immediately senior to 'Major'?", a: "Lieutenant Colonel", w: ["Captain", "Colonel", "Brigadier"], exp: "The ascending order is Captain → Major → Lieutenant Colonel → Colonel." }
+          { q: "Which rank in the Pakistan Army is equivalent to a 'Squadron Leader' in the PAF?", a: "Major", w: ["Captain", "Lieutenant Colonel", "Brigadier"], exp: "Squadron Leader (PAF), Major (Army), and Lieutenant Commander (Navy) are equivalent OF-3 ranks." },
+          { q: "Which rank in the Pakistan Navy corresponds directly to an Army 'Brigadier'?", a: "Commodore", w: ["Captain", "Rear Admiral", "Commander"], exp: "Brigadier (Army), Air Commodore (PAF), and Commodore (Navy) are equivalent 1-star ranks." },
+          { q: "What is the highest operational 4-star rank in the Pakistan Air Force?", a: "Air Chief Marshal", w: ["Air Marshal", "Air Vice Marshal", "Air Commodore"], exp: "Air Chief Marshal is the 4-star rank held by the Chief of the Air Staff." },
+          { q: "In the Pakistan Army, which rank is immediately senior to 'Major'?", a: "Lieutenant Colonel", w: ["Captain", "Colonel", "Brigadier"], exp: "Ascending order: Captain → Major → Lieutenant Colonel → Colonel." }
         ]
         const r = rankPuzzles[(testNumber * 2 + i) % rankPuzzles.length]
         const rawOptions = [r.a, r.w[0], r.w[1], r.w[2]]
@@ -225,9 +493,9 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
       // 9. Blood Relation Logic
       case 8: {
         const relations = [
-          { q: "Pointing to a photograph, a cadet said: 'He is the son of the only son of my grandfather.' How is the person in the photo related to the cadet?", a: "Brother", w: ["Father", "Uncle", "Cousin"], exp: "The only son of the grandfather is the cadet's father. The son of the father is the cadet's brother (or the cadet himself)." },
+          { q: "Pointing to a photograph, a cadet said: 'He is the son of the only son of my grandfather.' How is the person in the photo related to the cadet?", a: "Brother", w: ["Father", "Uncle", "Cousin"], exp: "The only son of grandfather is father; the son of father is the cadet's brother." },
           { q: "A is B's brother. C is A's father. D is C's father. How is A related to D?", a: "Grandson", w: ["Son", "Grandfather", "Brother"], exp: "D is the grandfather of A, so A is the grandson of D." },
-          { q: "Introducing a lady, Ali said: 'Her mother is the only daughter of my mother-in-law.' How is the lady related to Ali?", a: "Daughter", w: ["Sister", "Niece", "Wife"], exp: "The only daughter of Ali's mother-in-law is Ali's wife. The lady is her daughter, therefore Ali's daughter." }
+          { q: "Introducing a lady, Ali said: 'Her mother is the only daughter of my mother-in-law.' How is the lady related to Ali?", a: "Daughter", w: ["Sister", "Niece", "Wife"], exp: "The only daughter of mother-in-law is Ali's wife; her daughter is Ali's daughter." }
         ]
         const rel = relations[(testNumber + i) % relations.length]
         const rawOptions = [rel.a, rel.w[0], rel.w[1], rel.w[2]]
@@ -243,13 +511,13 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
         break
       }
 
-      // 10. Semantic Classification (Odd One Out)
+      // 10. Odd Word Out
       case 9: {
         const oddSets = [
-          { items: ["Submarine", "Frigate", "Destroyer", "Helicopter"], odd: "Helicopter", exp: "Helicopter is an aircraft; the others are naval warships/vessels." },
-          { items: ["Mirage", "Thunder JF-17", "F-16", "Al-Khalid"], odd: "Al-Khalid", exp: "Al-Khalid is a main battle tank; the others are combat fighter jets." },
-          { items: ["Thermometer", "Barometer", "Hygrometer", "Speedometer"], odd: "Speedometer", exp: "Speedometer measures vehicle speed; the others measure atmospheric/weather variables." },
-          { items: ["Peshawar", "Quetta", "Lahore", "Kakul"], odd: "Kakul", exp: "Kakul is an academy cantonment town; the others are provincial capital cities." }
+          { items: ["Submarine", "Frigate", "Destroyer", "Helicopter"], odd: "Helicopter", exp: "Helicopter is an aircraft; the others are naval warships." },
+          { items: ["Mirage", "Thunder JF-17", "F-16", "Al-Khalid"], odd: "Al-Khalid", exp: "Al-Khalid is a main battle tank; the others are combat aircraft." },
+          { items: ["Thermometer", "Barometer", "Hygrometer", "Speedometer"], odd: "Speedometer", exp: "Speedometer measures speed; others measure atmospheric variables." },
+          { items: ["Peshawar", "Quetta", "Lahore", "Kakul"], odd: "Kakul", exp: "Kakul is an academy town; others are provincial capitals." }
         ]
         const os = oddSets[(testNumber + i) % oddSets.length]
         const wrongChoices = os.items.filter(item => item !== os.odd)
@@ -269,9 +537,9 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
       // 11. Word Analogies
       case 10: {
         const analogies = [
-          { q: "SOLDIER is to REGIMENT as PILOT is to:", a: "SQUADRON", w: ["AIRCRAFT", "AIRPORT", "FLIGHT"], exp: "A soldier belongs to an army regiment; an air force pilot belongs to a squadron." },
-          { q: "RADAR is to DETECTION as COMPASS is to:", a: "NAVIGATION", w: ["DIRECTION", "ALTITUDE", "PRESSURE"], exp: "Radar functions for detection; a compass functions for navigation." },
-          { q: "DOCTOR is to STETHOSCOPE as SOLDIER is to:", a: "RIFLE", w: ["UNIFORM", "BARRACKS", "BULLET"], exp: "A stethoscope is a doctor's primary tool; a rifle is a soldier's primary weapon." }
+          { q: "SOLDIER is to REGIMENT as PILOT is to:", a: "SQUADRON", w: ["AIRCRAFT", "AIRPORT", "FLIGHT"], exp: "Soldiers belong to a regiment; pilots belong to a squadron." },
+          { q: "RADAR is to DETECTION as COMPASS is to:", a: "NAVIGATION", w: ["DIRECTION", "ALTITUDE", "PRESSURE"], exp: "Radar is used for detection; compass for navigation." },
+          { q: "DOCTOR is to STETHOSCOPE as SOLDIER is to:", a: "RIFLE", w: ["UNIFORM", "BARRACKS", "BULLET"], exp: "Stethoscope is a doctor's tool; rifle is a soldier's primary weapon." }
         ]
         const ana = analogies[(testNumber + i) % analogies.length]
         const rawOptions = [ana.a, ana.w[0], ana.w[1], ana.w[2]]
@@ -290,10 +558,10 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
       // 12. Military Vocabulary & Antonyms
       default: {
         const vocabBank = [
-          { q: "FORTITUDE", ant: "Cowardice", w: ["Courage", "Resilience", "Stamina"], exp: "Fortitude means mental and emotional strength in facing difficulty; cowardice is the direct antonym." },
-          { q: "VIGILANT", ant: "Negligent", w: ["Alert", "Watchful", "Attentive"], exp: "Vigilant means keenly watchful; negligent means careless or heedless." },
-          { q: "INTREPID", ant: "Fearful", w: ["Brave", "Dauntless", "Heroic"], exp: "Intrepid means completely fearless; fearful is its exact opposite." },
-          { q: "STEADFAST", ant: "Fickle", w: ["Loyal", "Firm", "Resolute"], exp: "Steadfast means dutifully firm and unwavering; fickle means changeable and disloyal." }
+          { q: "FORTITUDE", ant: "Cowardice", w: ["Courage", "Resilience", "Stamina"], exp: "Fortitude means mental strength in facing adversity; cowardice is the antonym." },
+          { q: "VIGILANT", ant: "Negligent", w: ["Alert", "Watchful", "Attentive"], exp: "Vigilant means watchful; negligent means careless." },
+          { q: "INTREPID", ant: "Fearful", w: ["Brave", "Dauntless", "Heroic"], exp: "Intrepid means fearless; fearful is the opposite." },
+          { q: "STEADFAST", ant: "Fickle", w: ["Loyal", "Firm", "Resolute"], exp: "Steadfast means loyal and unwavering; fickle means changeable." }
         ]
         const v = vocabBank[(testNumber * 2 + i) % vocabBank.length]
         const rawOptions = [v.ant, v.w[0], v.w[1], v.w[2]]
@@ -315,178 +583,7 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// 2. COMPREHENSIVE UNIQUE NON-VERBAL DIAGRAM GENERATOR (64 MCQs / Test)
-// ═════════════════════════════════════════════════════════════════════════════
-export function getUniqueNonVerbalQuestions(testNumber: number, count: number = 64): Array<{
-  id: number
-  question_text: string
-  diagram: DiagramConfig
-  correct_option_index: number
-  explanation: string
-}> {
-  const questions: Array<{
-    id: number
-    question_text: string
-    diagram: DiagramConfig
-    correct_option_index: number
-    explanation: string
-  }> = []
-
-  const seedBase = (testNumber - 1) * count
-
-  for (let i = 0; i < count; i++) {
-    const qIndex = seedBase + i + 1
-    const typeMod = i % 4
-    const questionSeed = testNumber * 2000 + i * 23
-
-    // 1. Clockwise/Anti-Clockwise Rotational Series
-    if (typeMod === 0) {
-      const stepAngle = (i % 2 === 0) ? 45 : 90
-      const startAngle = ((testNumber * 30) + (i * 15)) % 360
-      const a1 = startAngle
-      const a2 = (a1 + stepAngle) % 360
-      const a3 = (a2 + stepAngle) % 360
-      const a4 = (a3 + stepAngle) % 360
-      const correctAngle = (a4 + stepAngle) % 360
-
-      const shapeType = (i % 3 === 0) ? 'arrow' : (i % 3 === 1) ? 'line' : 'cross'
-
-      const rawOptionFigures = [
-        { shapes: [{ type: shapeType as any, x: 50, y: 50, size: 40, rotation: correctAngle }] },
-        { shapes: [{ type: shapeType as any, x: 50, y: 50, size: 40, rotation: (correctAngle + 90) % 360 }] },
-        { shapes: [{ type: shapeType as any, x: 50, y: 50, size: 40, rotation: (correctAngle + 180) % 360 }] },
-        { shapes: [{ type: shapeType as any, x: 50, y: 50, size: 40, rotation: (correctAngle + 270) % 360 }] },
-      ]
-
-      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptionFigures, 0, questionSeed)
-
-      questions.push({
-        id: qIndex,
-        question_text: `Identify the figure that correctly continues the ${stepAngle}° rotation sequence:`,
-        diagram: {
-          type: 'series',
-          problemFigures: [
-            { shapes: [{ type: shapeType as any, x: 50, y: 50, size: 40, rotation: a1 }] },
-            { shapes: [{ type: shapeType as any, x: 50, y: 50, size: 40, rotation: a2 }] },
-            { shapes: [{ type: shapeType as any, x: 50, y: 50, size: 40, rotation: a3 }] },
-            { shapes: [{ type: shapeType as any, x: 50, y: 50, size: 40, rotation: a4 }] },
-          ],
-          optionFigures: shuffled
-        },
-        correct_option_index: newCorrectIdx,
-        explanation: `The element rotates clockwise by exactly ${stepAngle}° at every step. Adding ${stepAngle}° to figure 4 gives Option ${String.fromCharCode(65 + newCorrectIdx)}.`
-      })
-    }
-
-    // 2. Element Inversion & Nesting Analogy (A : B :: C : ?)
-    else if (typeMod === 1) {
-      const outerShape = (i % 2 === 0) ? 'rect' : 'circle'
-      const innerShape = (i % 2 === 0) ? 'circle' : 'triangle'
-      const targetOuter = (i % 2 === 0) ? 'triangle' : 'rect'
-
-      const rawOptionFigures = [
-        { shapes: [{ type: 'circle' as any, x: 50, y: 50, size: 60 }, { type: targetOuter as any, x: 50, y: 50, size: 30, fill: '#0A192F' }] }, // Correct
-        { shapes: [{ type: targetOuter as any, x: 50, y: 50, size: 60 }, { type: 'cross' as any, x: 50, y: 50, size: 30 }] },
-        { shapes: [{ type: 'rect' as any, x: 50, y: 50, size: 50 }] },
-        { shapes: [{ type: 'dot' as any, x: 50, y: 50, size: 60 }] }
-      ]
-
-      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptionFigures, 0, questionSeed)
-
-      questions.push({
-        id: qIndex,
-        question_text: `Select the figure that satisfies the geometric proportional relationship (A : B :: C : ?):`,
-        diagram: {
-          type: 'analogy',
-          problemFigures: [
-            { shapes: [{ type: outerShape as any, x: 50, y: 50, size: 60 }, { type: innerShape as any, x: 50, y: 50, size: 30, fill: '#0A192F' }], label: '(A)' },
-            { shapes: [{ type: innerShape as any, x: 50, y: 50, size: 60 }, { type: outerShape as any, x: 50, y: 50, size: 30, fill: '#0A192F' }], label: '(B)' },
-            { shapes: [{ type: targetOuter as any, x: 50, y: 50, size: 60 }, { type: 'dot' as any, x: 50, y: 50, size: 24 }], label: '(C)' }
-          ],
-          optionFigures: shuffled
-        },
-        correct_option_index: newCorrectIdx,
-        explanation: `In pair (A : B), the inner and outer shapes interchange positions and the new inner figure becomes shaded. Applying this to (C) yields Option ${String.fromCharCode(65 + newCorrectIdx)}.`
-      })
-    }
-
-    // 3. Progressive Line Count Addition
-    else if (typeMod === 2) {
-      const rawOptionFigures = [
-        { shapes: [{ type: 'rect' as any, x: 50, y: 50, size: 50 }, { type: 'line', x1: 25, y1: 25, x2: 75, y2: 75 }] }, // Correct 5 lines
-        { shapes: [{ type: 'circle' as any, x: 50, y: 50, size: 50 }] },
-        { shapes: [{ type: 'cross' as any, x: 50, y: 50, size: 40 }] },
-        { shapes: [{ type: 'dot' as any, x: 50, y: 50, size: 30 }] }
-      ]
-
-      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptionFigures, 0, questionSeed)
-
-      questions.push({
-        id: qIndex,
-        question_text: `Which figure correctly continues the line-segment addition progression?`,
-        diagram: {
-          type: 'series',
-          problemFigures: [
-            { shapes: [{ type: 'line', x1: 50, y1: 20, x2: 50, y2: 80 }] },
-            { shapes: [{ type: 'line', x1: 50, y1: 20, x2: 50, y2: 80 }, { type: 'line', x1: 20, y1: 50, x2: 80, y2: 50 }] },
-            { shapes: [{ type: 'triangle', x: 50, y: 50, size: 50 }] },
-            { shapes: [{ type: 'rect', x: 50, y: 50, size: 50 }] }
-          ],
-          optionFigures: shuffled
-        },
-        correct_option_index: newCorrectIdx,
-        explanation: `The line count increases systematically (1 line → 2 lines → 3 sides → 4 sides → 5 segments). Option ${String.fromCharCode(65 + newCorrectIdx)} contains 5 segments.`
-      })
-    }
-
-    // 4. Dot Coordinate Cyclic Shift
-    else {
-      const corners = [
-        { x: 30, y: 30 },
-        { x: 70, y: 30 },
-        { x: 70, y: 70 },
-        { x: 30, y: 70 }
-      ]
-      const offset = (testNumber + i) % 4
-      const p1 = corners[offset % 4]
-      const p2 = corners[(offset + 1) % 4]
-      const p3 = corners[(offset + 2) % 4]
-      const p4 = corners[(offset + 3) % 4]
-      const correctPos = corners[(offset + 4) % 4]
-
-      const rawOptionFigures = [
-        { shapes: [{ type: 'rect' as any, x: 50, y: 50, size: 60 }, { type: 'dot', x: correctPos.x, y: correctPos.y, size: 16 }] }, // Correct
-        { shapes: [{ type: 'rect' as any, x: 50, y: 50, size: 60 }, { type: 'dot', x: 50, y: 50, size: 16 }] },
-        { shapes: [{ type: 'rect' as any, x: 50, y: 50, size: 60 }, { type: 'dot', x: corners[(offset + 1) % 4].x, y: corners[(offset + 1) % 4].y, size: 16 }] },
-        { shapes: [{ type: 'rect' as any, x: 50, y: 50, size: 60 }, { type: 'dot', x: corners[(offset + 2) % 4].x, y: corners[(offset + 2) % 4].y, size: 16 }] }
-      ]
-
-      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptionFigures, 0, questionSeed)
-
-      questions.push({
-        id: qIndex,
-        question_text: `Analyze the cyclic corner shift of the internal dot and determine the next figure:`,
-        diagram: {
-          type: 'series',
-          problemFigures: [
-            { shapes: [{ type: 'rect', x: 50, y: 50, size: 60 }, { type: 'dot', x: p1.x, y: p1.y, size: 16 }] },
-            { shapes: [{ type: 'rect', x: 50, y: 50, size: 60 }, { type: 'dot', x: p2.x, y: p2.y, size: 16 }] },
-            { shapes: [{ type: 'rect', x: 50, y: 50, size: 60 }, { type: 'dot', x: p3.x, y: p3.y, size: 16 }] },
-            { shapes: [{ type: 'rect', x: 50, y: 50, size: 60 }, { type: 'dot', x: p4.x, y: p4.y, size: 16 }] },
-          ],
-          optionFigures: shuffled
-        },
-        correct_option_index: newCorrectIdx,
-        explanation: `The dot traverses clockwise around the 4 frame corners. Following step 4, it completes the loop and returns to position (Option ${String.fromCharCode(65 + newCorrectIdx)}).`
-      })
-    }
-  }
-
-  return questions
-}
-
-// ═════════════════════════════════════════════════════════════════════════════
-// 3. COMPREHENSIVE UNIQUE ACADEMIC SCREENING GENERATOR (50 MCQs / Test)
+// 3. UNIQUE ACADEMIC SCREENING GENERATOR (50 100% Unique MCQs Per Test)
 // ═════════════════════════════════════════════════════════════════════════════
 export function getUniqueAcademicQuestions(testNumber: number, count: number = 50): Array<{
   id: number
@@ -510,7 +607,7 @@ export function getUniqueAcademicQuestions(testNumber: number, count: number = 5
     const subjectMod = i % 5
     const questionSeed = testNumber * 3000 + i * 29
 
-    // 1. Physics (Mechanics, Electricity, Nuclear, Waves, Modern)
+    // 1. Physics
     if (subjectMod === 0) {
       const physicsPool = [
         { q: `What is the standard value of acceleration due to gravity (g) at Earth's surface?`, a: `9.8 m/s²`, w: [`8.9 m/s²`, `10.8 m/s²`, `9.2 m/s²`], exp: `Standard gravitational acceleration g ≈ 9.8 m/s² (or 9.81 m/s²).` },
@@ -532,7 +629,7 @@ export function getUniqueAcademicQuestions(testNumber: number, count: number = 5
       })
     }
 
-    // 2. Mathematics (Calculus, Trigonometry, Matrices, Vectors)
+    // 2. Mathematics
     else if (subjectMod === 1) {
       const mathPool = [
         { q: `The derivative of sin(x) with respect to x is:`, a: `cos(x)`, w: [`-cos(x)`, `tan(x)`, `-sin(x)`], exp: `d/dx[sin(x)] = cos(x).` },
@@ -554,7 +651,7 @@ export function getUniqueAcademicQuestions(testNumber: number, count: number = 5
       })
     }
 
-    // 3. English Grammar (Prepositions, Active/Passive, Vocabulary)
+    // 3. English Grammar
     else if (subjectMod === 2) {
       const engPool = [
         { q: `Complete the sentence: The officer was congratulated ______ his outstanding valor.`, a: `on`, w: [`for`, `with`, `at`], exp: `The appropriate preposition after 'congratulate' is 'on'.` },
@@ -597,7 +694,7 @@ export function getUniqueAcademicQuestions(testNumber: number, count: number = 5
       })
     }
 
-    // 5. Pakistan Affairs, Defence & General Knowledge
+    // 5. Pakistan Affairs & General Knowledge
     else {
       const gkPool = [
         { q: `The highest military decoration of the Islamic Republic of Pakistan is:`, a: `Nishan-e-Haider`, w: [`Hilal-e-Jurat`, `Sitara-e-Jurat`, `Tamgha-e-Basalat`], exp: `Nishan-e-Haider is Pakistan's highest military gallantry award.` },

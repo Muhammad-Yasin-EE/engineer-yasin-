@@ -6,7 +6,7 @@ import {
   ArrowRight, CheckCircle2, ExternalLink,
   Users, Calendar, Clock, UserCheck,
   ChevronRight, Zap, FileText, BookOpen,
-  ListChecks, Info, GraduationCap, Lock, ShoppingCart, Brain, Sparkles, Flame
+  ListChecks, Info, GraduationCap, Lock, ShoppingCart, Brain, Sparkles, Flame, Shield
 } from 'lucide-react'
 import { generateCourseTests, CourseTestItem } from '@/lib/data/branchTestsData'
 
@@ -45,8 +45,7 @@ interface ExamTabsProps {
 }
 
 export default function ExamTabs({ info, quizzes, clr }: ExamTabsProps) {
-  const [activeTab, setActiveTab] = useState<'information' | 'preparation'>('preparation')
-  const [testFilter, setTestFilter] = useState<'all' | 'non-verbal' | 'verbal' | 'academic'>('all')
+  const [activeTab, setActiveTab] = useState<'preparation' | 'information'>('preparation')
 
   // Generate 20+ Tests per Category dynamically for this course
   const branchNormalized = (info.branchSlug || 'army').toLowerCase().includes('paf')
@@ -59,13 +58,13 @@ export default function ExamTabs({ info, quizzes, clr }: ExamTabsProps) {
 
   const allGeneratedTests = generateCourseTests(branchNormalized as any, courseSlugNormalized, info.title)
 
-  const filteredTests = testFilter === 'all' 
-    ? allGeneratedTests 
-    : allGeneratedTests.filter(t => t.type === testFilter)
+  const verbalTests = allGeneratedTests.filter(t => t.type === 'verbal')
+  const nonVerbalTests = allGeneratedTests.filter(t => t.type === 'non-verbal')
+  const academicTests = allGeneratedTests.filter(t => t.type === 'academic')
 
   const tabs = [
-    { id: 'preparation' as const, label: 'Practice Tests (60+)', icon: GraduationCap },
-    { id: 'information' as const, label: 'Course Information', icon: Info },
+    { id: 'preparation' as const, label: 'Official Practice Tests (60 Tests)', icon: GraduationCap },
+    { id: 'information' as const, label: 'Course Eligibility & Process', icon: Info },
   ]
 
   return (
@@ -99,129 +98,237 @@ export default function ExamTabs({ info, quizzes, clr }: ExamTabsProps) {
       {/* ── TAB CONTENT ─────────────────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-        {/* TAB 1: PREPARATION (20+ Tests Matrix) */}
+        {/* ── TAB 1: PREPARATION (3 DEDICATED SECTIONS STACKED) ────────────── */}
         {activeTab === 'preparation' && (
-          <div className="space-y-8 animate-fadeIn">
+          <div className="space-y-16 animate-fadeIn">
             
-            {/* Header & Filter Row */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
-              <div>
-                <span className="text-[10px] font-black text-[#B8212E] uppercase tracking-widest bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">
-                  Official Selection Bank
+            {/* Top Overview Banner */}
+            <div className="bg-gradient-to-r from-[#0A192F] to-slate-900 text-white rounded-3xl p-6 sm:p-10 shadow-xl border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="space-y-2 text-center md:text-left">
+                <span className="text-[10px] font-black text-amber-300 uppercase tracking-widest bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20 inline-block">
+                  🎖️ {info.branch} Official Selection Hub
                 </span>
-                <h2 className="text-xl sm:text-3xl font-black text-slate-900 uppercase tracking-tight mt-1">
-                  {info.title} Practice Tests
-                </h2>
-                <p className="text-xs sm:text-sm text-slate-500 font-medium">
-                  Attempt timed test batteries with official countdown timers, anti-cheat, and instant certificate evaluation.
+                <h1 className="text-2xl sm:text-4xl font-black uppercase tracking-tight text-white">
+                  {info.title} Complete Testing Suite
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-300 max-w-2xl font-medium">
+                  Attempt timed test series across all 3 official modules required for initial computer screening at Selection Centers.
                 </p>
               </div>
 
-              {/* Filter Pills */}
-              <div className="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 self-start sm:self-auto overflow-x-auto">
-                <button
-                  onClick={() => setTestFilter('all')}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
-                    testFilter === 'all'
-                      ? 'bg-[#B8212E] text-white shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
-                  }`}
-                >
-                  All (60)
-                </button>
-                <button
-                  onClick={() => setTestFilter('non-verbal')}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
-                    testFilter === 'non-verbal'
-                      ? 'bg-rose-600 text-white shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
-                  }`}
-                >
-                  <Brain className="w-3.5 h-3.5" /> Non-Verbal (20)
-                </button>
-                <button
-                  onClick={() => setTestFilter('verbal')}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
-                    testFilter === 'verbal'
-                      ? 'bg-emerald-700 text-white shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
-                  }`}
-                >
-                  Verbal IQ (20)
-                </button>
-                <button
-                  onClick={() => setTestFilter('academic')}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
-                    testFilter === 'academic'
-                      ? 'bg-indigo-700 text-white shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
-                  }`}
-                >
-                  Academic (20)
-                </button>
+              {/* Jump To Section Buttons */}
+              <div className="flex flex-wrap gap-2 justify-center md:justify-end shrink-0">
+                <a href="#verbal-section" className="px-4 py-2 bg-emerald-600/30 border border-emerald-500/50 hover:bg-emerald-600 text-emerald-200 hover:text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all">
+                  🧠 Verbal (20) ↓
+                </a>
+                <a href="#non-verbal-section" className="px-4 py-2 bg-rose-600/30 border border-rose-500/50 hover:bg-rose-600 text-rose-200 hover:text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all">
+                  🧩 Non-Verbal (20) ↓
+                </a>
+                <a href="#academic-section" className="px-4 py-2 bg-indigo-600/30 border border-indigo-500/50 hover:bg-indigo-600 text-indigo-200 hover:text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all">
+                  📚 Academic (20) ↓
+                </a>
               </div>
             </div>
 
-            {/* Test Cards Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {filteredTests.map((test) => {
-                const isNV = test.type === 'non-verbal'
-                const isVerbal = test.type === 'verbal'
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {/* SECTION 1: VERBAL INTELLIGENCE TESTS (20 Tests)                */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            <section id="verbal-section" className="space-y-6 pt-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-emerald-600 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-100 border border-emerald-300 text-emerald-800 flex items-center justify-center font-black text-xl shadow-xs">
+                    🧠
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                        Section 1
+                      </span>
+                      <span className="text-xs font-bold text-slate-500">84 MCQs • 30 Minutes • Pass: 50%</span>
+                    </div>
+                    <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase tracking-tight mt-0.5">
+                      Verbal Intelligence Tests ({verbalTests.length} Tests)
+                    </h2>
+                  </div>
+                </div>
+                <span className="text-xs font-extrabold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200 self-start sm:self-auto">
+                  ✓ Official AS&RC Pattern
+                </span>
+              </div>
 
-                let typeColor = 'bg-indigo-50 border-indigo-200 text-indigo-700'
-                if (isNV) typeColor = 'bg-rose-50 border-rose-200 text-rose-700'
-                if (isVerbal) typeColor = 'bg-emerald-50 border-emerald-200 text-emerald-700'
-
-                return (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {verbalTests.map((test) => (
                   <div
                     key={test.id}
-                    className="bg-white border-2 border-slate-200/80 hover:border-[#B8212E] rounded-3xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 relative overflow-hidden"
+                    className="bg-white border-2 border-slate-200 hover:border-emerald-600 rounded-2xl p-4 shadow-xs hover:shadow-lg transition-all duration-200 flex flex-col justify-between group hover:-translate-y-0.5"
                   >
-                    <div className="space-y-3">
-                      {/* Top Badges */}
-                      <div className="flex items-center justify-between gap-2">
-                        <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-full border ${typeColor}`}>
-                          {isNV ? '🧩 Non-Verbal Shapes' : isVerbal ? '🧠 Verbal Intelligence' : '📚 Academic Screening'}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          Verbal IQ
                         </span>
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
-                          Test #{test.testNumber}
+                        <span className="text-[11px] font-black text-slate-400">
+                          #{test.testNumber}
                         </span>
                       </div>
-
-                      <h3 className="font-extrabold text-sm sm:text-base text-slate-900 group-hover:text-[#B8212E] transition-colors leading-snug">
+                      <h3 className="font-extrabold text-sm text-slate-900 group-hover:text-emerald-700 transition-colors">
                         {test.title}
                       </h3>
-
-                      {/* Meta Tags */}
-                      <div className="flex items-center gap-3 text-xs font-bold text-slate-500 pt-1">
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3.5 h-3.5 text-rose-600" /> {test.timeMinutes} Mins
-                        </span>
+                      <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500">
+                        <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-emerald-600" /> 30m</span>
                         <span>•</span>
-                        <span>{test.totalQuestions} Questions</span>
-                        <span>•</span>
-                        <span className="text-emerald-700">Pass: 50%</span>
+                        <span>84 MCQs</span>
                       </div>
                     </div>
 
-                    <div className="pt-6 mt-4 border-t border-slate-100">
+                    <div className="pt-4 mt-3 border-t border-slate-100">
                       <Link
                         href={`/prep/quiz/${test.id}`}
-                        className="w-full py-3 bg-[#B8212E] hover:bg-[#961A25] text-white font-black rounded-xl text-xs uppercase tracking-wider shadow-md flex items-center justify-center gap-2 group-hover:scale-[1.02] transition-all cursor-pointer"
+                        className="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-black rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
                       >
-                        <Flame className="w-4 h-4 text-amber-300 fill-current" />
-                        Attempt Test {test.testNumber} <ArrowRight className="w-4 h-4" />
+                        <Flame className="w-3.5 h-3.5 text-amber-300 fill-current" />
+                        Attempt Test {test.testNumber} ➔
                       </Link>
                     </div>
                   </div>
-                )
-              })}
-            </div>
+                ))}
+              </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {/* SECTION 2: NON-VERBAL INTELLIGENCE TESTS (20 Tests)            */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            <section id="non-verbal-section" className="space-y-6 pt-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-[#B8212E] pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-rose-100 border border-rose-300 text-rose-800 flex items-center justify-center font-black text-xl shadow-xs">
+                    🧩
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-300">
+                        Section 2
+                      </span>
+                      <span className="text-xs font-bold text-slate-500">64 Shapes &amp; Diagrams • 30 Minutes • Pass: 50%</span>
+                    </div>
+                    <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase tracking-tight mt-0.5">
+                      Non-Verbal Intelligence Tests ({nonVerbalTests.length} Tests)
+                    </h2>
+                  </div>
+                </div>
+                <span className="text-xs font-extrabold text-[#B8212E] bg-rose-50 px-3 py-1.5 rounded-xl border border-rose-200 self-start sm:self-auto">
+                  ✓ High-DPI Vector Diagrams
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {nonVerbalTests.map((test) => (
+                  <div
+                    key={test.id}
+                    className="bg-white border-2 border-slate-200 hover:border-[#B8212E] rounded-2xl p-4 shadow-xs hover:shadow-lg transition-all duration-200 flex flex-col justify-between group hover:-translate-y-0.5"
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 border border-rose-200">
+                          Non-Verbal
+                        </span>
+                        <span className="text-[11px] font-black text-slate-400">
+                          #{test.testNumber}
+                        </span>
+                      </div>
+                      <h3 className="font-extrabold text-sm text-slate-900 group-hover:text-[#B8212E] transition-colors">
+                        {test.title}
+                      </h3>
+                      <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500">
+                        <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-rose-600" /> 30m</span>
+                        <span>•</span>
+                        <span>64 Diagrams</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-4 mt-3 border-t border-slate-100">
+                      <Link
+                        href={`/prep/quiz/${test.id}`}
+                        className="w-full py-2.5 bg-[#B8212E] hover:bg-[#961A25] text-white font-black rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                      >
+                        <Flame className="w-3.5 h-3.5 text-amber-300 fill-current" />
+                        Attempt Test {test.testNumber} ➔
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {/* SECTION 3: ACADEMIC SCREENING TESTS (20 Tests)                  */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            <section id="academic-section" className="space-y-6 pt-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-indigo-600 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-100 border border-indigo-300 text-indigo-800 flex items-center justify-center font-black text-xl shadow-xs">
+                    📚
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-300">
+                        Section 3
+                      </span>
+                      <span className="text-xs font-bold text-slate-500">50 Subject MCQs • 25 Minutes • Pass: 50%</span>
+                    </div>
+                    <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase tracking-tight mt-0.5">
+                      Academic Screening Tests ({academicTests.length} Tests)
+                    </h2>
+                  </div>
+                </div>
+                <span className="text-xs font-extrabold text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-xl border border-indigo-200 self-start sm:self-auto">
+                  ✓ Physics, Math, Eng, GK
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {academicTests.map((test) => (
+                  <div
+                    key={test.id}
+                    className="bg-white border-2 border-slate-200 hover:border-indigo-600 rounded-2xl p-4 shadow-xs hover:shadow-lg transition-all duration-200 flex flex-col justify-between group hover:-translate-y-0.5"
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200">
+                          Academic
+                        </span>
+                        <span className="text-[11px] font-black text-slate-400">
+                          #{test.testNumber}
+                        </span>
+                      </div>
+                      <h3 className="font-extrabold text-sm text-slate-900 group-hover:text-indigo-700 transition-colors">
+                        {test.title}
+                      </h3>
+                      <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500">
+                        <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-indigo-600" /> 25m</span>
+                        <span>•</span>
+                        <span>50 MCQs</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-4 mt-3 border-t border-slate-100">
+                      <Link
+                        href={`/prep/quiz/${test.id}`}
+                        className="w-full py-2.5 bg-indigo-700 hover:bg-indigo-800 text-white font-black rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                      >
+                        <Flame className="w-3.5 h-3.5 text-amber-300 fill-current" />
+                        Attempt Test {test.testNumber} ➔
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
 
           </div>
         )}
 
-        {/* TAB 2: COURSE INFORMATION */}
+        {/* ── TAB 2: COURSE INFORMATION ───────────────────────────────────── */}
         {activeTab === 'information' && (
           <div className="space-y-12 animate-fadeIn">
 

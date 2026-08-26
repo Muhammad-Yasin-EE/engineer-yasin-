@@ -7,7 +7,7 @@ export interface DiagramShape {
     | 'circle' | 'rect' | 'triangle' | 'line' | 'cross' | 'star' | 'arrow' | 'dot'
     | 'pentagon' | 'hexagon' | 'diamond' | 'semicircle' | 'hourglass' | 'pinwheel' 
     | 'pie_quadrant' | 'target_rings' | 'dice_face' | 'chevron' | 'plus' | 't_bar'
-    | 'divided_box'
+    | 'divided_box' | 'clock_face' | 'cube_net' | 'overlapping_regions' | 'folded_punch'
   x?: number
   y?: number
   size?: number
@@ -22,14 +22,21 @@ export interface DiagramShape {
   val?: number
   quadrant?: number
   stripes?: number
+  hours?: number
+  minutes?: number
+  text?: string
 }
 
 export interface DiagramConfig {
-  type: 'series' | 'analogy' | 'odd_one_out' | 'matrix'
-  problemFigures: Array<{
+  type: 'series' | 'analogy' | 'odd_one_out' | 'matrix' | 'mirror' | 'water' | 'dot_situation' | 'folding'
+  problemFigures?: Array<{
     shapes: DiagramShape[]
     label?: string
   }>
+  matrixGrid?: Array<Array<{
+    shapes: DiagramShape[]
+    isMissing?: boolean
+  }>>
   optionFigures: Array<{
     shapes: DiagramShape[]
     label?: string
@@ -52,7 +59,10 @@ function RenderShape({ shape }: { shape: DiagramShape }) {
     y2 = 80,
     val = 1,
     quadrant = 0,
-    stripes = 1
+    stripes = 1,
+    hours = 12,
+    minutes = 0,
+    text = ''
   } = shape
 
   const transform = rotation ? `rotate(${rotation} ${x} ${y})` : undefined
@@ -152,13 +162,11 @@ function RenderShape({ shape }: { shape: DiagramShape }) {
 
     case 'pie_quadrant': {
       const r = size / 2
-      // Draw 4 quadrant circle
       return (
         <g transform={transform}>
           <circle cx={x} cy={y} r={r} fill="none" stroke={stroke} strokeWidth={strokeWidth} />
           <line x1={x - r} y1={y} x2={x + r} y2={y} stroke={stroke} strokeWidth={strokeWidth / 1.5} />
           <line x1={x} y1={y - r} x2={x} y2={y + r} stroke={stroke} strokeWidth={strokeWidth / 1.5} />
-          {/* Shaded Quadrant */}
           {quadrant === 1 && <path d={`M ${x} ${y} L ${x + r} ${y} A ${r} ${r} 0 0 1 ${x} ${y + r} Z`} fill="#B8212E" />}
           {quadrant === 2 && <path d={`M ${x} ${y} L ${x} ${y + r} A ${r} ${r} 0 0 1 ${x - r} ${y} Z`} fill="#B8212E" />}
           {quadrant === 3 && <path d={`M ${x} ${y} L ${x - r} ${y} A ${r} ${r} 0 0 1 ${x} ${y - r} Z`} fill="#B8212E" />}
@@ -219,6 +227,66 @@ function RenderShape({ shape }: { shape: DiagramShape }) {
             strokeLinecap="round"
             strokeLinejoin="round"
           />
+        </g>
+      )
+    }
+
+    case 'clock_face': {
+      const r = size / 2
+      const hAngle = ((hours % 12) + minutes / 60) * 30 * (Math.PI / 180) - Math.PI / 2
+      const mAngle = (minutes * 6) * (Math.PI / 180) - Math.PI / 2
+      const hLen = r * 0.5
+      const mLen = r * 0.75
+      return (
+        <g transform={transform}>
+          <circle cx={x} cy={y} r={r} fill="none" stroke={stroke} strokeWidth={strokeWidth} />
+          <circle cx={x} cy={y} r={3} fill="#B8212E" />
+          {/* Hour Hand */}
+          <line x1={x} y1={y} x2={x + hLen * Math.cos(hAngle)} y2={y + hLen * Math.sin(hAngle)} stroke={stroke} strokeWidth={strokeWidth + 1} strokeLinecap="round" />
+          {/* Minute Hand */}
+          <line x1={x} y1={y} x2={x + mLen * Math.cos(mAngle)} y2={y + mLen * Math.sin(mAngle)} stroke="#B8212E" strokeWidth={strokeWidth} strokeLinecap="round" />
+        </g>
+      )
+    }
+
+    case 'cube_net': {
+      const cell = size / 3
+      return (
+        <g transform={transform}>
+          {/* Unfolded 3D Cube Net Cross */}
+          <rect x={x - cell / 2} y={y - 1.5 * cell} width={cell} height={cell} fill="none" stroke={stroke} strokeWidth={2} />
+          <rect x={x - 1.5 * cell} y={y - 0.5 * cell} width={cell} height={cell} fill="none" stroke={stroke} strokeWidth={2} />
+          <rect x={x - cell / 2} y={y - 0.5 * cell} width={cell} height={cell} fill={fill} stroke={stroke} strokeWidth={2} />
+          <rect x={x + cell / 2} y={y - 0.5 * cell} width={cell} height={cell} fill="none" stroke={stroke} strokeWidth={2} />
+          <rect x={x - cell / 2} y={y + 0.5 * cell} width={cell} height={cell} fill="none" stroke={stroke} strokeWidth={2} />
+          <rect x={x - cell / 2} y={y + 1.5 * cell} width={cell} height={cell} fill="none" stroke={stroke} strokeWidth={2} />
+          {text && <text x={x} y={y + 4} textAnchor="middle" fontSize="12" fontWeight="bold" fill={stroke}>{text}</text>}
+        </g>
+      )
+    }
+
+    case 'overlapping_regions': {
+      return (
+        <g transform={transform}>
+          <circle cx={x - 12} cy={y} r={22} fill="none" stroke={stroke} strokeWidth={strokeWidth} />
+          <polygon points={`${x + 12},${y - 20} ${x - 8},${y + 18} ${x + 32},${y + 18}`} fill="none" stroke={stroke} strokeWidth={strokeWidth} />
+          <rect x={x - 10} y={y - 10} width={25} height={25} fill="none" stroke={stroke} strokeWidth={strokeWidth} />
+          {/* Dot placed at specified coordinate or default overlap */}
+          <circle cx={x1} cy={y1} r={4} fill="#B8212E" />
+        </g>
+      )
+    }
+
+    case 'folded_punch': {
+      const h = size / 2
+      return (
+        <g transform={transform}>
+          <rect x={x - h} y={y - h} width={size} height={size} fill="none" stroke={stroke} strokeWidth={strokeWidth} />
+          <line x1={x - h} y1={y + h} x2={x + h} y2={y - h} stroke={stroke} strokeWidth={1.5} strokeDasharray="3,3" />
+          <circle cx={x} cy={y} r={4} fill="#B8212E" />
+          {val >= 2 && <circle cx={x - h / 2} cy={y - h / 2} r={4} fill="#B8212E" />}
+          {val >= 3 && <circle cx={x + h / 2} cy={y + h / 2} r={4} fill="#B8212E" />}
+          {val >= 4 && <circle cx={x - h / 2} cy={y + h / 2} r={4} fill="#B8212E" />}
         </g>
       )
     }
@@ -322,49 +390,104 @@ export default function NonVerbalDiagram({
   onSelectOption?: (index: number) => void
   isInteractive?: boolean
 }) {
-  return (
-    <div className="w-full space-y-6 bg-slate-900/80 p-4 sm:p-6 rounded-3xl border border-slate-700/80">
-      
-      {/* 1. Problem Figures Container */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] uppercase font-black tracking-widest text-[#D4AF37] bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20">
-            {config.type === 'series' ? 'Pattern Series (Identify Next Figure)' : config.type === 'analogy' ? 'Figure Analogy (A : B :: C : ?)' : config.type === 'matrix' ? 'Matrix Rule Completion' : 'Odd Figure Out'}
-          </span>
-          <span className="text-[10px] text-slate-400 font-bold uppercase">Problem Sequence</span>
-        </div>
+  const getBadgeTitle = () => {
+    switch (config.type) {
+      case 'matrix': return '3x3 Matrix Grid (Identify Missing 9th Cell)'
+      case 'odd_one_out': return 'Classification (Identify the Odd Figure Out)'
+      case 'analogy': return 'Figure Analogy (A : B :: C : ?)'
+      case 'mirror': return 'Mirror Image Reflection'
+      case 'water': return 'Water Image Inversion'
+      case 'dot_situation': return 'Dot Situation Logic (Matching Overlap)'
+      case 'folding': return 'Paper Folding & Hole Punch'
+      default: return 'Pattern Series (Determine the Next Figure)'
+    }
+  }
 
+  return (
+    <div className="w-full space-y-6 bg-slate-900/90 p-4 sm:p-6 rounded-3xl border border-slate-700/80">
+      
+      {/* 1. Problem Header Badge */}
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] uppercase font-black tracking-widest text-[#D4AF37] bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20">
+          🧩 {getBadgeTitle()}
+        </span>
+        <span className="text-[10px] text-slate-400 font-bold uppercase">Problem Sequence</span>
+      </div>
+
+      {/* 2. Special Layout: 3x3 Matrix Grid */}
+      {config.type === 'matrix' && config.matrixGrid && (
+        <div className="flex flex-col items-center justify-center p-4 bg-slate-800/90 rounded-2xl border border-slate-700/60 max-w-sm mx-auto">
+          <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
+            {config.matrixGrid.map((row, rIdx) => (
+              <React.Fragment key={rIdx}>
+                {row.map((cell, cIdx) => (
+                  <div key={cIdx}>
+                    {cell.isMissing ? (
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl border-2 border-dashed border-amber-400 bg-amber-400/10 flex items-center justify-center text-amber-400 font-black text-2xl animate-pulse">
+                        ?
+                      </div>
+                    ) : (
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-white border-2 border-slate-300 flex items-center justify-center p-1 shadow-sm">
+                        <svg viewBox="0 0 100 100" className="w-full h-full">
+                          {cell.shapes.map((s, sIdx) => (
+                            <RenderShape key={sIdx} shape={s} />
+                          ))}
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 3. Standard Layout: Linear Problem Figures (Series, Analogy, Reflection) */}
+      {config.type !== 'matrix' && config.problemFigures && config.problemFigures.length > 0 && (
         <div className="flex items-center justify-center gap-2 sm:gap-4 overflow-x-auto py-4 bg-slate-800/90 rounded-2xl border border-slate-700/60 px-2 sm:px-4">
           {config.problemFigures.map((fig, idx) => (
             <React.Fragment key={idx}>
               <SingleFigureBox shapes={fig.shapes} label={fig.label || `(${idx + 1})`} />
-              {idx < config.problemFigures.length - 1 && (
+              {config.type === 'series' && idx < config.problemFigures!.length - 1 && (
                 <span className="text-slate-500 font-black text-sm sm:text-base select-none">→</span>
+              )}
+              {config.type === 'analogy' && idx === 0 && (
+                <span className="text-amber-400 font-black text-xs sm:text-sm px-1">:</span>
+              )}
+              {config.type === 'analogy' && idx === 1 && (
+                <span className="text-[#D4AF37] font-black text-sm sm:text-base px-2">::</span>
+              )}
+              {config.type === 'analogy' && idx === 2 && (
+                <span className="text-amber-400 font-black text-xs sm:text-sm px-1">:</span>
               )}
             </React.Fragment>
           ))}
           
           {/* Missing Box Placeholder */}
-          <div className="text-slate-500 font-black text-sm sm:text-base select-none">→</div>
-          <div className="flex flex-col items-center gap-1.5">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-2xl border-2 border-dashed border-amber-400/60 bg-amber-400/5 flex items-center justify-center text-amber-400 font-black text-2xl animate-pulse">
-              ?
+          {(config.type === 'series' || config.type === 'analogy') && (
+            <div className="flex flex-col items-center gap-1.5">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-2xl border-2 border-dashed border-amber-400/80 bg-amber-400/10 flex items-center justify-center text-amber-400 font-black text-2xl animate-pulse">
+                ?
+              </div>
+              <span className="text-[11px] font-black uppercase text-amber-400">Answer</span>
             </div>
-            <span className="text-[11px] font-black uppercase text-amber-400">Answer</span>
-          </div>
+          )}
         </div>
-      </div>
+      )}
 
-      {/* 2. Multiple Choice Options (A, B, C, D) */}
+      {/* 4. Multiple Choice Options Grid (A, B, C, D, E) */}
       <div className="space-y-2 pt-2 border-t border-slate-800">
         <div className="flex items-center justify-between">
           <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-            Select the Correct Figure from Options Below:
+            {config.type === 'odd_one_out' 
+              ? 'Select the figure that does NOT fit the rule:' 
+              : 'Select the correct replacement figure from options below:'}
           </span>
           <span className="text-[10px] font-black text-[#D4AF37] uppercase">Click Option to Choose</span>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <div className={`grid gap-3 sm:gap-4 ${config.optionFigures.length === 5 ? 'grid-cols-2 sm:grid-cols-5' : 'grid-cols-2 sm:grid-cols-4'}`}>
           {config.optionFigures.map((opt, idx) => {
             const isSelected = selectedOption === idx
             return (

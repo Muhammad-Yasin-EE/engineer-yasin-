@@ -7,15 +7,19 @@ import { createClient } from '@/lib/supabase/client'
 import { 
   ArrowLeft, Loader2, Award, CheckCircle2, XCircle, ChevronRight, ChevronLeft, 
   RotateCcw, AlertTriangle, Clock, User, ShieldAlert, CheckSquare, Shield, X, 
-  LogIn, UserPlus, Lock, Download, AlertOctagon 
+  LogIn, UserPlus, Lock, Download, AlertOctagon, Sparkles 
 } from 'lucide-react'
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import confetti from 'canvas-confetti'
+import NonVerbalDiagram from '@/components/NonVerbalDiagram'
+import { NON_VERBAL_QUESTION_BANK } from '@/lib/data/nonVerbalQuestions'
 
 // ── Official Pakistan Armed Forces Selection & Recruitment Standards ───────
 const OFFICIAL_VERBAL_TIME_MINUTES = 30     // 30 Minutes for Verbal Intelligence
 const OFFICIAL_VERBAL_MAX_QUESTIONS = 84    // 84 MCQs for Verbal Intelligence
+const OFFICIAL_NON_VERBAL_TIME_MINUTES = 30 // 30 Minutes for Non-Verbal Intelligence
+const OFFICIAL_NON_VERBAL_MAX_QUESTIONS = 64 // 64 MCQs for Non-Verbal Intelligence
 const OFFICIAL_ACADEMIC_TIME_MINUTES = 25   // 25 Minutes for Academic Tests
 const OFFICIAL_ACADEMIC_MAX_QUESTIONS = 50  // 50 MCQs for Academic Tests
 
@@ -30,21 +34,11 @@ const OFFICIAL_VERBAL_BANK = [
   { id: 7, question_text: "A train running at 72 km/h crosses a pole in 15 seconds. What is the length of the train?", options: ["300 meters", "250 meters", "350 meters", "200 meters"], correct_option_index: 0, explanation: "72 km/h = 20 m/s. Length = Speed * Time = 20 * 15 = 300 meters." },
   { id: 8, question_text: "Identify the odd word out among the following instruments:", options: ["Barometer", "Thermometer", "Diameter", "Hygrometer"], correct_option_index: 2, explanation: "Diameter is a geometric measurement; others are measuring instruments." },
   { id: 9, question_text: "If 'A' is taller than 'B' but shorter than 'C', and 'D' is taller than 'C', who is the tallest among them?", options: ["C", "A", "B", "D"], correct_option_index: 3, explanation: "Descending order of height is D > C > A > B. Thus, D is the tallest." },
-  { id: 10, question_text: "If Ali's present age is 5 years and Sidra is twice Ali's age, what will be Sidra's age when Ali is 11 years old?", options: ["14", "16", "22", "18"], correct_option_index: 1, explanation: "Sidra is currently 10 (5 years older). When Ali is 11, Sidra will be 11 + 5 = 16." },
-  { id: 11, question_text: "What is one third of 10% of 90?", options: ["3", "9", "30", "1"], correct_option_index: 0, explanation: "10% of 90 = 9. One third of 9 = 3." },
-  { id: 12, question_text: "A man walked towards North, turned left, then turned right. His present direction is:", options: ["South", "West", "North", "East"], correct_option_index: 2, explanation: "North -> Left (West) -> Right (North)." },
-  { id: 13, question_text: "90% of 90 is equal to:", options: ["80", "81", "72", "89"], correct_option_index: 1, explanation: "0.90 * 90 = 81." },
-  { id: 14, question_text: "Out of 500 students, 360 are boys. What is the percentage of girls?", options: ["24%", "28%", "32%", "30%"], correct_option_index: 1, explanation: "Girls = 140. Percentage = (140/500)*100 = 28%." },
-  { id: 15, question_text: "If yesterday was Friday, what day will be tomorrow?", options: ["Saturday", "Sunday", "Monday", "Thursday"], correct_option_index: 1, explanation: "Yesterday was Friday -> Today is Saturday -> Tomorrow will be Sunday." },
-  { id: 16, question_text: "What will come next in sequence? 3, 7, 14, 18, 36, 40, ...", options: ["44", "80", "72", "48"], correct_option_index: 1, explanation: "Pattern: +4, *2, +4, *2, +4, *2. 40 * 2 = 80." },
-  { id: 17, question_text: "Quarter of one tenth of 120 is:", options: ["3", "4", "12", "6"], correct_option_index: 0, explanation: "One tenth of 120 = 12. Quarter of 12 = 3." },
-  { id: 18, question_text: "Light is to Eye as Sound is to:", options: ["Nose", "Ear", "Tongue", "Skin"], correct_option_index: 1, explanation: "Light is perceived by the eye; sound is perceived by the ear." },
-  { id: 19, question_text: "Find the odd one out: Islamabad, Lahore, Karachi, Peshawar, Kabul", options: ["Islamabad", "Lahore", "Kabul", "Peshawar"], correct_option_index: 2, explanation: "Kabul is in Afghanistan; all others are Pakistani cities." },
-  { id: 20, question_text: "If 1st day of a month is Monday, what will be the 12th day?", options: ["Thursday", "Friday", "Saturday", "Sunday"], correct_option_index: 1, explanation: "1st = Mon, 8th = Mon, 9th = Tue, 10th = Wed, 11th = Thu, 12th = Friday." }
+  { id: 10, question_text: "If Ali's present age is 5 years and Sidra is twice Ali's age, what will be Sidra's age when Ali is 11 years old?", options: ["14", "16", "22", "18"], correct_option_index: 1, explanation: "Sidra is currently 10 (5 years older). When Ali is 11, Sidra will be 11 + 5 = 16." }
 ]
 
 while (OFFICIAL_VERBAL_BANK.length < 84) {
-  const base = OFFICIAL_VERBAL_BANK[OFFICIAL_VERBAL_BANK.length % 20]
+  const base = OFFICIAL_VERBAL_BANK[OFFICIAL_VERBAL_BANK.length % 10]
   OFFICIAL_VERBAL_BANK.push({
     id: OFFICIAL_VERBAL_BANK.length + 1,
     question_text: base.question_text,
@@ -60,16 +54,11 @@ const OFFICIAL_ACADEMIC_BANK = [
   { id: 2, question_text: "Who was the first Prime Minister of Pakistan?", options: ["Quaid-e-Azam", "Liaquat Ali Khan", "Khawaja Nazimuddin", "Ayub Khan"], correct_option_index: 1, explanation: "Nawabzada Liaquat Ali Khan was Pakistan's first Prime Minister." },
   { id: 3, question_text: "What is the speed of light in vacuum?", options: ["3 x 10^8 m/s", "3 x 10^6 m/s", "3 x 10^10 m/s", "3 x 10^5 m/s"], correct_option_index: 0, explanation: "The speed of light c = 3 * 10^8 m/s." },
   { id: 4, question_text: "Which gas is most abundant in Earth's atmosphere?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], correct_option_index: 1, explanation: "Nitrogen makes up approximately 78% of Earth's atmosphere." },
-  { id: 5, question_text: "The largest dam in Pakistan by water storage capacity is:", options: ["Mangla Dam", "Tarbela Dam", "Warsak Dam", "Diamer Bhasha"], correct_option_index: 1, explanation: "Tarbela Dam on River Indus is the largest earth-filled dam in Pakistan." },
-  { id: 6, question_text: "What is the derivative of sin(x) with respect to x?", options: ["-cos(x)", "cos(x)", "-sin(x)", "tan(x)"], correct_option_index: 1, explanation: "d/dx(sin x) = cos x." },
-  { id: 7, question_text: "In which year did the Battle of Badr take place?", options: ["1 A.H", "2 A.H", "3 A.H", "4 A.H"], correct_option_index: 1, explanation: "Ghazwa-e-Badr took place in 2 A.H (624 AD)." },
-  { id: 8, question_text: "Which organ produces insulin in the human body?", options: ["Liver", "Pancreas", "Kidney", "Gallbladder"], correct_option_index: 1, explanation: "The beta cells of the pancreas secrete insulin." },
-  { id: 9, question_text: "Who is the author of Pakistan's National Anthem?", options: ["Allama Iqbal", "Hafeez Jalandhari", "Faiz Ahmed Faiz", "Chaudhry Rehmat Ali"], correct_option_index: 1, explanation: "Hafeez Jalandhari composed the lyrics of the national anthem." },
-  { id: 10, question_text: "Acceleration is defined as the rate of change of:", options: ["Distance", "Velocity", "Displacement", "Speed"], correct_option_index: 1, explanation: "Acceleration a = dv/dt." }
+  { id: 5, question_text: "The largest dam in Pakistan by water storage capacity is:", options: ["Mangla Dam", "Tarbela Dam", "Warsak Dam", "Diamer Bhasha"], correct_option_index: 1, explanation: "Tarbela Dam on River Indus is the largest earth-filled dam in Pakistan." }
 ]
 
 while (OFFICIAL_ACADEMIC_BANK.length < 50) {
-  const base = OFFICIAL_ACADEMIC_BANK[OFFICIAL_ACADEMIC_BANK.length % 10]
+  const base = OFFICIAL_ACADEMIC_BANK[OFFICIAL_ACADEMIC_BANK.length % 5]
   OFFICIAL_ACADEMIC_BANK.push({
     id: OFFICIAL_ACADEMIC_BANK.length + 1,
     question_text: base.question_text,
@@ -93,6 +82,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
   const [quiz, setQuiz] = useState<any>(null)
   const [questions, setQuestions] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [isNonVerbal, setIsNonVerbal] = useState(false)
 
   // Exam States
   const [examStarted, setExamStarted] = useState(false)
@@ -142,56 +132,76 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
         }
 
         if (!currentQuiz) {
+          const isNV = quizId.includes('non-verbal')
           currentQuiz = {
             id: quizId,
-            title: quizId.replace(/-/g, ' ').toUpperCase() || 'OFFICIAL SELECTION TEST',
-            category: quizId.includes('paf') ? 'Pak Air Force' : quizId.includes('navy') ? 'Pak Navy' : 'Pak Army',
-            description: 'Official interactive timed screening test according to AS&RC / Selection Center pattern.'
+            title: isNV ? 'OFFICIAL NON-VERBAL INTELLIGENCE TEST 1' : quizId.replace(/-/g, ' ').toUpperCase() || 'OFFICIAL SELECTION TEST',
+            category: isNV ? 'Non-Verbal Intelligence' : quizId.includes('paf') ? 'Pak Air Force' : quizId.includes('navy') ? 'Pak Navy' : 'Pak Army',
+            description: isNV 
+              ? 'Official 64 pattern series, analogies, and matrix diagram test according to AS&RC / Selection Center pattern.'
+              : 'Official interactive timed screening test according to AS&RC / Selection Center pattern.'
           }
         }
         setQuiz(currentQuiz)
 
-        const titleLower = (currentQuiz.title || '').toLowerCase()
-        const isVerbal = titleLower.includes('verbal') || titleLower.includes('intelligence') || titleLower.includes('non-verbal')
+        const titleLower = (currentQuiz.title || '').toLowerCase() + ' ' + (quizId || '').toLowerCase()
+        const isNV = titleLower.includes('non-verbal') || titleLower.includes('matrix') || titleLower.includes('shapes')
+        const isVerbal = !isNV && (titleLower.includes('verbal') || titleLower.includes('intelligence'))
 
-        const limitMin = isVerbal ? OFFICIAL_VERBAL_TIME_MINUTES : OFFICIAL_ACADEMIC_TIME_MINUTES
-        const maxQ = isVerbal ? OFFICIAL_VERBAL_MAX_QUESTIONS : OFFICIAL_ACADEMIC_MAX_QUESTIONS
+        setIsNonVerbal(isNV)
+
+        let limitMin = OFFICIAL_ACADEMIC_TIME_MINUTES
+        let maxQ = OFFICIAL_ACADEMIC_MAX_QUESTIONS
+
+        if (isNV) {
+          limitMin = OFFICIAL_NON_VERBAL_TIME_MINUTES
+          maxQ = OFFICIAL_NON_VERBAL_MAX_QUESTIONS
+        } else if (isVerbal) {
+          limitMin = OFFICIAL_VERBAL_TIME_MINUTES
+          maxQ = OFFICIAL_VERBAL_MAX_QUESTIONS
+        }
 
         setLimitMinutes(limitMin)
         setMaxQCount(maxQ)
         setTimeLeft(limitMin * 60)
 
         let fetchedQuestions: any[] = []
-        try {
-          const { data: questionsData } = await supabase
-            .from('quiz_questions')
-            .select('*')
-            .eq('quiz_id', quizId)
-          fetchedQuestions = questionsData || []
-        } catch (e) {
-          console.warn('Questions DB query fallback:', e)
-        }
-        
-        if (fetchedQuestions.length === 0) {
-          const fallbackBank = isVerbal ? OFFICIAL_VERBAL_BANK : OFFICIAL_ACADEMIC_BANK
-          fetchedQuestions = [...fallbackBank]
+        if (isNV) {
+          fetchedQuestions = [...NON_VERBAL_QUESTION_BANK]
+        } else {
+          try {
+            const { data: questionsData } = await supabase
+              .from('quiz_questions')
+              .select('*')
+              .eq('quiz_id', quizId)
+            fetchedQuestions = questionsData || []
+          } catch (e) {
+            console.warn('Questions DB query fallback:', e)
+          }
+          
+          if (fetchedQuestions.length === 0) {
+            const fallbackBank = isVerbal ? OFFICIAL_VERBAL_BANK : OFFICIAL_ACADEMIC_BANK
+            fetchedQuestions = [...fallbackBank]
+          }
         }
 
         fetchedQuestions = fetchedQuestions.sort(() => 0.5 - Math.random()).slice(0, maxQ)
 
-        fetchedQuestions = fetchedQuestions.map(q => {
-          const originalOptions = q.options || []
-          const originalCorrect = q.correct_option_index
-          let optionsWithIndices = originalOptions.map((opt: string, i: number) => ({ text: opt, originalIndex: i }))
-          optionsWithIndices.sort(() => 0.5 - Math.random())
-          const newCorrectIndex = optionsWithIndices.findIndex(opt => opt.originalIndex === originalCorrect)
-          
-          return {
-            ...q,
-            options: optionsWithIndices.map(opt => opt.text),
-            correct_option_index: newCorrectIndex
-          }
-        })
+        if (!isNV) {
+          fetchedQuestions = fetchedQuestions.map(q => {
+            const originalOptions = q.options || []
+            const originalCorrect = q.correct_option_index
+            let optionsWithIndices = originalOptions.map((opt: string, i: number) => ({ text: opt, originalIndex: i }))
+            optionsWithIndices.sort(() => 0.5 - Math.random())
+            const newCorrectIndex = optionsWithIndices.findIndex(opt => opt.originalIndex === originalCorrect)
+            
+            return {
+              ...q,
+              options: optionsWithIndices.map(opt => opt.text),
+              correct_option_index: newCorrectIndex
+            }
+          })
+        }
 
         setQuestions(fetchedQuestions)
       } catch (err) {
@@ -469,8 +479,8 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
         </div>
       )}
 
-      {/* STATE 2: ACTIVE EXAM */}
-      {examState === 'active' && (
+      {/* STATE 2: ACTIVE EXAM (Supports both Text MCQs and Non-Verbal Diagrams) */}
+      {examState === 'active' && currentQuestion && (
         <div className="space-y-5">
           {/* Top Sticky Test Bar */}
           <div className="bg-slate-800 text-white p-4 rounded-2xl flex items-center justify-between sticky top-4 z-50 shadow-2xl border border-slate-700">
@@ -502,39 +512,59 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
             <div className="h-full bg-[#B8212E] transition-all duration-300" style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }} />
           </div>
 
-          {/* Question Container */}
-          <div className="p-6 sm:p-8 bg-slate-800/90 border border-slate-700 rounded-3xl min-h-[140px] flex items-center shadow-xl">
-            <h3 className="font-extrabold text-base sm:text-xl text-white leading-relaxed">
-              <span className="text-[#D4AF37] font-black mr-2">Q{currentIndex + 1}:</span>
-              {currentQuestion.question_text}
-            </h3>
-          </div>
+          {/* DYNAMIC QUESTION RENDERER */}
+          {currentQuestion.diagram ? (
+            // Non-Verbal Vector Diagram Question
+            <div className="space-y-4">
+              <div className="p-4 bg-slate-800/90 border border-slate-700 rounded-2xl">
+                <p className="text-sm sm:text-base font-bold text-white">
+                  <span className="text-[#D4AF37] font-black mr-2">Q{currentIndex + 1}:</span>
+                  {currentQuestion.question_text}
+                </p>
+              </div>
+              <NonVerbalDiagram
+                config={currentQuestion.diagram}
+                selectedOption={answers[currentIndex]}
+                onSelectOption={(optIdx) => handleOptionSelect(optIdx)}
+              />
+            </div>
+          ) : (
+            // Standard Text Multiple Choice Question
+            <div className="space-y-5">
+              <div className="p-6 sm:p-8 bg-slate-800/90 border border-slate-700 rounded-3xl min-h-[140px] flex items-center shadow-xl">
+                <h3 className="font-extrabold text-base sm:text-xl text-white leading-relaxed">
+                  <span className="text-[#D4AF37] font-black mr-2">Q{currentIndex + 1}:</span>
+                  {currentQuestion.question_text}
+                </h3>
+              </div>
 
-          {/* Options Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            {currentQuestion.options.map((option: string, idx: number) => {
-              const isSelected = answers[currentIndex] === idx
-              return (
-                <button
-                  key={idx}
-                  onClick={() => handleOptionSelect(idx)}
-                  className={`p-4 sm:p-5 border-2 rounded-2xl text-left font-bold text-xs sm:text-sm flex items-center justify-between cursor-pointer transition-all duration-200 ${
-                    isSelected 
-                      ? 'bg-[#B8212E]/20 border-[#B8212E] text-white ring-2 ring-[#B8212E]/50' 
-                      : 'bg-slate-800/60 border-slate-700/80 text-slate-200 hover:bg-slate-800 hover:border-slate-500'
-                  }`}
-                >
-                  <span className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded-md bg-slate-700 text-slate-300 text-xs flex items-center justify-center font-black shrink-0">
-                      {String.fromCharCode(65 + idx)}
-                    </span>
-                    <span>{option}</span>
-                  </span>
-                  {isSelected && <CheckCircle2 className="w-5 h-5 text-rose-400 shrink-0" />}
-                </button>
-              )
-            })}
-          </div>
+              {/* Options Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {currentQuestion.options?.map((option: string, idx: number) => {
+                  const isSelected = answers[currentIndex] === idx
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => handleOptionSelect(idx)}
+                      className={`p-4 sm:p-5 border-2 rounded-2xl text-left font-bold text-xs sm:text-sm flex items-center justify-between cursor-pointer transition-all duration-200 ${
+                        isSelected 
+                          ? 'bg-[#B8212E]/20 border-[#B8212E] text-white ring-2 ring-[#B8212E]/50' 
+                          : 'bg-slate-800/60 border-slate-700/80 text-slate-200 hover:bg-slate-800 hover:border-slate-500'
+                      }`}
+                    >
+                      <span className="flex items-center gap-3">
+                        <span className="w-6 h-6 rounded-md bg-slate-700 text-slate-300 text-xs flex items-center justify-center font-black shrink-0">
+                          {String.fromCharCode(65 + idx)}
+                        </span>
+                        <span>{option}</span>
+                      </span>
+                      {isSelected && <CheckCircle2 className="w-5 h-5 text-rose-400 shrink-0" />}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Next/Back Controls */}
           <div className="flex justify-between items-center pt-4 border-t border-slate-800">
@@ -562,7 +592,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
             )}
           </div>
 
-          {/* Touch-Friendly Question Navigator (84 Items) */}
+          {/* Touch-Friendly Question Navigator */}
           <div className="pt-6 space-y-3">
             <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
               Question Navigator ({questions.length} Items)
@@ -625,7 +655,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
                 </div>
               </div>
 
-              {/* Verified Certificate Template (Captured by html2canvas) */}
+              {/* Verified Certificate Template */}
               <div ref={certificateRef} className="p-6 bg-gradient-to-br from-slate-900 to-[#0A192F] text-white rounded-2xl border border-slate-800 space-y-4 text-center">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/10 text-amber-300 text-[10px] font-black uppercase tracking-widest border border-amber-400/20">
                   <Award className="w-3 h-3" /> Official Selection Verification
@@ -636,6 +666,31 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
                 </p>
                 <div className="text-[10px] text-slate-400 font-mono">
                   Verified by Engineer Yasin Forces Academy • ID: {quizId.toUpperCase()}-{Math.floor(1000 + Math.random() * 9000)}
+                </div>
+              </div>
+
+              {/* Detailed Review Section */}
+              <div className="space-y-4 pt-4 border-t border-slate-200">
+                <h4 className="font-black text-sm uppercase text-slate-800">
+                  Question Review &amp; Explanations ({questions.length} Items)
+                </h4>
+                <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
+                  {questions.slice(0, 10).map((q, idx) => {
+                    const isCorrect = answers[idx] === q.correct_option_index
+                    return (
+                      <div key={idx} className={`p-4 rounded-xl border ${isCorrect ? 'bg-emerald-50/50 border-emerald-200' : 'bg-rose-50/50 border-rose-200'} space-y-1.5 text-xs`}>
+                        <div className="flex items-center justify-between font-bold">
+                          <span className="text-slate-800">Q{idx + 1}: {q.question_text}</span>
+                          <span className={isCorrect ? 'text-emerald-700' : 'text-rose-700'}>
+                            {isCorrect ? '✓ Correct' : '✗ Incorrect'}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-600 font-medium leading-relaxed">
+                          <strong>Explanation:</strong> {q.explanation}
+                        </p>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
 

@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import { 
   ArrowLeft, Loader2, Award, CheckCircle2, XCircle, ChevronRight, ChevronLeft, 
   RotateCcw, AlertTriangle, Clock, User, ShieldAlert, CheckSquare, Shield, X, 
-  LogIn, UserPlus, Lock, Download, AlertOctagon, Sparkles 
+  LogIn, UserPlus, Lock, Download, AlertOctagon, Sparkles, Flame 
 } from 'lucide-react'
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
@@ -68,6 +68,19 @@ while (OFFICIAL_ACADEMIC_BANK.length < 50) {
   })
 }
 
+// Pseudo-random deterministic shuffle by seed
+function seededShuffle<T>(array: T[], seed: number): T[] {
+  const arr = [...array]
+  let m = arr.length, t, i
+  while (m) {
+    i = Math.floor(Math.abs(Math.sin(seed++)) * m--)
+    t = arr[m]
+    arr[m] = arr[i]
+    arr[i] = t
+  }
+  return arr
+}
+
 export default function QuizClient({ params }: { params: Promise<{ quizId: string }> }) {
   const router = useRouter()
   const { quizId } = use(params)
@@ -108,7 +121,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
   const certificateRef = useRef<HTMLDivElement>(null)
   const [downloadingCert, setDownloadingCert] = useState(false)
 
-  // 1. Initial Load & Auth Check
+  // 1. Initial Load & Dynamic Course Test Parser
   useEffect(() => {
     const initQuiz = async () => {
       try {
@@ -119,34 +132,22 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
           setStudentName(fullName)
         }
 
-        let currentQuiz: any = null
-        try {
-          const { data: quizData } = await supabase
-            .from('quizzes')
-            .select('*')
-            .eq('id', quizId)
-            .single()
-          currentQuiz = quizData
-        } catch (e) {
-          console.warn('Quiz DB query fallback:', e)
+        // Extract Seed & Details from dynamic slug (e.g. pma-long-course-non-verbal-test-5)
+        const match = quizId.match(/^(.*?)-(non-verbal|verbal|academic)-test-(\d+)$/i)
+        
+        let dynamicCourseTitle = ''
+        let dynamicTestType: 'non-verbal' | 'verbal' | 'academic' = 'verbal'
+        let dynamicTestNumber = 1
+
+        if (match) {
+          dynamicCourseTitle = match[1].replace(/-/g, ' ').toUpperCase()
+          dynamicTestType = match[2].toLowerCase() as any
+          dynamicTestNumber = parseInt(match[3], 10) || 1
         }
 
-        if (!currentQuiz) {
-          const isNV = quizId.includes('non-verbal')
-          currentQuiz = {
-            id: quizId,
-            title: isNV ? 'OFFICIAL NON-VERBAL INTELLIGENCE TEST 1' : quizId.replace(/-/g, ' ').toUpperCase() || 'OFFICIAL SELECTION TEST',
-            category: isNV ? 'Non-Verbal Intelligence' : quizId.includes('paf') ? 'Pak Air Force' : quizId.includes('navy') ? 'Pak Navy' : 'Pak Army',
-            description: isNV 
-              ? 'Official 64 pattern series, analogies, and matrix diagram test according to AS&RC / Selection Center pattern.'
-              : 'Official interactive timed screening test according to AS&RC / Selection Center pattern.'
-          }
-        }
-        setQuiz(currentQuiz)
-
-        const titleLower = (currentQuiz.title || '').toLowerCase() + ' ' + (quizId || '').toLowerCase()
-        const isNV = titleLower.includes('non-verbal') || titleLower.includes('matrix') || titleLower.includes('shapes')
-        const isVerbal = !isNV && (titleLower.includes('verbal') || titleLower.includes('intelligence'))
+        const isNV = dynamicTestType === 'non-verbal' || quizId.includes('non-verbal') || quizId.includes('matrix')
+        const isVerbal = !isNV && (dynamicTestType === 'verbal' || quizId.includes('verbal') || quizId.includes('intelligence'))
+        const isAcademic = !isNV && !isVerbal
 
         setIsNonVerbal(isNV)
 
@@ -165,34 +166,44 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
         setMaxQCount(maxQ)
         setTimeLeft(limitMin * 60)
 
+        // Set Quiz Title & Category
+        const branchCategory = quizId.includes('paf') 
+          ? 'Pakistan Air Force' 
+          : quizId.includes('navy') || quizId.includes('pn-') || quizId.includes('sailor')
+          ? 'Pakistan Navy' 
+          : 'Pakistan Army'
+
+        const cleanTitle = match
+          ? `${dynamicCourseTitle} ${isNV ? 'NON-VERBAL' : isVerbal ? 'VERBAL' : 'ACADEMIC'} TEST ${dynamicTestNumber}`
+          : quizId.replace(/-/g, ' ').toUpperCase()
+
+        const currentQuiz = {
+          id: quizId,
+          title: cleanTitle,
+          category: isNV ? 'Non-Verbal Intelligence' : branchCategory,
+          description: `Official ${maxQ} questions timed screening test according to AS&RC / Selection Center pattern.`
+        }
+        setQuiz(currentQuiz)
+
+        // Populate deterministic questions by test seed
+        const seedValue = dynamicTestNumber * 100 + (isNV ? 1 : isVerbal ? 2 : 3)
+
         let fetchedQuestions: any[] = []
         if (isNV) {
-          fetchedQuestions = [...NON_VERBAL_QUESTION_BANK]
+          fetchedQuestions = seededShuffle(NON_VERBAL_QUESTION_BANK, seedValue).slice(0, maxQ)
+        } else if (isVerbal) {
+          fetchedQuestions = seededShuffle(OFFICIAL_VERBAL_BANK, seedValue).slice(0, maxQ)
         } else {
-          try {
-            const { data: questionsData } = await supabase
-              .from('quiz_questions')
-              .select('*')
-              .eq('quiz_id', quizId)
-            fetchedQuestions = questionsData || []
-          } catch (e) {
-            console.warn('Questions DB query fallback:', e)
-          }
-          
-          if (fetchedQuestions.length === 0) {
-            const fallbackBank = isVerbal ? OFFICIAL_VERBAL_BANK : OFFICIAL_ACADEMIC_BANK
-            fetchedQuestions = [...fallbackBank]
-          }
+          fetchedQuestions = seededShuffle(OFFICIAL_ACADEMIC_BANK, seedValue).slice(0, maxQ)
         }
 
-        fetchedQuestions = fetchedQuestions.sort(() => 0.5 - Math.random()).slice(0, maxQ)
-
+        // Shuffle option choices for text MCQs
         if (!isNV) {
-          fetchedQuestions = fetchedQuestions.map(q => {
+          fetchedQuestions = fetchedQuestions.map((q, qIdx) => {
             const originalOptions = q.options || []
             const originalCorrect = q.correct_option_index
             let optionsWithIndices = originalOptions.map((opt: string, i: number) => ({ text: opt, originalIndex: i }))
-            optionsWithIndices.sort(() => 0.5 - Math.random())
+            optionsWithIndices = seededShuffle(optionsWithIndices, seedValue + qIdx)
             const newCorrectIndex = optionsWithIndices.findIndex(opt => opt.originalIndex === originalCorrect)
             
             return {
@@ -479,7 +490,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
         </div>
       )}
 
-      {/* STATE 2: ACTIVE EXAM (Supports both Text MCQs and Non-Verbal Diagrams) */}
+      {/* STATE 2: ACTIVE EXAM */}
       {examState === 'active' && currentQuestion && (
         <div className="space-y-5">
           {/* Top Sticky Test Bar */}

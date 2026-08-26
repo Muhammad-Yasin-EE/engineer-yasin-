@@ -430,13 +430,13 @@ export default async function Home() {
           
           <div className="relative z-10 max-w-4xl mx-auto space-y-6">
             <span className="px-4 py-1.5 rounded-full bg-rose-50 border border-rose-200 text-[#B8212E] text-xs font-black uppercase tracking-widest inline-block shadow-2xs">
-              🎖️ ENGINEER YASIN FORCES ACADEMY
+              🎖️ ENGINEER YASIN
             </span>
             <h2 className="text-2xl sm:text-4xl font-black uppercase tracking-tight text-[#0A192F]">
               OUR MISSION
             </h2>
             <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed font-medium text-justify sm:text-center">
-              &ldquo;Engineer Yasin Forces Academy is dedicated to shaping the defenders and leaders of tomorrow. With a firm commitment to excellence in guidance, preparation, and motivation, we provide an unparalleled online learning experience for candidates preparing for careers in the Pakistan Army, Navy, and Air Force. We integrate authentic military testing standards, realistic timed simulations, and expert mentoring under one unified digital roof to ensure your triumph in selection exams.&rdquo;
+              &ldquo;Engineer Yasin is dedicated to shaping the defenders and leaders of tomorrow. With a firm commitment to excellence in guidance, preparation, and motivation, we provide an unparalleled online learning experience for candidates preparing for careers in the Pakistan Army, Navy, and Air Force. We integrate authentic military testing standards, realistic timed simulations, and expert mentoring under one unified digital roof to ensure your triumph in selection exams.&rdquo;
             </p>
             <div className="pt-4 flex items-center justify-center gap-6 text-xs sm:text-sm font-black text-[#0A192F]">
               <span>⚔️ Courage</span> &bull; <span>🛡️ Honour</span> &bull; <span>🇵🇰 Dedication</span>

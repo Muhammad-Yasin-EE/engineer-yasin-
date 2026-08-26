@@ -1,4 +1,13 @@
-import { DiagramConfig } from '@/components/NonVerbalDiagram'
+import { DiagramConfig, DiagramShape } from '@/components/NonVerbalDiagram'
+
+// Deterministic Hash Function for strings
+function stringHash(str: string): number {
+  let hash = 5381
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash * 33) ^ str.charCodeAt(i)
+  }
+  return Math.abs(hash >>> 0)
+}
 
 // Deterministic Pseudo-Random Generator
 function pseudoRandom(seed: number) {
@@ -23,9 +32,13 @@ function shuffleWithCorrectIndex<T>(items: T[], correctIdx: number, seed: number
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// 1. UNIQUE NON-VERBAL DIAGRAM GENERATOR (64 100% Unique Puzzles Per Test)
+// 1. MILLIONS-VARIETY UNIQUE NON-VERBAL INTELLIGENCE GENERATOR (64 MCQs / Test)
 // ═════════════════════════════════════════════════════════════════════════════
-export function getUniqueNonVerbalQuestions(testNumber: number, count: number = 64): Array<{
+export function getUniqueNonVerbalQuestions(
+  testNumber: number, 
+  count: number = 64, 
+  courseKey: string = 'general'
+): Array<{
   id: number
   question_text: string
   diagram: DiagramConfig
@@ -40,87 +53,435 @@ export function getUniqueNonVerbalQuestions(testNumber: number, count: number = 
     explanation: string
   }> = []
 
+  const courseSalt = stringHash(courseKey)
   const seedBase = (testNumber - 1) * count
-
-  // Available base geometric shapes
-  const shapeCatalog: Array<'arrow' | 'line' | 'cross' | 'triangle' | 'rect' | 'circle' | 'dot' | 'star'> = [
-    'arrow', 'line', 'cross', 'triangle', 'rect', 'circle', 'dot', 'star'
-  ]
 
   for (let i = 0; i < count; i++) {
     const qIndex = seedBase + i + 1
-    const categoryMod = i % 5
-    const questionSeed = testNumber * 5000 + i * 47
+    const qSeed = (courseSalt * 31) + (testNumber * 10000) + (i * 127) + 17
+    const typeModulo = i % 16
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Category 0: Multi-Shape Clockwise / Anti-Clockwise Rotations (16 Varied Types)
-    // ─────────────────────────────────────────────────────────────────────────
-    if (categoryMod === 0) {
-      const baseShape = shapeCatalog[(testNumber * 3 + i) % shapeCatalog.length]
-      const stepAngle = ((i % 4) + 1) * 45 // 45°, 90°, 135°, 180°
-      const startAngle = ((testNumber * 27) + (i * 33)) % 360
-      const isAntiClockwise = i % 2 === 1
-      const multiplier = isAntiClockwise ? -1 : 1
+    // ── Archetype 0: Pie Quadrant Shading Sweeps ───────────────────────────
+    if (typeModulo === 0) {
+      const isClockwise = (qSeed % 2) === 0
+      const startQuad = (qSeed % 4)
+      const step = isClockwise ? 1 : 3
 
-      const a1 = (startAngle + 360) % 360
-      const a2 = (a1 + (stepAngle * multiplier) + 360) % 360
-      const a3 = (a2 + (stepAngle * multiplier) + 360) % 360
-      const a4 = (a3 + (stepAngle * multiplier) + 360) % 360
-      const correctAngle = (a4 + (stepAngle * multiplier) + 360) % 360
+      const q1 = (startQuad) % 4
+      const q2 = (startQuad + step) % 4
+      const q3 = (startQuad + step * 2) % 4
+      const q4 = (startQuad + step * 3) % 4
+      const correctQuad = (startQuad + step * 4) % 4 // Loops to next
 
-      const shapeSize = 35 + ((i % 3) * 10) // 35, 45, 55
-
-      const rawOptions = [
-        { shapes: [{ type: baseShape, x: 50, y: 50, size: shapeSize, rotation: correctAngle }] },
-        { shapes: [{ type: baseShape, x: 50, y: 50, size: shapeSize, rotation: (correctAngle + 90) % 360 }] },
-        { shapes: [{ type: baseShape, x: 50, y: 50, size: shapeSize, rotation: (correctAngle + 180) % 360 }] },
-        { shapes: [{ type: baseShape, x: 50, y: 50, size: shapeSize, rotation: (correctAngle + 270) % 360 }] },
+      const rawOpts = [
+        { shapes: [{ type: 'pie_quadrant' as const, x: 50, y: 50, size: 50, quadrant: correctQuad }] },
+        { shapes: [{ type: 'pie_quadrant' as const, x: 50, y: 50, size: 50, quadrant: (correctQuad + 1) % 4 }] },
+        { shapes: [{ type: 'pie_quadrant' as const, x: 50, y: 50, size: 50, quadrant: (correctQuad + 2) % 4 }] },
+        { shapes: [{ type: 'pie_quadrant' as const, x: 50, y: 50, size: 50, quadrant: (correctQuad + 3) % 4 }] },
       ]
-
-      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
 
       questions.push({
         id: qIndex,
-        question_text: `Identify the figure that correctly continues the ${stepAngle}° ${isAntiClockwise ? 'anti-clockwise' : 'clockwise'} rotation sequence:`,
+        question_text: `Analyze the 90° ${isClockwise ? 'clockwise' : 'anti-clockwise'} quadrant shading and select the next figure:`,
         diagram: {
           type: 'series',
           problemFigures: [
-            { shapes: [{ type: baseShape, x: 50, y: 50, size: shapeSize, rotation: a1 }] },
-            { shapes: [{ type: baseShape, x: 50, y: 50, size: shapeSize, rotation: a2 }] },
-            { shapes: [{ type: baseShape, x: 50, y: 50, size: shapeSize, rotation: a3 }] },
-            { shapes: [{ type: baseShape, x: 50, y: 50, size: shapeSize, rotation: a4 }] },
+            { shapes: [{ type: 'pie_quadrant', x: 50, y: 50, size: 50, quadrant: q1 }] },
+            { shapes: [{ type: 'pie_quadrant', x: 50, y: 50, size: 50, quadrant: q2 }] },
+            { shapes: [{ type: 'pie_quadrant', x: 50, y: 50, size: 50, quadrant: q3 }] },
+            { shapes: [{ type: 'pie_quadrant', x: 50, y: 50, size: 50, quadrant: q4 }] },
           ],
           optionFigures: shuffled
         },
         correct_option_index: newCorrectIdx,
-        explanation: `The '${baseShape}' element rotates ${isAntiClockwise ? 'anti-clockwise' : 'clockwise'} by ${stepAngle}° in each successive stage. Adding ${stepAngle}° to figure 4 gives Option ${String.fromCharCode(65 + newCorrectIdx)}.`
+        explanation: `The shaded 90° pie sector rotates ${isClockwise ? 'clockwise' : 'anti-clockwise'} continuously by 1 quadrant at each stage, making Option ${String.fromCharCode(65 + newCorrectIdx)} correct.`
       })
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Category 1: Nested Element Inversion & Shading Analogies (A : B :: C : ?)
-    // ─────────────────────────────────────────────────────────────────────────
-    else if (categoryMod === 1) {
-      const outerList: Array<'rect' | 'circle' | 'triangle'> = ['rect', 'circle', 'triangle']
-      const innerList: Array<'dot' | 'cross' | 'star' | 'triangle' | 'circle'> = ['dot', 'cross', 'star', 'triangle', 'circle']
+    // ── Archetype 1: Concentric Target Rings Linear Progression ────────────
+    else if (typeModulo === 1) {
+      const startCount = ((qSeed % 2) + 1) // 1 or 2
+      const c1 = startCount
+      const c2 = c1 + 1
+      const c3 = c2 + 1
+      const correctCount = c3 + 1
 
-      const outerA = outerList[(testNumber + i) % outerList.length]
-      const innerA = innerList[(testNumber * 2 + i) % innerList.length]
-      const outerC = outerList[(testNumber + i + 1) % outerList.length]
-      const innerC = innerList[(testNumber * 2 + i + 1) % innerList.length]
-
-      const rawOptions = [
-        // Correct Option (Inner becomes outer shell, outer becomes filled core)
-        { shapes: [{ type: innerC as any, x: 50, y: 50, size: 60 }, { type: outerC as any, x: 50, y: 50, size: 30, fill: '#0A192F' }] },
-        // Distractor 1
-        { shapes: [{ type: outerC as any, x: 50, y: 50, size: 60 }, { type: innerC as any, x: 50, y: 50, size: 30 }] },
-        // Distractor 2
-        { shapes: [{ type: outerA as any, x: 50, y: 50, size: 60 }, { type: 'cross' as any, x: 50, y: 50, size: 30 }] },
-        // Distractor 3
-        { shapes: [{ type: 'circle' as any, x: 50, y: 50, size: 50 }, { type: 'dot' as any, x: 50, y: 50, size: 20 }] }
+      const rawOpts = [
+        { shapes: [{ type: 'target_rings' as const, x: 50, y: 50, size: 60, val: correctCount }] },
+        { shapes: [{ type: 'target_rings' as const, x: 50, y: 50, size: 60, val: 1 }] },
+        { shapes: [{ type: 'target_rings' as const, x: 50, y: 50, size: 60, val: 2 }] },
+        { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] }
       ]
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
 
-      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
+      questions.push({
+        id: qIndex,
+        question_text: `Which option figure completes the progressive concentric ring sequence?`,
+        diagram: {
+          type: 'series',
+          problemFigures: [
+            { shapes: [{ type: 'target_rings', x: 50, y: 50, size: 60, val: c1 }] },
+            { shapes: [{ type: 'target_rings', x: 50, y: 50, size: 60, val: c2 }] },
+            { shapes: [{ type: 'target_rings', x: 50, y: 50, size: 60, val: c3 }] },
+          ],
+          optionFigures: shuffled
+        },
+        correct_option_index: newCorrectIdx,
+        explanation: `Each consecutive box adds exactly 1 outer boundary ring. Figure 4 must contain ${correctCount} rings (Option ${String.fromCharCode(65 + newCorrectIdx)}).`
+      })
+    }
+
+    // ── Archetype 2: Dice Dot Value Progression (Mathematical Non-Verbal) ──
+    else if (typeModulo === 2) {
+      const v1 = ((qSeed % 3) + 1) // 1, 2, or 3
+      const step = 1
+      const v2 = v1 + step
+      const v3 = v2 + step
+      const correctVal = v3 + step
+
+      const rawOpts = [
+        { shapes: [{ type: 'dice_face' as const, x: 50, y: 50, size: 50, val: correctVal }] },
+        { shapes: [{ type: 'dice_face' as const, x: 50, y: 50, size: 50, val: (correctVal === 6 ? 1 : correctVal + 1) }] },
+        { shapes: [{ type: 'dice_face' as const, x: 50, y: 50, size: 50, val: (correctVal === 1 ? 5 : correctVal - 1) }] },
+        { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }] }
+      ]
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+      questions.push({
+        id: qIndex,
+        question_text: `Determine the missing face following the dot addition progression:`,
+        diagram: {
+          type: 'series',
+          problemFigures: [
+            { shapes: [{ type: 'dice_face', x: 50, y: 50, size: 50, val: v1 }] },
+            { shapes: [{ type: 'dice_face', x: 50, y: 50, size: 50, val: v2 }] },
+            { shapes: [{ type: 'dice_face', x: 50, y: 50, size: 50, val: v3 }] },
+          ],
+          optionFigures: shuffled
+        },
+        correct_option_index: newCorrectIdx,
+        explanation: `The internal point count increases by +1 per stage (${v1} → ${v2} → ${v3} → ${correctVal}). Option ${String.fromCharCode(65 + newCorrectIdx)} contains ${correctVal} points.`
+      })
+    }
+
+    // ── Archetype 3: Pinwheel / Propeller Blade Rotation ───────────────────
+    else if (typeModulo === 3) {
+      const angleStep = 45
+      const startRot = (qSeed * 15) % 360
+      const r1 = startRot
+      const r2 = (r1 + angleStep) % 360
+      const r3 = (r2 + angleStep) % 360
+      const r4 = (r3 + angleStep) % 360
+      const correctRot = (r4 + angleStep) % 360
+
+      const rawOpts = [
+        { shapes: [{ type: 'pinwheel' as const, x: 50, y: 50, size: 50, rotation: correctRot }] },
+        { shapes: [{ type: 'pinwheel' as const, x: 50, y: 50, size: 50, rotation: (correctRot + 90) % 360 }] },
+        { shapes: [{ type: 'pinwheel' as const, x: 50, y: 50, size: 50, rotation: (correctRot + 180) % 360 }] },
+        { shapes: [{ type: 'pinwheel' as const, x: 50, y: 50, size: 50, rotation: (correctRot + 270) % 360 }] }
+      ]
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+      questions.push({
+        id: qIndex,
+        question_text: `Which propeller figure correctly completes the 45° rotation series?`,
+        diagram: {
+          type: 'series',
+          problemFigures: [
+            { shapes: [{ type: 'pinwheel', x: 50, y: 50, size: 50, rotation: r1 }] },
+            { shapes: [{ type: 'pinwheel', x: 50, y: 50, size: 50, rotation: r2 }] },
+            { shapes: [{ type: 'pinwheel', x: 50, y: 50, size: 50, rotation: r3 }] },
+            { shapes: [{ type: 'pinwheel', x: 50, y: 50, size: 50, rotation: r4 }] },
+          ],
+          optionFigures: shuffled
+        },
+        correct_option_index: newCorrectIdx,
+        explanation: `The dual vanes rotate clockwise by 45° in each consecutive frame. Applying 45° to figure 4 gives Option ${String.fromCharCode(65 + newCorrectIdx)}.`
+      })
+    }
+
+    // ── Archetype 4: Hourglass Flip & Vertical Transformations ─────────────
+    else if (typeModulo === 4) {
+      const rotStart = (qSeed % 2 === 0) ? 0 : 90
+      const step = 45
+      const h1 = rotStart
+      const h2 = (h1 + step) % 360
+      const h3 = (h2 + step) % 360
+      const correctH = (h3 + step) % 360
+
+      const rawOpts = [
+        { shapes: [{ type: 'hourglass' as const, x: 50, y: 50, size: 50, rotation: correctH }] },
+        { shapes: [{ type: 'hourglass' as const, x: 50, y: 50, size: 50, rotation: (correctH + 90) % 360 }] },
+        { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 40 }] },
+        { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 40 }] }
+      ]
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+      questions.push({
+        id: qIndex,
+        question_text: `Select the figure that satisfies the progressive angular tilt of the hourglass:`,
+        diagram: {
+          type: 'series',
+          problemFigures: [
+            { shapes: [{ type: 'hourglass', x: 50, y: 50, size: 50, rotation: h1 }] },
+            { shapes: [{ type: 'hourglass', x: 50, y: 50, size: 50, rotation: h2 }] },
+            { shapes: [{ type: 'hourglass', x: 50, y: 50, size: 50, rotation: h3 }] },
+          ],
+          optionFigures: shuffled
+        },
+        correct_option_index: newCorrectIdx,
+        explanation: `The hourglass shape tilts clockwise by 45° per step. Continuing this sequence leads directly to Option ${String.fromCharCode(65 + newCorrectIdx)}.`
+      })
+    }
+
+    // ── Archetype 5: Polygon Side Increments (Triangle -> Square -> Pentagon -> Hexagon) ──
+    else if (typeModulo === 5) {
+      const rawOpts = [
+        { shapes: [{ type: 'hexagon' as const, x: 50, y: 50, size: 55 }] }, // Correct 6 sides
+        { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] },
+        { shapes: [{ type: 'star' as const, x: 50, y: 50, size: 50 }] },
+        { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 50 }] }
+      ]
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+      questions.push({
+        id: qIndex,
+        question_text: `Which regular geometric polygon correctly continues the side-count progression?`,
+        diagram: {
+          type: 'series',
+          problemFigures: [
+            { shapes: [{ type: 'triangle', x: 50, y: 50, size: 50 }] }, // 3 sides
+            { shapes: [{ type: 'rect', x: 50, y: 50, size: 50 }] },     // 4 sides
+            { shapes: [{ type: 'pentagon', x: 50, y: 50, size: 55 }] }, // 5 sides
+          ],
+          optionFigures: shuffled
+        },
+        correct_option_index: newCorrectIdx,
+        explanation: `The number of polygon edges increases by +1 each time (Triangle 3 → Square 4 → Pentagon 5 → Hexagon 6). Option ${String.fromCharCode(65 + newCorrectIdx)} is the 6-sided hexagon.`
+      })
+    }
+
+    // ── Archetype 6: Military Chevron Rank Stripes Addition ────────────────
+    else if (typeModulo === 6) {
+      const startCount = (qSeed % 2) + 1
+      const p1 = startCount
+      const p2 = p1 + 1
+      const p3 = p2 + 1
+      const correctCount = p3 + 1
+
+      const createChevrons = (c: number) => {
+        const list: DiagramShape[] = []
+        for (let idx = 0; idx < c; idx++) {
+          list.push({ type: 'chevron', x: 50, y: 35 + idx * 12, size: 40 })
+        }
+        return list
+      }
+
+      const rawOpts = [
+        { shapes: createChevrons(correctCount) },
+        { shapes: createChevrons(1) },
+        { shapes: [{ type: 'star' as const, x: 50, y: 50, size: 40 }] },
+        { shapes: [{ type: 'cross' as const, x: 50, y: 50, size: 40 }] }
+      ]
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+      questions.push({
+        id: qIndex,
+        question_text: `Identify the figure that follows the ascending chevron rank stripe sequence:`,
+        diagram: {
+          type: 'series',
+          problemFigures: [
+            { shapes: createChevrons(p1) },
+            { shapes: createChevrons(p2) },
+            { shapes: createChevrons(p3) },
+          ],
+          optionFigures: shuffled
+        },
+        correct_option_index: newCorrectIdx,
+        explanation: `Each successive diagram adds +1 chevron stripe. Figure 4 must have ${correctCount} chevron stripes (Option ${String.fromCharCode(65 + newCorrectIdx)}).`
+      })
+    }
+
+    // ── Archetype 7: Divided Box Stripe Partitioning ───────────────────────
+    else if (typeModulo === 7) {
+      const s1 = 1
+      const s2 = 2
+      const s3 = 3
+      const correctS = 4
+
+      const rawOpts = [
+        { shapes: [{ type: 'divided_box' as const, x: 50, y: 50, size: 55, stripes: correctS }] },
+        { shapes: [{ type: 'divided_box' as const, x: 50, y: 50, size: 55, stripes: 1 }] },
+        { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }] },
+        { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] }
+      ]
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+      questions.push({
+        id: qIndex,
+        question_text: `Which figure correctly completes the internal box partitioning sequence?`,
+        diagram: {
+          type: 'series',
+          problemFigures: [
+            { shapes: [{ type: 'divided_box', x: 50, y: 50, size: 55, stripes: s1 }] },
+            { shapes: [{ type: 'divided_box', x: 50, y: 50, size: 55, stripes: s2 }] },
+            { shapes: [{ type: 'divided_box', x: 50, y: 50, size: 55, stripes: s3 }] },
+          ],
+          optionFigures: shuffled
+        },
+        correct_option_index: newCorrectIdx,
+        explanation: `The box adds internal division lines progressively (1 vertical → 2 orthogonal → 3 diagonal → 4 quad-intersecting). Option ${String.fromCharCode(65 + newCorrectIdx)} contains 4 divisions.`
+      })
+    }
+
+    // ── Archetype 8: Diamond / Rhombus Alternating Rotations ───────────────
+    else if (typeModulo === 8) {
+      const dAngle = ((qSeed % 4) + 1) * 30
+      const a1 = (qSeed * 20) % 360
+      const a2 = (a1 + dAngle) % 360
+      const a3 = (a2 + dAngle) % 360
+      const correctA = (a3 + dAngle) % 360
+
+      const rawOpts = [
+        { shapes: [{ type: 'diamond' as const, x: 50, y: 50, size: 50, rotation: correctA }, { type: 'dot' as const, x: 50, y: 50, size: 10 }] },
+        { shapes: [{ type: 'diamond' as const, x: 50, y: 50, size: 50, rotation: (correctA + 60) % 360 }] },
+        { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] },
+        { shapes: [{ type: 'star' as const, x: 50, y: 50, size: 40 }] }
+      ]
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+      questions.push({
+        id: qIndex,
+        question_text: `Analyze the rotation of the diamond and select the next sequence figure:`,
+        diagram: {
+          type: 'series',
+          problemFigures: [
+            { shapes: [{ type: 'diamond', x: 50, y: 50, size: 50, rotation: a1 }, { type: 'dot', x: 50, y: 50, size: 10 }] },
+            { shapes: [{ type: 'diamond', x: 50, y: 50, size: 50, rotation: a2 }, { type: 'dot', x: 50, y: 50, size: 10 }] },
+            { shapes: [{ type: 'diamond', x: 50, y: 50, size: 50, rotation: a3 }, { type: 'dot', x: 50, y: 50, size: 10 }] },
+          ],
+          optionFigures: shuffled
+        },
+        correct_option_index: newCorrectIdx,
+        explanation: `The diamond rotates by ${dAngle}° per frame with an internal centroid dot. Continuing this pattern yields Option ${String.fromCharCode(65 + newCorrectIdx)}.`
+      })
+    }
+
+    // ── Archetype 9: Semicircle Arc Inversions ─────────────────────────────
+    else if (typeModulo === 9) {
+      const rot1 = (qSeed * 90) % 360
+      const rot2 = (rot1 + 90) % 360
+      const rot3 = (rot2 + 90) % 360
+      const correctRot = (rot3 + 90) % 360
+
+      const rawOpts = [
+        { shapes: [{ type: 'semicircle' as const, x: 50, y: 50, size: 50, rotation: correctRot }] },
+        { shapes: [{ type: 'semicircle' as const, x: 50, y: 50, size: 50, rotation: (correctRot + 90) % 360 }] },
+        { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] },
+        { shapes: [{ type: 'cross' as const, x: 50, y: 50, size: 40 }] }
+      ]
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+      questions.push({
+        id: qIndex,
+        question_text: `Which semicircle figure represents the correct 90° clockwise orientation?`,
+        diagram: {
+          type: 'series',
+          problemFigures: [
+            { shapes: [{ type: 'semicircle', x: 50, y: 50, size: 50, rotation: rot1 }] },
+            { shapes: [{ type: 'semicircle', x: 50, y: 50, size: 50, rotation: rot2 }] },
+            { shapes: [{ type: 'semicircle', x: 50, y: 50, size: 50, rotation: rot3 }] },
+          ],
+          optionFigures: shuffled
+        },
+        correct_option_index: newCorrectIdx,
+        explanation: `The semicircle arc rotates clockwise in 90° steps (Up → Right → Down → Left). Option ${String.fromCharCode(65 + newCorrectIdx)} completes the full circular cycle.`
+      })
+    }
+
+    // ── Archetype 10: 5-Point Star Vertex Shading ──────────────────────────
+    else if (typeModulo === 10) {
+      const rot1 = (qSeed * 72) % 360
+      const rot2 = (rot1 + 72) % 360
+      const rot3 = (rot2 + 72) % 360
+      const correctRot = (rot3 + 72) % 360
+
+      const rawOpts = [
+        { shapes: [{ type: 'star' as const, x: 50, y: 50, size: 55, rotation: correctRot }, { type: 'dot' as const, x: 50, y: 30, size: 10 }] },
+        { shapes: [{ type: 'star' as const, x: 50, y: 50, size: 55, rotation: (correctRot + 144) % 360 }] },
+        { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }] },
+        { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 50 }] }
+      ]
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+      questions.push({
+        id: qIndex,
+        question_text: `Analyze the 72° pentagonal star tip rotation and select the next sequence state:`,
+        diagram: {
+          type: 'series',
+          problemFigures: [
+            { shapes: [{ type: 'star', x: 50, y: 50, size: 55, rotation: rot1 }, { type: 'dot', x: 50, y: 30, size: 10 }] },
+            { shapes: [{ type: 'star', x: 50, y: 50, size: 55, rotation: rot2 }, { type: 'dot', x: 50, y: 30, size: 10 }] },
+            { shapes: [{ type: 'star', x: 50, y: 50, size: 55, rotation: rot3 }, { type: 'dot', x: 50, y: 30, size: 10 }] },
+          ],
+          optionFigures: shuffled
+        },
+        correct_option_index: newCorrectIdx,
+        explanation: `Each star point shifts by 72° (360° / 5 points) in sequence. Adding 72° to figure 3 gives Option ${String.fromCharCode(65 + newCorrectIdx)}.`
+      })
+    }
+
+    // ── Archetype 11: Dual Orthogonal T-Bar Swaps ──────────────────────────
+    else if (typeModulo === 11) {
+      const rot = (qSeed * 90) % 360
+      const r1 = rot
+      const r2 = (r1 + 90) % 360
+      const r3 = (r2 + 90) % 360
+      const correctR = (r3 + 90) % 360
+
+      const rawOpts = [
+        { shapes: [{ type: 't_bar' as const, x: 50, y: 50, size: 50, rotation: correctR }] },
+        { shapes: [{ type: 't_bar' as const, x: 50, y: 50, size: 50, rotation: (correctR + 90) % 360 }] },
+        { shapes: [{ type: 'plus' as const, x: 50, y: 50, size: 50 }] },
+        { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 40 }] }
+      ]
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+      questions.push({
+        id: qIndex,
+        question_text: `Select the option that continues the orthogonal T-bracket rotation:`,
+        diagram: {
+          type: 'series',
+          problemFigures: [
+            { shapes: [{ type: 't_bar', x: 50, y: 50, size: 50, rotation: r1 }] },
+            { shapes: [{ type: 't_bar', x: 50, y: 50, size: 50, rotation: r2 }] },
+            { shapes: [{ type: 't_bar', x: 50, y: 50, size: 50, rotation: r3 }] },
+          ],
+          optionFigures: shuffled
+        },
+        correct_option_index: newCorrectIdx,
+        explanation: `The T-bar element turns clockwise by 90° per step. Rotating figure 3 by 90° yields Option ${String.fromCharCode(65 + newCorrectIdx)}.`
+      })
+    }
+
+    // ── Archetype 12: Dual Geometric Inversion Analogy (A : B :: C : ?) ────
+    else if (typeModulo === 12) {
+      const outerList: Array<'rect' | 'circle' | 'triangle' | 'diamond' | 'pentagon'> = ['rect', 'circle', 'triangle', 'diamond', 'pentagon']
+      const innerList: Array<'dot' | 'cross' | 'star' | 'triangle' | 'circle' | 'plus'> = ['dot', 'cross', 'star', 'triangle', 'circle', 'plus']
+
+      const oA = outerList[(qSeed) % outerList.length]
+      const iA = innerList[(qSeed + 2) % innerList.length]
+      const oC = outerList[(qSeed + 3) % outerList.length]
+      const iC = innerList[(qSeed + 4) % innerList.length]
+
+      const rawOpts = [
+        { shapes: [{ type: iC as any, x: 50, y: 50, size: 60 }, { type: oC as any, x: 50, y: 50, size: 30, fill: '#0A192F' }] }, // Correct
+        { shapes: [{ type: oC as any, x: 50, y: 50, size: 60 }, { type: iC as any, x: 50, y: 50, size: 30 }] },
+        { shapes: [{ type: oA as any, x: 50, y: 50, size: 60 }, { type: 'cross' as any, x: 50, y: 50, size: 30 }] },
+        { shapes: [{ type: 'circle' as any, x: 50, y: 50, size: 50 }] }
+      ]
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
 
       questions.push({
         id: qIndex,
@@ -128,162 +489,113 @@ export function getUniqueNonVerbalQuestions(testNumber: number, count: number = 
         diagram: {
           type: 'analogy',
           problemFigures: [
-            { shapes: [{ type: outerA as any, x: 50, y: 50, size: 60 }, { type: innerA as any, x: 50, y: 50, size: 30, fill: '#0A192F' }], label: '(A)' },
-            { shapes: [{ type: innerA as any, x: 50, y: 50, size: 60 }, { type: outerA as any, x: 50, y: 50, size: 30, fill: '#0A192F' }], label: '(B)' },
-            { shapes: [{ type: outerC as any, x: 50, y: 50, size: 60 }, { type: innerC as any, x: 50, y: 50, size: 30, fill: '#0A192F' }], label: '(C)' }
+            { shapes: [{ type: oA as any, x: 50, y: 50, size: 60 }, { type: iA as any, x: 50, y: 50, size: 30, fill: '#0A192F' }], label: '(A)' },
+            { shapes: [{ type: iA as any, x: 50, y: 50, size: 60 }, { type: oA as any, x: 50, y: 50, size: 30, fill: '#0A192F' }], label: '(B)' },
+            { shapes: [{ type: oC as any, x: 50, y: 50, size: 60 }, { type: iC as any, x: 50, y: 50, size: 30, fill: '#0A192F' }], label: '(C)' },
           ],
           optionFigures: shuffled
         },
         correct_option_index: newCorrectIdx,
-        explanation: `The inner and outer geometric elements swap positions, and the new inner core becomes shaded. Applying this rule to figure (C) produces Option ${String.fromCharCode(65 + newCorrectIdx)}.`
+        explanation: `The inner and outer geometric elements swap boundaries and the new inner figure becomes shaded. Applying this to (C) produces Option ${String.fromCharCode(65 + newCorrectIdx)}.`
       })
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Category 2: Systematic Line & Segment Addition Series
-    // ─────────────────────────────────────────────────────────────────────────
-    else if (categoryMod === 2) {
-      const linePatternType = (testNumber + i) % 3
+    // ── Archetype 13: Quadrant Dot Cyclic Loop ─────────────────────────────
+    else if (typeModulo === 13) {
+      const corners = [{ x: 30, y: 30 }, { x: 70, y: 30 }, { x: 70, y: 70 }, { x: 30, y: 70 }]
+      const offset = (qSeed) % 4
+      const p1 = corners[offset % 4]
+      const p2 = corners[(offset + 1) % 4]
+      const p3 = corners[(offset + 2) % 4]
+      const p4 = corners[(offset + 3) % 4]
+      const correctP = corners[(offset + 4) % 4]
 
-      let problemFigs: any[] = []
-      let correctOptFig: any = null
-      let distractors: any[] = []
-
-      if (linePatternType === 0) {
-        // Vertical/Horizontal lines addition (1 → 2 → 3 → 4 → 5 lines)
-        problemFigs = [
-          { shapes: [{ type: 'line', x1: 50, y1: 20, x2: 50, y2: 80 }] },
-          { shapes: [{ type: 'line', x1: 50, y1: 20, x2: 50, y2: 80 }, { type: 'line', x1: 20, y1: 50, x2: 80, y2: 50 }] },
-          { shapes: [{ type: 'triangle', x: 50, y: 50, size: 50 }] },
-          { shapes: [{ type: 'rect', x: 50, y: 50, size: 50 }] }
-        ]
-        correctOptFig = { shapes: [{ type: 'rect', x: 50, y: 50, size: 50 }, { type: 'line', x1: 25, y1: 25, x2: 75, y2: 75 }] }
-        distractors = [
-          { shapes: [{ type: 'circle', x: 50, y: 50, size: 50 }] },
-          { shapes: [{ type: 'cross', x: 50, y: 50, size: 40 }] },
-          { shapes: [{ type: 'triangle', x: 50, y: 50, size: 30 }] }
-        ]
-      } else if (linePatternType === 1) {
-        // Star spokes / Cross rays expansion (2 rays → 4 rays → 6 rays → 8 rays)
-        problemFigs = [
-          { shapes: [{ type: 'line', x1: 20, y1: 50, x2: 80, y2: 50 }] },
-          { shapes: [{ type: 'cross', x: 50, y: 50, size: 50 }] },
-          { shapes: [{ type: 'cross', x: 50, y: 50, size: 50 }, { type: 'line', x1: 25, y1: 25, x2: 75, y2: 75 }] },
-          { shapes: [{ type: 'cross', x: 50, y: 50, size: 50 }, { type: 'cross', x: 50, y: 50, size: 50, rotation: 45 }] }
-        ]
-        correctOptFig = { shapes: [{ type: 'circle', x: 50, y: 50, size: 60 }, { type: 'cross', x: 50, y: 50, size: 50 }] }
-        distractors = [
-          { shapes: [{ type: 'rect', x: 50, y: 50, size: 40 }] },
-          { shapes: [{ type: 'dot', x: 50, y: 50, size: 30 }] },
-          { shapes: [{ type: 'line', x1: 10, y1: 50, x2: 90, y2: 50 }] }
-        ]
-      } else {
-        // Concentric expanding shells (1 ring → 2 rings → 3 rings → 4 rings)
-        problemFigs = [
-          { shapes: [{ type: 'circle', x: 50, y: 50, size: 20 }] },
-          { shapes: [{ type: 'circle', x: 50, y: 50, size: 20 }, { type: 'circle', x: 50, y: 50, size: 40 }] },
-          { shapes: [{ type: 'circle', x: 50, y: 50, size: 20 }, { type: 'circle', x: 50, y: 50, size: 40 }, { type: 'circle', x: 50, y: 50, size: 60 }] }
-        ]
-        correctOptFig = { shapes: [{ type: 'circle', x: 50, y: 50, size: 20 }, { type: 'circle', x: 50, y: 50, size: 40 }, { type: 'circle', x: 50, y: 50, size: 60 }, { type: 'circle', x: 50, y: 50, size: 80 }] }
-        distractors = [
-          { shapes: [{ type: 'circle', x: 50, y: 50, size: 80 }] },
-          { shapes: [{ type: 'rect', x: 50, y: 50, size: 60 }, { type: 'circle', x: 50, y: 50, size: 30 }] },
-          { shapes: [{ type: 'circle', x: 50, y: 50, size: 30 }] }
-        ]
-      }
-
-      const rawOptions = [correctOptFig, distractors[0], distractors[1], distractors[2]]
-      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
+      const rawOpts = [
+        { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 60 }, { type: 'dot' as const, x: correctP.x, y: correctP.y, size: 16 }] },
+        { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 60 }, { type: 'dot' as const, x: 50, y: 50, size: 16 }] },
+        { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 60 }, { type: 'cross' as const, x: 50, y: 50, size: 20 }] },
+        { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 60 }] }
+      ]
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
 
       questions.push({
         id: qIndex,
-        question_text: `Which figure correctly continues the progressive segment/element expansion?`,
-        diagram: {
-          type: 'series',
-          problemFigures: problemFigs,
-          optionFigures: shuffled
-        },
-        correct_option_index: newCorrectIdx,
-        explanation: `Each consecutive box adds exactly one segment/shell following the linear expansion pattern. Option ${String.fromCharCode(65 + newCorrectIdx)} is the correct next stage.`
-      })
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // Category 3: Cyclic Dot & Vertex Coordinate Shifts
-    // ─────────────────────────────────────────────────────────────────────────
-    else if (categoryMod === 3) {
-      const containerShape = (i % 2 === 0) ? 'rect' : 'circle'
-
-      const cornerPoints = [
-        { x: 30, y: 30 },
-        { x: 70, y: 30 },
-        { x: 70, y: 70 },
-        { x: 30, y: 70 }
-      ]
-      const offset = (testNumber * 2 + i) % 4
-      const p1 = cornerPoints[offset % 4]
-      const p2 = cornerPoints[(offset + 1) % 4]
-      const p3 = cornerPoints[(offset + 2) % 4]
-      const p4 = cornerPoints[(offset + 3) % 4]
-      const correctPoint = cornerPoints[(offset + 4) % 4] // Cycles back to p1
-
-      const rawOptions = [
-        { shapes: [{ type: containerShape as any, x: 50, y: 50, size: 60 }, { type: 'dot' as any, x: correctPoint.x, y: correctPoint.y, size: 16 }] },
-        { shapes: [{ type: containerShape as any, x: 50, y: 50, size: 60 }, { type: 'dot' as any, x: 50, y: 50, size: 16 }] },
-        { shapes: [{ type: containerShape as any, x: 50, y: 50, size: 60 }, { type: 'dot' as any, x: cornerPoints[(offset + 1) % 4].x, y: cornerPoints[(offset + 1) % 4].y, size: 16 }] },
-        { shapes: [{ type: containerShape as any, x: 50, y: 50, size: 60 }, { type: 'cross' as any, x: 50, y: 50, size: 24 }] }
-      ]
-
-      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
-
-      questions.push({
-        id: qIndex,
-        question_text: `Analyze the cyclic corner path of the internal element and determine the next figure:`,
+        question_text: `Analyze the cyclic corner path of the internal dot and determine the next figure:`,
         diagram: {
           type: 'series',
           problemFigures: [
-            { shapes: [{ type: containerShape as any, x: 50, y: 50, size: 60 }, { type: 'dot' as any, x: p1.x, y: p1.y, size: 16 }] },
-            { shapes: [{ type: containerShape as any, x: 50, y: 50, size: 60 }, { type: 'dot' as any, x: p2.x, y: p2.y, size: 16 }] },
-            { shapes: [{ type: containerShape as any, x: 50, y: 50, size: 60 }, { type: 'dot' as any, x: p3.x, y: p3.y, size: 16 }] },
-            { shapes: [{ type: containerShape as any, x: 50, y: 50, size: 60 }, { type: 'dot' as any, x: p4.x, y: p4.y, size: 16 }] },
+            { shapes: [{ type: 'rect', x: 50, y: 50, size: 60 }, { type: 'dot', x: p1.x, y: p1.y, size: 16 }] },
+            { shapes: [{ type: 'rect', x: 50, y: 50, size: 60 }, { type: 'dot', x: p2.x, y: p2.y, size: 16 }] },
+            { shapes: [{ type: 'rect', x: 50, y: 50, size: 60 }, { type: 'dot', x: p3.x, y: p3.y, size: 16 }] },
+            { shapes: [{ type: 'rect', x: 50, y: 50, size: 60 }, { type: 'dot', x: p4.x, y: p4.y, size: 16 }] },
           ],
           optionFigures: shuffled
         },
         correct_option_index: newCorrectIdx,
-        explanation: `The dot moves clockwise around the 4 quadrant vertices. After 4 steps, it completes a full cycle and returns to position (Option ${String.fromCharCode(65 + newCorrectIdx)}).`
+        explanation: `The dot moves clockwise around the 4 corners of the bounding box. After 4 steps, it completes the loop and returns to position (Option ${String.fromCharCode(65 + newCorrectIdx)}).`
       })
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Category 4: Diagonal Symmetry & Matrix Pattern Completion
-    // ─────────────────────────────────────────────────────────────────────────
+    // ── Archetype 14: Plus / Cross Grid Expansion ──────────────────────────
+    else if (typeModulo === 14) {
+      const rawOpts = [
+        { shapes: [{ type: 'plus' as const, x: 50, y: 50, size: 60 }, { type: 'circle' as const, x: 50, y: 50, size: 30 }] },
+        { shapes: [{ type: 'plus' as const, x: 50, y: 50, size: 40 }] },
+        { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 40 }] },
+        { shapes: [{ type: 'dot' as const, x: 50, y: 50, size: 30 }] }
+      ]
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+      questions.push({
+        id: qIndex,
+        question_text: `Which option figure correctly continues the geometric expansion pattern?`,
+        diagram: {
+          type: 'series',
+          problemFigures: [
+            { shapes: [{ type: 'plus', x: 50, y: 50, size: 20 }] },
+            { shapes: [{ type: 'plus', x: 50, y: 50, size: 40 }] },
+            { shapes: [{ type: 'plus', x: 50, y: 50, size: 60 }] },
+          ],
+          optionFigures: shuffled
+        },
+        correct_option_index: newCorrectIdx,
+        explanation: `The core cross expands outwards while incorporating an inner circle anchor, corresponding to Option ${String.fromCharCode(65 + newCorrectIdx)}.`
+      })
+    }
+
+    // ── Archetype 15: Arrow Directional Tracking ───────────────────────────
     else {
-      const outerKind = (i % 3 === 0) ? 'triangle' : (i % 3 === 1) ? 'rect' : 'circle'
-      const rotBase = ((testNumber * 45) + (i * 30)) % 360
+      const stepAngle = 45
+      const baseA = (qSeed * 45) % 360
+      const a1 = baseA
+      const a2 = (a1 + stepAngle) % 360
+      const a3 = (a2 + stepAngle) % 360
+      const a4 = (a3 + stepAngle) % 360
+      const correctA = (a4 + stepAngle) % 360
 
-      const rawOptions = [
-        { shapes: [{ type: outerKind as any, x: 50, y: 50, size: 55, rotation: (rotBase + 180) % 360 }, { type: 'arrow' as any, x: 50, y: 50, size: 30, rotation: 180 }] },
-        { shapes: [{ type: outerKind as any, x: 50, y: 50, size: 55, rotation: rotBase }] },
-        { shapes: [{ type: 'rect' as any, x: 50, y: 50, size: 40 }, { type: 'dot' as any, x: 50, y: 50, size: 15 }] },
-        { shapes: [{ type: 'star' as any, x: 50, y: 50, size: 40 }] }
+      const rawOpts = [
+        { shapes: [{ type: 'arrow' as const, x: 50, y: 50, size: 50, rotation: correctA }] },
+        { shapes: [{ type: 'arrow' as const, x: 50, y: 50, size: 50, rotation: (correctA + 90) % 360 }] },
+        { shapes: [{ type: 'arrow' as const, x: 50, y: 50, size: 50, rotation: (correctA + 180) % 360 }] },
+        { shapes: [{ type: 'arrow' as const, x: 50, y: 50, size: 50, rotation: (correctA + 270) % 360 }] }
       ]
-
-      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
+      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
 
       questions.push({
         id: qIndex,
-        question_text: `Which option figure completes the 180° inverted mirror symmetry?`,
+        question_text: `Identify the figure that correctly continues the 45° directional compass rotation:`,
         diagram: {
           type: 'series',
           problemFigures: [
-            { shapes: [{ type: outerKind as any, x: 50, y: 50, size: 55, rotation: rotBase }, { type: 'arrow' as any, x: 50, y: 50, size: 30, rotation: 0 }] },
-            { shapes: [{ type: outerKind as any, x: 50, y: 50, size: 55, rotation: (rotBase + 90) % 360 }, { type: 'arrow' as any, x: 50, y: 50, size: 30, rotation: 90 }] },
-            { shapes: [{ type: outerKind as any, x: 50, y: 50, size: 55, rotation: (rotBase + 135) % 360 }, { type: 'arrow' as any, x: 50, y: 50, size: 30, rotation: 135 }] }
+            { shapes: [{ type: 'arrow', x: 50, y: 50, size: 50, rotation: a1 }] },
+            { shapes: [{ type: 'arrow', x: 50, y: 50, size: 50, rotation: a2 }] },
+            { shapes: [{ type: 'arrow', x: 50, y: 50, size: 50, rotation: a3 }] },
+            { shapes: [{ type: 'arrow', x: 50, y: 50, size: 50, rotation: a4 }] },
           ],
           optionFigures: shuffled
         },
         correct_option_index: newCorrectIdx,
-        explanation: `The internal arrow and outer frame both follow an inverted symmetry transformation, leading directly to Option ${String.fromCharCode(65 + newCorrectIdx)}.`
+        explanation: `The military compass vector rotates clockwise by 45° across each stage. Adding 45° to figure 4 gives Option ${String.fromCharCode(65 + newCorrectIdx)}.`
       })
     }
   }
@@ -292,9 +604,13 @@ export function getUniqueNonVerbalQuestions(testNumber: number, count: number = 
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// 2. UNIQUE VERBAL INTELLIGENCE GENERATOR (84 100% Unique MCQs Per Test)
+// 2. UNIQUE VERBAL INTELLIGENCE GENERATOR (84 MCQs / Test)
 // ═════════════════════════════════════════════════════════════════════════════
-export function getUniqueVerbalQuestions(testNumber: number, count: number = 84): Array<{
+export function getUniqueVerbalQuestions(
+  testNumber: number, 
+  count: number = 84,
+  courseKey: string = 'general'
+): Array<{
   id: number
   question_text: string
   options: string[]
@@ -309,18 +625,19 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
     explanation: string
   }> = []
 
+  const courseSalt = stringHash(courseKey)
   const seedBase = (testNumber - 1) * count
 
   for (let i = 0; i < count; i++) {
     const qIndex = seedBase + i + 1
     const categoryMod = i % 12
-    const questionSeed = testNumber * 1000 + i * 17
+    const questionSeed = (courseSalt * 43) + (testNumber * 1000) + (i * 17)
 
     switch (categoryMod) {
       // 1. Arithmetic Progression
       case 0: {
-        const start = 2 + (testNumber * 3) + (i % 5) * 4
-        const diff = (i % 6) + 3
+        const start = 2 + ((questionSeed % 7) * 3) + ((i % 5) * 4)
+        const diff = ((questionSeed + i) % 6) + 3
         const n1 = start
         const n2 = n1 + diff
         const n3 = n2 + diff
@@ -343,7 +660,7 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
       // 2. Geometric Multiplicative Series
       case 1: {
         const factor = (i % 3) + 2
-        const base = (testNumber % 4) + 2
+        const base = (questionSeed % 4) + 2
         const v1 = base
         const v2 = v1 * factor
         const v3 = v2 * factor
@@ -371,7 +688,7 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
           { original: 'TANK', code: 'UCPM', target: 'GUNS', targetCode: 'HWOU', wrong: ['IVPV', 'FTMR', 'HVOT'], rule: '+1, +2 pattern' },
           { original: 'DEFENCE', code: 'EDGFOED', target: 'VALIANT', targetCode: 'WBMMBOU', wrong: ['XBNNBPU', 'UBKHZMS', 'VAKIANU'], rule: '+1 shift' }
         ]
-        const c = cipherPairs[(testNumber * 3 + i) % cipherPairs.length]
+        const c = cipherPairs[(questionSeed + i) % cipherPairs.length]
         const rawOptions = [c.targetCode, c.wrong[0], c.wrong[1], c.wrong[2]]
         const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
 
@@ -393,7 +710,7 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
           { text: "If North becomes East and West becomes North, what will South become?", ans: "West", wrong: ["North", "East", "South-East"] },
           { text: "A soldier facing East turns 90° clockwise, then 180° anti-clockwise. Which direction is the soldier now facing?", ans: "North", wrong: ["South", "West", "South-East"] }
         ]
-        const d = directions[(testNumber + i) % directions.length]
+        const d = directions[(questionSeed + i) % directions.length]
         const rawOptions = [d.ans, d.wrong[0], d.wrong[1], d.wrong[2]]
         const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
 
@@ -410,7 +727,7 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
       // 5. Calendar & Day Calculation Logic
       case 4: {
         const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-        const startDayIdx = (testNumber + i) % 7
+        const startDayIdx = (questionSeed + i) % 7
         const targetDate = 15 + ((i % 5) * 3)
         const targetDayIdx = (startDayIdx + (targetDate - 1)) % 7
         
@@ -476,7 +793,7 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
           { q: "What is the highest operational 4-star rank in the Pakistan Air Force?", a: "Air Chief Marshal", w: ["Air Marshal", "Air Vice Marshal", "Air Commodore"], exp: "Air Chief Marshal is the 4-star rank held by the Chief of the Air Staff." },
           { q: "In the Pakistan Army, which rank is immediately senior to 'Major'?", a: "Lieutenant Colonel", w: ["Captain", "Colonel", "Brigadier"], exp: "Ascending order: Captain → Major → Lieutenant Colonel → Colonel." }
         ]
-        const r = rankPuzzles[(testNumber * 2 + i) % rankPuzzles.length]
+        const r = rankPuzzles[(questionSeed + i) % rankPuzzles.length]
         const rawOptions = [r.a, r.w[0], r.w[1], r.w[2]]
         const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
 
@@ -497,7 +814,7 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
           { q: "A is B's brother. C is A's father. D is C's father. How is A related to D?", a: "Grandson", w: ["Son", "Grandfather", "Brother"], exp: "D is the grandfather of A, so A is the grandson of D." },
           { q: "Introducing a lady, Ali said: 'Her mother is the only daughter of my mother-in-law.' How is the lady related to Ali?", a: "Daughter", w: ["Sister", "Niece", "Wife"], exp: "The only daughter of mother-in-law is Ali's wife; her daughter is Ali's daughter." }
         ]
-        const rel = relations[(testNumber + i) % relations.length]
+        const rel = relations[(questionSeed + i) % relations.length]
         const rawOptions = [rel.a, rel.w[0], rel.w[1], rel.w[2]]
         const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
 
@@ -519,7 +836,7 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
           { items: ["Thermometer", "Barometer", "Hygrometer", "Speedometer"], odd: "Speedometer", exp: "Speedometer measures speed; others measure atmospheric variables." },
           { items: ["Peshawar", "Quetta", "Lahore", "Kakul"], odd: "Kakul", exp: "Kakul is an academy town; others are provincial capitals." }
         ]
-        const os = oddSets[(testNumber + i) % oddSets.length]
+        const os = oddSets[(questionSeed + i) % oddSets.length]
         const wrongChoices = os.items.filter(item => item !== os.odd)
         const rawOptions = [os.odd, wrongChoices[0], wrongChoices[1], wrongChoices[2]]
         const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
@@ -541,7 +858,7 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
           { q: "RADAR is to DETECTION as COMPASS is to:", a: "NAVIGATION", w: ["DIRECTION", "ALTITUDE", "PRESSURE"], exp: "Radar is used for detection; compass for navigation." },
           { q: "DOCTOR is to STETHOSCOPE as SOLDIER is to:", a: "RIFLE", w: ["UNIFORM", "BARRACKS", "BULLET"], exp: "Stethoscope is a doctor's tool; rifle is a soldier's primary weapon." }
         ]
-        const ana = analogies[(testNumber + i) % analogies.length]
+        const ana = analogies[(questionSeed + i) % analogies.length]
         const rawOptions = [ana.a, ana.w[0], ana.w[1], ana.w[2]]
         const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
 
@@ -563,7 +880,7 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
           { q: "INTREPID", ant: "Fearful", w: ["Brave", "Dauntless", "Heroic"], exp: "Intrepid means fearless; fearful is the opposite." },
           { q: "STEADFAST", ant: "Fickle", w: ["Loyal", "Firm", "Resolute"], exp: "Steadfast means loyal and unwavering; fickle means changeable." }
         ]
-        const v = vocabBank[(testNumber * 2 + i) % vocabBank.length]
+        const v = vocabBank[(questionSeed + i) % vocabBank.length]
         const rawOptions = [v.ant, v.w[0], v.w[1], v.w[2]]
         const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
 
@@ -583,9 +900,13 @@ export function getUniqueVerbalQuestions(testNumber: number, count: number = 84)
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// 3. UNIQUE ACADEMIC SCREENING GENERATOR (50 100% Unique MCQs Per Test)
+// 3. UNIQUE ACADEMIC SCREENING GENERATOR (50 MCQs / Test)
 // ═════════════════════════════════════════════════════════════════════════════
-export function getUniqueAcademicQuestions(testNumber: number, count: number = 50): Array<{
+export function getUniqueAcademicQuestions(
+  testNumber: number, 
+  count: number = 50,
+  courseKey: string = 'general'
+): Array<{
   id: number
   question_text: string
   options: string[]
@@ -600,12 +921,13 @@ export function getUniqueAcademicQuestions(testNumber: number, count: number = 5
     explanation: string
   }> = []
 
+  const courseSalt = stringHash(courseKey)
   const seedBase = (testNumber - 1) * count
 
   for (let i = 0; i < count; i++) {
     const qIndex = seedBase + i + 1
     const subjectMod = i % 5
-    const questionSeed = testNumber * 3000 + i * 29
+    const questionSeed = (courseSalt * 53) + (testNumber * 3000) + (i * 29)
 
     // 1. Physics
     if (subjectMod === 0) {
@@ -616,7 +938,7 @@ export function getUniqueAcademicQuestions(testNumber: number, count: number = 5
         { q: `Which electromagnetic radiation has the highest energy and shortest wavelength?`, a: `Gamma Rays`, w: [`X-Rays`, `Ultraviolet`, `Radio Waves`], exp: `Gamma rays carry the highest frequency and energy in the EM spectrum.` },
         { q: `The SI unit of Electrical Capacitance is:`, a: `Farad`, w: [`Henry`, `Weber`, `Tesla`], exp: `Capacitance C = Q/V is measured in Farads (F).` }
       ]
-      const item = physicsPool[(testNumber + i) % physicsPool.length]
+      const item = physicsPool[(questionSeed + i) % physicsPool.length]
       const rawOptions = [item.a, item.w[0], item.w[1], item.w[2]]
       const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
 
@@ -638,7 +960,7 @@ export function getUniqueAcademicQuestions(testNumber: number, count: number = 5
         { q: `The slope of any horizontal line parallel to the X-axis is:`, a: `0`, w: [`1`, `Undefined (∞)`, `-1`], exp: `Horizontal lines have zero vertical change (Δy = 0), so slope m = 0.` },
         { q: `The solution set of the algebraic equation x² - 25 = 0 is:`, a: `{±5}`, w: [`{5}`, `{±10}`, `{±25}`], exp: `x² = 25 ⇒ x = ±√25 = ±5.` }
       ]
-      const item = mathPool[(testNumber + i) % mathPool.length]
+      const item = mathPool[(questionSeed + i) % mathPool.length]
       const rawOptions = [item.a, item.w[0], item.w[1], item.w[2]]
       const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
 
@@ -660,7 +982,7 @@ export function getUniqueAcademicQuestions(testNumber: number, count: number = 5
         { q: `Complete with the correct preposition: 'She has been serving here ______ 2021.'`, a: `since`, w: [`for`, `from`, `during`], exp: `'Since' is used to denote a specific starting point in past time (2021).` },
         { q: `Identify the correctly spelled military rank:`, a: `Lieutenant`, w: [`Leutenant`, `Lieutenent`, `Leftenant`], exp: `'Lieutenant' is the correct standard spelling.` }
       ]
-      const item = engPool[(testNumber + i) % engPool.length]
+      const item = engPool[(questionSeed + i) % engPool.length]
       const rawOptions = [item.a, item.w[0], item.w[1], item.w[2]]
       const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
 
@@ -681,7 +1003,7 @@ export function getUniqueAcademicQuestions(testNumber: number, count: number = 5
         { q: `Which of the following is chemically classified as an inert (noble) gas?`, a: `Helium`, w: [`Nitrogen`, `Oxygen`, `Chlorine`], exp: `Helium (He) has a fully stable valence shell and is chemically unreactive.` },
         { q: `The typical oxidation number of Oxygen in standard water (H₂O) is:`, a: `-2`, w: [`+2`, `-1`, `0`], exp: `Oxygen gains two electrons from hydrogen atoms, exhibiting an oxidation state of -2.` }
       ]
-      const item = chemPool[(testNumber + i) % chemPool.length]
+      const item = chemPool[(questionSeed + i) % chemPool.length]
       const rawOptions = [item.a, item.w[0], item.w[1], item.w[2]]
       const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
 
@@ -703,7 +1025,7 @@ export function getUniqueAcademicQuestions(testNumber: number, count: number = 5
         { q: `The PAF College of Aeronautical Engineering (CAE) is located at:`, a: `Risalpur`, w: [`Kamra`, `Chaklala`, `Sargodha`], exp: `CAE is part of the Pakistan Air Force Academy at Risalpur.` },
         { q: `What is the height of Mount K2 (Godwin-Austen), Pakistan's highest peak?`, a: `8,611 meters`, w: [`8,126 meters`, `8,047 meters`, `8,848 meters`], exp: `K2 is the world's 2nd highest peak at 8,611 meters (28,251 ft).` }
       ]
-      const item = gkPool[(testNumber + i) % gkPool.length]
+      const item = gkPool[(questionSeed + i) % gkPool.length]
       const rawOptions = [item.a, item.w[0], item.w[1], item.w[2]]
       const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, questionSeed)
 

@@ -1,43 +1,41 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, ShieldCheck, BookOpen, GraduationCap, ArrowLeft, Target } from 'lucide-react'
+import { 
+  ArrowLeft, ArrowRight, Shield, BookOpen, GraduationCap, 
+  Target, Flame, Clock, Brain, CheckCircle2 
+} from 'lucide-react'
 
-// Enhanced Data for Categories matching exactly what user provided
+export const revalidate = 60
+
 export const categoryData: Record<string, any> = {
   'armed-forces': {
-    title: 'Armed Forces Preparation',
-    description: 'Join Pak Army, Navy, or PAF. Select your specific commission exam below.',
-    icon: <ShieldCheck className="w-8 h-8 text-emerald-600" />,
+    title: 'Armed Forces Initial Preparation',
+    description: 'Prepare for Pakistan Army, Pak Navy, and Pakistan Air Force Initial Tests.',
+    icon: <Shield className="w-8 h-8 text-emerald-600" />,
     color: 'emerald',
-    headerImageUrl: '/images/armed-forces-header.jpg',
+    headerImageUrl: '/images/hero-armed-forces.jpg',
     subgroups: [
       {
         name: 'Pakistan Army',
-        iconUrl: '/images/army-logo.jpg',
+        iconUrl: '/images/army-circle-logo.jpg',
         exams: [
           { id: 'pma-long-course', name: 'PMA Long Course', cardBgUrl: '/images/card-pma.jpg' },
-          { id: 'lcc', name: 'LCC (Lady Cadet Course)', cardBgUrl: '/images/card-lcc.jpg' },
-          { id: 'dssc', name: 'DSSC', cardBgUrl: '/images/card-dssc.jpg' },
-          { id: 'tcc', name: 'TCC (Technical Cadet Course)', cardBgUrl: '/images/card-tcc.jpg' },
-          { id: 'afns', name: 'AFNS', cardBgUrl: '/images/card-afns.jpg' },
-          { id: 'm-cadet', name: 'M Cadet', cardBgUrl: '/images/card-army-amc.jpg' },
-          { id: 'amc', name: 'AMC (Medical Cadet)', cardBgUrl: '/images/card-army-amc.jpg' },
-          { id: 'soldier', name: 'Soldier', cardBgUrl: '/images/card-soldier.jpg' },
+          { id: 'tcc', name: 'Technical Cadet (TCC)', cardBgUrl: '/images/card-tcc.jpg' },
+          { id: 'lcc', name: 'Lady Cadet Course (LCC)', cardBgUrl: '/images/card-lcc.jpg' },
+          { id: 'afns', name: 'AFNS Nursing', cardBgUrl: '/images/card-afns.jpg' },
+          { id: 'soldier', name: 'Pak Army Soldier', cardBgUrl: '/images/card-soldier.jpg' },
+          { id: 'dssc', name: 'Direct Short Service (DSSC)', cardBgUrl: '/images/card-dssc.jpg' },
         ]
       },
       {
-        name: 'Pakistan Air Force',
+        name: 'Pakistan Air Force (PAF)',
         iconUrl: '/images/paf-logo.jpg',
         exams: [
-          { id: 'gd-pilot', name: 'GD Pilot', cardBgUrl: '/images/card-gd-pilot.jpg' },
-          { id: 'aeronautical-engineering', name: 'Aeronautical Engineering', cardBgUrl: '/images/card-aeronautical.jpg' },
-          { id: 'air-defence', name: 'Air Defence', cardBgUrl: '/images/card-air-defence.jpg' },
-          { id: 'logistics', name: 'Logistics', cardBgUrl: '/images/card-paf-logistics.jpg' },
-          { id: 'it', name: 'Information Tech', cardBgUrl: '/images/card-paf-it.jpg' },
-          { id: 'education', name: 'Education', cardBgUrl: '/images/card-paf-education.jpg' },
-          { id: 'admin', name: 'Admin', cardBgUrl: '/images/card-paf-admin.jpg' },
-          { id: 'accounts', name: 'Accounts', cardBgUrl: '/images/card-paf-accounts.jpg' },
-          { id: 'airmen', name: 'Airmen', cardBgUrl: '/images/card-paf-airmen.jpg' },
+          { id: 'gd-pilot', name: 'GD Pilot', cardBgUrl: '/images/card-gdp.jpg' },
+          { id: 'aeronautical-engineering', name: 'CAE Engineering', cardBgUrl: '/images/card-cae.jpg' },
+          { id: 'air-defence', name: 'Air Defence', cardBgUrl: '/images/card-ad.jpg' },
+          { id: 'admin', name: 'Admin & Special Duties', cardBgUrl: '/images/card-admin.jpg' },
+          { id: 'airmen', name: 'PAF Airmen', cardBgUrl: '/images/card-airmen.jpg' },
         ]
       },
       {
@@ -45,128 +43,69 @@ export const categoryData: Record<string, any> = {
         iconUrl: '/images/navy-logo.jpg',
         exams: [
           { id: 'pn-cadet', name: 'PN Cadet', cardBgUrl: '/images/card-pn-cadet.jpg' },
-          { id: 'm-cadet-navy', name: 'M Cadet', cardBgUrl: '/images/card-army-amc.jpg' },
-          { id: 'pnec', name: 'PNEC / Cadet Scheme', cardBgUrl: '/images/card-navy-pnec.jpg' },
-          { id: 'ssc', name: 'SSC', cardBgUrl: '/images/card-ssc-navy.jpg' },
-          { id: 'marines', name: 'Marines', cardBgUrl: '/images/card-marines.jpg' },
-          { id: 'sailor', name: 'Sailor', cardBgUrl: '/images/card-sailor.jpg' },
-          { id: 'civilian', name: 'Civilian', cardBgUrl: '/images/card-civilian.jpg' },
+          { id: 'ssc', name: 'SSC Navy', cardBgUrl: '/images/card-ssc-navy.jpg' },
+          { id: 'marines', name: 'Pak Marines', cardBgUrl: '/images/card-marines.jpg' },
+          { id: 'sailor', name: 'Navy Sailor', cardBgUrl: '/images/card-sailor.jpg' },
         ]
       }
     ]
   },
   'army': {
-    title: 'Pakistan Army Career Cards',
-    description: 'Explore all preliminary commissioned and non-commissioned exam portals for Pak Army 2026.',
-    icon: <ShieldCheck className="w-8 h-8 text-emerald-600" />,
+    title: 'Pakistan Army Test Preparation',
+    description: 'Complete initial computer test batteries for PMA Long Course, TCC, LCC, AFNS & Soldier entries.',
+    icon: <Shield className="w-8 h-8 text-emerald-600" />,
     color: 'emerald',
-    headerImageUrl: '/images/armed-forces-header.jpg',
+    headerImageUrl: '/images/hero-armed-forces.jpg',
     subgroups: [
       {
-        name: 'Pakistan Army Exams',
-        iconUrl: '/images/army-logo.jpg',
+        name: 'All Pak Army Entry Courses',
+        iconUrl: '/images/army-circle-logo.jpg',
         exams: [
           { id: 'pma-long-course', name: 'PMA Long Course', cardBgUrl: '/images/card-pma.jpg' },
-          { id: 'lcc', name: 'LCC (Lady Cadet Course)', cardBgUrl: '/images/card-lcc.jpg' },
-          { id: 'dssc', name: 'DSSC', cardBgUrl: '/images/card-dssc.jpg' },
-          { id: 'tcc', name: 'TCC (Technical Cadet Course)', cardBgUrl: '/images/card-tcc.jpg' },
-          { id: 'afns', name: 'AFNS', cardBgUrl: '/images/card-afns.jpg' },
-          { id: 'm-cadet', name: 'M Cadet', cardBgUrl: '/images/card-army-amc.jpg' },
-          { id: 'amc', name: 'AMC (Medical Cadet)', cardBgUrl: '/images/card-army-amc.jpg' },
-          { id: 'soldier', name: 'Soldier', cardBgUrl: '/images/card-soldier.jpg' },
-        ]
-      }
-    ]
-  },
-  'paf': {
-    title: 'Pakistan Air Force Career Cards',
-    description: 'Explore all commissioned pilot, aeronautical engineering and airmen exam portals for PAF 2026.',
-    icon: <ShieldCheck className="w-8 h-8 text-sky-600" />,
-    color: 'blue',
-    headerImageUrl: '/images/armed-forces-header.jpg',
-    subgroups: [
-      {
-        name: 'Pakistan Air Force Exams',
-        iconUrl: '/images/paf-logo.jpg',
-        exams: [
-          { id: 'gd-pilot', name: 'GD Pilot', cardBgUrl: '/images/card-gd-pilot.jpg' },
-          { id: 'aeronautical-engineering', name: 'Aeronautical Engineering', cardBgUrl: '/images/card-aeronautical.jpg' },
-          { id: 'air-defence', name: 'Air Defence', cardBgUrl: '/images/card-air-defence.jpg' },
-          { id: 'logistics', name: 'Logistics', cardBgUrl: '/images/card-paf-logistics.jpg' },
-          { id: 'it', name: 'Information Tech', cardBgUrl: '/images/card-paf-it.jpg' },
-          { id: 'education', name: 'Education', cardBgUrl: '/images/card-paf-education.jpg' },
-          { id: 'admin', name: 'Admin', cardBgUrl: '/images/card-paf-admin.jpg' },
-          { id: 'accounts', name: 'Accounts', cardBgUrl: '/images/card-paf-accounts.jpg' },
-          { id: 'airmen', name: 'Airmen', cardBgUrl: '/images/card-paf-airmen.jpg' },
+          { id: 'tcc', name: 'Technical Cadet (TCC)', cardBgUrl: '/images/card-tcc.jpg' },
+          { id: 'lcc', name: 'Lady Cadet Course (LCC)', cardBgUrl: '/images/card-lcc.jpg' },
+          { id: 'afns', name: 'AFNS Nursing', cardBgUrl: '/images/card-afns.jpg' },
+          { id: 'soldier', name: 'Pak Army Soldier', cardBgUrl: '/images/card-soldier.jpg' },
+          { id: 'dssc', name: 'Direct Short Service (DSSC)', cardBgUrl: '/images/card-dssc.jpg' },
         ]
       }
     ]
   },
   'navy': {
-    title: 'Pakistan Navy Career Cards',
-    description: 'Explore all PN Cadet, Short Service Commission, Marines and Technical Sailor portals for Pak Navy 2026.',
-    icon: <ShieldCheck className="w-8 h-8 text-indigo-600" />,
-    color: 'blue',
-    headerImageUrl: '/images/armed-forces-header.jpg',
+    title: 'Pakistan Navy Test Preparation',
+    description: 'Online computerized screening preparation for PN Cadet, SSC, Marines, and Sailor selections.',
+    icon: <Shield className="w-8 h-8 text-indigo-600" />,
+    color: 'emerald',
+    headerImageUrl: '/images/exam-navy-bg.jpg',
     subgroups: [
       {
-        name: 'Pakistan Navy Exams',
+        name: 'All Pakistan Navy Entry Courses',
         iconUrl: '/images/navy-logo.jpg',
         exams: [
           { id: 'pn-cadet', name: 'PN Cadet', cardBgUrl: '/images/card-pn-cadet.jpg' },
-          { id: 'm-cadet-navy', name: 'M Cadet', cardBgUrl: '/images/card-army-amc.jpg' },
-          { id: 'pnec', name: 'PNEC / Cadet Scheme', cardBgUrl: '/images/card-navy-pnec.jpg' },
-          { id: 'ssc', name: 'SSC', cardBgUrl: '/images/card-ssc-navy.jpg' },
-          { id: 'marines', name: 'Marines', cardBgUrl: '/images/card-marines.jpg' },
-          { id: 'sailor', name: 'Sailor', cardBgUrl: '/images/card-sailor.jpg' },
-          { id: 'civilian', name: 'Civilian', cardBgUrl: '/images/card-civilian.jpg' },
+          { id: 'ssc', name: 'SSC Navy', cardBgUrl: '/images/card-ssc-navy.jpg' },
+          { id: 'marines', name: 'Pak Marines', cardBgUrl: '/images/card-marines.jpg' },
+          { id: 'sailor', name: 'Navy Sailor', cardBgUrl: '/images/card-sailor.jpg' },
         ]
       }
     ]
   },
-  'public-service': {
-    title: 'Public Service Commissions',
-    description: 'Federal and Provincial Public Service Commission Preparation.',
-    icon: <BookOpen className="w-8 h-8 text-blue-600" />,
-    color: 'blue',
-    headerImageUrl: '/images/public-service-header.jpg',
+  'paf': {
+    title: 'Pakistan Air Force (PAF) Test Preparation',
+    description: 'Initial intelligence and academic mock tests for GD Pilot, CAE Engineering, Air Defence, and Airmen.',
+    icon: <Shield className="w-8 h-8 text-sky-600" />,
+    color: 'emerald',
+    headerImageUrl: '/images/exam-paf-bg.jpg',
     subgroups: [
       {
-        name: 'All Commissions',
-        iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/State_emblem_of_Pakistan.svg/150px-State_emblem_of_Pakistan.svg.png',
+        name: 'All PAF Commission & Airmen Courses',
+        iconUrl: '/images/paf-logo.jpg',
         exams: [
-          { id: 'fpsc', name: 'FPSC', cardBgUrl: '/images/card-fpsc.jpg' },
-          { id: 'ppsc', name: 'PPSC', cardBgUrl: '/images/card-ppsc.jpg' },
-          { id: 'bpsc', name: 'BPSC', cardBgUrl: '/images/card-bpsc.jpg' },
-          { id: 'spsc', name: 'SPSC', cardBgUrl: '/images/card-spsc.jpg' },
-          { id: 'kppsc', name: 'KPPSC', cardBgUrl: '/images/card-kppsc.jpg' },
-          { id: 'ajkpsc', name: 'AJKPSC', cardBgUrl: '/images/card-ajkpsc.jpg' },
-          { id: 'gbpsc', name: 'GBPSC', cardBgUrl: '/images/card-gbpsc.jpg' },
-        ]
-      }
-    ]
-  },
-  'entry-tests': {
-    title: 'University Entry Tests',
-    description: 'Prepare for ECAT, MDCAT, NTS, and top university admissions.',
-    icon: <GraduationCap className="w-8 h-8 text-amber-600" />,
-    color: 'amber',
-    headerImageUrl: '/images/entry-tests-header.jpg',
-    subgroups: [
-      {
-        name: 'All Entry Tests',
-        exams: [
-          { id: 'ecat', name: 'ECAT', cardBgUrl: '/images/card-ecat.jpg' },
-          { id: 'mdcat', name: 'MDCAT', cardBgUrl: '/images/card-mdcat.jpg' },
-          { id: 'nums', name: 'NUMS', cardBgUrl: '/images/card-mdcat.jpg' },
-          { id: 'nts', name: 'NTS', cardBgUrl: '/images/card-nts.jpg' },
-          { id: 'uet', name: 'UET', cardBgUrl: '/images/card-uet.jpg' },
-          { id: 'nust', name: 'NUST', cardBgUrl: '/images/card-nust.jpg' },
-          { id: 'pieas', name: 'PIEAS', cardBgUrl: '/images/card-pieas.jpg' },
-          { id: 'giki', name: 'GIKI', cardBgUrl: '/images/card-giki.jpg' },
-          { id: 'ots', name: 'OTS', cardBgUrl: '/images/card-ots.jpg' },
-          { id: 'pts', name: 'PTS', cardBgUrl: '/images/card-pts.jpg' },
-          { id: 'cts', name: 'CTS', cardBgUrl: '/images/card-cts.jpg' },
+          { id: 'gd-pilot', name: 'GD Pilot', cardBgUrl: '/images/card-gdp.jpg' },
+          { id: 'aeronautical-engineering', name: 'CAE Engineering', cardBgUrl: '/images/card-cae.jpg' },
+          { id: 'air-defence', name: 'Air Defence', cardBgUrl: '/images/card-ad.jpg' },
+          { id: 'admin', name: 'Admin & Special Duties', cardBgUrl: '/images/card-admin.jpg' },
+          { id: 'airmen', name: 'PAF Airmen', cardBgUrl: '/images/card-airmen.jpg' },
         ]
       }
     ]
@@ -176,91 +115,135 @@ export const categoryData: Record<string, any> = {
 export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
   const { category } = await params
   
-  const data = categoryData[category]
-  
-  if (!data) {
-    return (
-      <div className="py-20 text-center">
-        <h2 className="text-2xl font-bold">Category not found</h2>
-        <Link href="/prep" className="text-[#B8212E] hover:underline mt-4 inline-block">Return to Prep Hub</Link>
-      </div>
-    )
-  }
-
-  const colorClass = data.color === 'emerald' ? 'bg-emerald-50 border-emerald-200' : 
-                     data.color === 'blue' ? 'bg-blue-50 border-blue-200' : 
-                     'bg-amber-50 border-amber-200'
+  const data = categoryData[category] || categoryData['armed-forces']
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow flex flex-col gap-10 bg-white text-gray-800">
+      
+      {/* Back Link */}
       <Link href="/prep" className="inline-flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-[#B8212E] w-fit">
-        <ArrowLeft className="w-4 h-4" /> Back to Hub
+        <ArrowLeft className="w-4 h-4" /> Back to Prep Hub
       </Link>
       
-      {/* Header */}
-      {data.headerImageUrl ? (
-        <div className="relative rounded-md overflow-hidden shadow-sm border border-gray-200 min-h-[250px] sm:min-h-[300px] flex items-center justify-center">
-          <div className="absolute inset-0 bg-[#0A192F]/80 z-10 mix-blend-multiply"></div>
+      {/* Hero Banner */}
+      <div className="relative rounded-3xl overflow-hidden shadow-lg border border-gray-200 min-h-[220px] sm:min-h-[260px] flex items-center justify-center">
+        <div className="absolute inset-0 bg-[#0A192F]/85 z-10"></div>
+        {data.headerImageUrl && (
           <Image src={data.headerImageUrl} alt={data.title} fill priority className="absolute inset-0 object-cover object-top" />
-          <div className="relative z-20 flex flex-col items-center text-center p-8 sm:p-14 text-white w-full">
-            <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4 drop-shadow-lg text-white">
-              {data.title}
-            </h1>
-            <p className="text-sm sm:text-base max-w-2xl mx-auto font-medium text-gray-200 drop-shadow-md">
-              {data.description}
-            </p>
-          </div>
-        </div>
-      ) : (
-        <div className={`flex flex-col items-center text-center p-6 sm:p-10 rounded-md border ${colorClass} shadow-sm relative overflow-hidden`}>
-          <div className="w-14 h-14 bg-white rounded-md flex items-center justify-center mb-6 shadow-sm border border-gray-100">
-            {data.icon}
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-4">
+        )}
+        <div className="relative z-20 flex flex-col items-center text-center p-6 sm:p-12 text-white w-full space-y-3">
+          <span className="text-[10px] font-black uppercase tracking-widest bg-amber-400/20 text-amber-300 px-3.5 py-1 rounded-full border border-amber-400/30">
+            Official Commission Portal
+          </span>
+          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white uppercase drop-shadow-md">
             {data.title}
           </h1>
-          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto font-medium">
+          <p className="text-xs sm:text-sm max-w-2xl mx-auto font-medium text-gray-200">
             {data.description}
           </p>
         </div>
-      )}
+      </div>
 
-      {/* Subgroups & Exams */}
+      {/* ── 3 CORE TESTING SECTIONS HIGHLIGHT HUB ───────────────────────────── */}
+      <div className="bg-slate-50 border-2 border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6">
+        <div className="text-center max-w-2xl mx-auto space-y-1">
+          <span className="text-[10px] font-black text-[#B8212E] uppercase tracking-widest bg-rose-50 px-3 py-0.5 rounded-full border border-rose-200">
+            ⚡ 3 Standard Test Modules
+          </span>
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 uppercase">
+            Official 3-Step Selection Engine
+          </h2>
+          <p className="text-xs text-slate-500 font-medium">
+            Every candidate must clear Verbal, Non-Verbal, and Academic tests to pass the computerized initial test.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          
+          {/* Section 1 Card */}
+          <div className="p-5 rounded-2xl bg-white border-2 border-emerald-200 shadow-xs space-y-3 flex flex-col justify-between">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black text-sm">🧠</span>
+                <span className="text-[10px] font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 uppercase">84 MCQs | 30m</span>
+              </div>
+              <h3 className="font-extrabold text-base text-slate-900">1. Verbal Intelligence</h3>
+              <p className="text-xs text-slate-500 font-medium">Number series, analogies, blood relations, and coding-decoding puzzles.</p>
+            </div>
+            <div className="pt-2 text-xs font-black text-emerald-700">20+ Practice Tests Included ✓</div>
+          </div>
+
+          {/* Section 2 Card */}
+          <div className="p-5 rounded-2xl bg-white border-2 border-[#B8212E]/40 shadow-xs space-y-3 flex flex-col justify-between">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="w-8 h-8 rounded-xl bg-rose-100 text-rose-800 flex items-center justify-center font-black text-sm">🧩</span>
+                <span className="text-[10px] font-black text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 uppercase">64 Shapes | 30m</span>
+              </div>
+              <h3 className="font-extrabold text-base text-slate-900">2. Non-Verbal Intelligence</h3>
+              <p className="text-xs text-slate-500 font-medium">Pattern rotations, shape analogies, dot shifts, and matrix completion figures.</p>
+            </div>
+            <div className="pt-2 text-xs font-black text-[#B8212E]">20+ Practice Tests Included ✓</div>
+          </div>
+
+          {/* Section 3 Card */}
+          <div className="p-5 rounded-2xl bg-white border-2 border-indigo-200 shadow-xs space-y-3 flex flex-col justify-between">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-800 flex items-center justify-center font-black text-sm">📚</span>
+                <span className="text-[10px] font-black text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 uppercase">50 MCQs | 25m</span>
+              </div>
+              <h3 className="font-extrabold text-base text-slate-900">3. Academic Screening</h3>
+              <p className="text-xs text-slate-500 font-medium">Physics, Mathematics, English, Chemistry, and General Knowledge test batteries.</p>
+            </div>
+            <div className="pt-2 text-xs font-black text-indigo-700">20+ Practice Tests Included ✓</div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Subgroups & Course Cards */}
       <div className="space-y-12">
         {data.subgroups.map((subgroup: any) => (
-          <div key={subgroup.name}>
-            <div className="flex items-center gap-3 mb-6 border-b border-gray-150 pb-3">
+          <div key={subgroup.name} className="space-y-6">
+            <div className="flex items-center gap-3 border-b-2 border-slate-200 pb-3">
               {subgroup.iconUrl ? (
-                <div className="w-10 h-10 shrink-0 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-100 overflow-hidden p-1 relative">
-                  <img src={subgroup.iconUrl} alt={subgroup.name} className="w-full h-full object-contain p-1" />
+                <div className="w-10 h-10 shrink-0 bg-white rounded-full flex items-center justify-center shadow-xs border border-gray-200 overflow-hidden p-1 relative">
+                  <Image src={subgroup.iconUrl} alt={subgroup.name} fill className="object-contain p-1" />
                 </div>
               ) : (
                 <Target className="w-6 h-6 text-[#B8212E]" />
               )}
-              <h2 className="text-xl sm:text-2xl font-extrabold text-gray-800 uppercase tracking-widest">{subgroup.name}</h2>
+              <div>
+                <h2 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tight">{subgroup.name}</h2>
+                <p className="text-xs text-gray-500 font-medium">Select your desired commission course below to access all 60+ tests.</p>
+              </div>
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-5">
               {subgroup.exams.map((exam: any) => (
                 <Link 
                   key={exam.id}
-                  href={['army', 'navy', 'paf'].includes(category) ? `/${category}/${exam.id}` : `/prep/${category}/${exam.id}`}
-                  className={`group border border-gray-200 rounded-md hover:border-[#B8212E] hover:shadow-lg transition-all duration-300 flex flex-col justify-between h-full min-h-[160px] relative overflow-hidden ${exam.cardBgUrl ? '' : 'p-5 bg-white'}`}
+                  href={`/prep/${category === 'armed-forces' ? 'army' : category}/${exam.id}`}
+                  className="group border-2 border-slate-200 hover:border-[#B8212E] rounded-3xl p-5 hover:shadow-xl transition-all duration-300 flex flex-col justify-between min-h-[170px] bg-white relative overflow-hidden"
                 >
-                  {exam.cardBgUrl && (
-                    <>
-                      <Image src={exam.cardBgUrl} alt={exam.name} fill sizes="(max-width: 768px) 100vw, 300px" className="object-cover absolute inset-0 z-0 group-hover:scale-105 transition-transform duration-500" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10"></div>
-                    </>
-                  )}
-                  {!exam.cardBgUrl && <div className="absolute top-0 left-0 w-1 h-full bg-gray-200 group-hover:bg-[#B8212E] transition-colors"></div>}
-                  
-                  <div className={`relative z-20 ${exam.cardBgUrl ? 'p-5 flex flex-col h-full justify-end' : 'pl-2'}`}>
-                    <h3 className={`font-bold text-base sm:text-lg transition-colors ${exam.cardBgUrl ? 'text-white drop-shadow-md' : 'text-gray-900 group-hover:text-[#B8212E]'}`}>{exam.name}</h3>
-                    <div className={`mt-2 flex items-center justify-between text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-colors ${exam.cardBgUrl ? 'text-gray-300 group-hover:text-white' : 'text-gray-400 group-hover:text-[#B8212E] mt-6'}`}>
-                      <span>View Materials</span>
-                      <ArrowRight className="w-4 h-4" />
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                        60+ Tests Active
+                      </span>
+                      <span className="text-[10px] font-black text-slate-400 uppercase">
+                        Verbal • Non-Verbal • Acad
+                      </span>
                     </div>
+                    <h3 className="font-extrabold text-base sm:text-lg text-slate-900 group-hover:text-[#B8212E] transition-colors leading-snug">
+                      {exam.name}
+                    </h3>
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-black uppercase tracking-wider text-[#B8212E]">
+                    <span>Enter 60+ Tests ➔</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </Link>
               ))}
@@ -268,6 +251,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
           </div>
         ))}
       </div>
+
     </div>
   )
 }

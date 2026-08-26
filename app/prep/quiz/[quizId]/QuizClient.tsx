@@ -13,73 +13,19 @@ import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import confetti from 'canvas-confetti'
 import NonVerbalDiagram from '@/components/NonVerbalDiagram'
-import { NON_VERBAL_QUESTION_BANK } from '@/lib/data/nonVerbalQuestions'
+import { 
+  getUniqueVerbalQuestions, 
+  getUniqueNonVerbalQuestions, 
+  getUniqueAcademicQuestions 
+} from '@/lib/data/uniqueQuestionEngine'
 
-// ── Official Pakistan Armed Forces Selection & Recruitment Standards ───────
+// ── Official Pakistan Armed Forces Selection Standards ───────────────────────
 const OFFICIAL_VERBAL_TIME_MINUTES = 30     // 30 Minutes for Verbal Intelligence
 const OFFICIAL_VERBAL_MAX_QUESTIONS = 84    // 84 MCQs for Verbal Intelligence
 const OFFICIAL_NON_VERBAL_TIME_MINUTES = 30 // 30 Minutes for Non-Verbal Intelligence
 const OFFICIAL_NON_VERBAL_MAX_QUESTIONS = 64 // 64 MCQs for Non-Verbal Intelligence
 const OFFICIAL_ACADEMIC_TIME_MINUTES = 25   // 25 Minutes for Academic Tests
 const OFFICIAL_ACADEMIC_MAX_QUESTIONS = 50  // 50 MCQs for Academic Tests
-
-// High-Yield Official Verbal Intelligence Test Bank (84 MCQs)
-const OFFICIAL_VERBAL_BANK = [
-  { id: 1, question_text: "Which number comes next in the sequence? 2, 6, 12, 20, 30, ...", options: ["40", "42", "44", "38"], correct_option_index: 1, explanation: "Differences are +4, +6, +8, +10. Next difference is +12, so 30 + 12 = 42." },
-  { id: 2, question_text: "If TOWN is coded as 1234 and BIRD is coded as 5678, what is DOWN coded as?", options: ["8234", "5234", "8243", "5324"], correct_option_index: 0, explanation: "D = 8, O = 2, W = 3, N = 4. Therefore DOWN is 8234." },
-  { id: 3, question_text: "A candidate completes 80% of a 150-mark test correctly. How many marks did the candidate score?", options: ["110", "120", "125", "115"], correct_option_index: 1, explanation: "(80 / 100) * 150 = 120 marks." },
-  { id: 4, question_text: "Choose the word that is most nearly OPPOSITE in meaning to 'COURAGEOUS':", options: ["Bold", "Timid", "Valiant", "Heroic"], correct_option_index: 1, explanation: "Timid means fearful or easily frightened, opposite of courageous." },
-  { id: 5, question_text: "If 5 workers can build a defensive trench in 12 days, how many days will 6 workers take at the same pace?", options: ["10 days", "9 days", "8 days", "11 days"], correct_option_index: 0, explanation: "Total man-days = 5 * 12 = 60. For 6 workers: 60 / 6 = 10 days." },
-  { id: 6, question_text: "Which of the following represents the highest operational military rank among the choices?", options: ["Lieutenant Colonel", "Brigadier", "Major General", "Colonel"], correct_option_index: 2, explanation: "Major General is a two-star general officer." },
-  { id: 7, question_text: "A train running at 72 km/h crosses a pole in 15 seconds. What is the length of the train?", options: ["300 meters", "250 meters", "350 meters", "200 meters"], correct_option_index: 0, explanation: "72 km/h = 20 m/s. Length = Speed * Time = 20 * 15 = 300 meters." },
-  { id: 8, question_text: "Identify the odd word out among the following instruments:", options: ["Barometer", "Thermometer", "Diameter", "Hygrometer"], correct_option_index: 2, explanation: "Diameter is a geometric measurement; others are measuring instruments." },
-  { id: 9, question_text: "If 'A' is taller than 'B' but shorter than 'C', and 'D' is taller than 'C', who is the tallest among them?", options: ["C", "A", "B", "D"], correct_option_index: 3, explanation: "Descending order of height is D > C > A > B. Thus, D is the tallest." },
-  { id: 10, question_text: "If Ali's present age is 5 years and Sidra is twice Ali's age, what will be Sidra's age when Ali is 11 years old?", options: ["14", "16", "22", "18"], correct_option_index: 1, explanation: "Sidra is currently 10 (5 years older). When Ali is 11, Sidra will be 11 + 5 = 16." }
-]
-
-while (OFFICIAL_VERBAL_BANK.length < 84) {
-  const base = OFFICIAL_VERBAL_BANK[OFFICIAL_VERBAL_BANK.length % 10]
-  OFFICIAL_VERBAL_BANK.push({
-    id: OFFICIAL_VERBAL_BANK.length + 1,
-    question_text: base.question_text,
-    options: [...base.options],
-    correct_option_index: base.correct_option_index,
-    explanation: base.explanation
-  })
-}
-
-// High-Yield Official Academic Test Bank (50 MCQs)
-const OFFICIAL_ACADEMIC_BANK = [
-  { id: 1, question_text: "The SI unit of force is:", options: ["Joule", "Newton", "Pascal", "Watt"], correct_option_index: 1, explanation: "Force is measured in Newtons (N = kg*m/s^2)." },
-  { id: 2, question_text: "Who was the first Prime Minister of Pakistan?", options: ["Quaid-e-Azam", "Liaquat Ali Khan", "Khawaja Nazimuddin", "Ayub Khan"], correct_option_index: 1, explanation: "Nawabzada Liaquat Ali Khan was Pakistan's first Prime Minister." },
-  { id: 3, question_text: "What is the speed of light in vacuum?", options: ["3 x 10^8 m/s", "3 x 10^6 m/s", "3 x 10^10 m/s", "3 x 10^5 m/s"], correct_option_index: 0, explanation: "The speed of light c = 3 * 10^8 m/s." },
-  { id: 4, question_text: "Which gas is most abundant in Earth's atmosphere?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], correct_option_index: 1, explanation: "Nitrogen makes up approximately 78% of Earth's atmosphere." },
-  { id: 5, question_text: "The largest dam in Pakistan by water storage capacity is:", options: ["Mangla Dam", "Tarbela Dam", "Warsak Dam", "Diamer Bhasha"], correct_option_index: 1, explanation: "Tarbela Dam on River Indus is the largest earth-filled dam in Pakistan." }
-]
-
-while (OFFICIAL_ACADEMIC_BANK.length < 50) {
-  const base = OFFICIAL_ACADEMIC_BANK[OFFICIAL_ACADEMIC_BANK.length % 5]
-  OFFICIAL_ACADEMIC_BANK.push({
-    id: OFFICIAL_ACADEMIC_BANK.length + 1,
-    question_text: base.question_text,
-    options: [...base.options],
-    correct_option_index: base.correct_option_index,
-    explanation: base.explanation
-  })
-}
-
-// Pseudo-random deterministic shuffle by seed
-function seededShuffle<T>(array: T[], seed: number): T[] {
-  const arr = [...array]
-  let m = arr.length, t, i
-  while (m) {
-    i = Math.floor(Math.abs(Math.sin(seed++)) * m--)
-    t = arr[m]
-    arr[m] = arr[i]
-    arr[i] = t
-  }
-  return arr
-}
 
 export default function QuizClient({ params }: { params: Promise<{ quizId: string }> }) {
   const router = useRouter()
@@ -121,7 +67,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
   const certificateRef = useRef<HTMLDivElement>(null)
   const [downloadingCert, setDownloadingCert] = useState(false)
 
-  // 1. Initial Load & Dynamic Course Test Parser
+  // 1. Initial Load & Non-Repeating Partition Engine
   useEffect(() => {
     const initQuiz = async () => {
       try {
@@ -132,7 +78,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
           setStudentName(fullName)
         }
 
-        // Extract Seed & Details from dynamic slug (e.g. pma-long-course-non-verbal-test-5)
+        // Parse test number & course from quizId (e.g. pma-long-course-non-verbal-test-5)
         const match = quizId.match(/^(.*?)-(non-verbal|verbal|academic)-test-(\d+)$/i)
         
         let dynamicCourseTitle = ''
@@ -143,10 +89,17 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
           dynamicCourseTitle = match[1].replace(/-/g, ' ').toUpperCase()
           dynamicTestType = match[2].toLowerCase() as any
           dynamicTestNumber = parseInt(match[3], 10) || 1
+        } else {
+          // Fallback parsing
+          const numMatch = quizId.match(/(\d+)$/)
+          if (numMatch) dynamicTestNumber = parseInt(numMatch[1], 10) || 1
+          if (quizId.includes('non-verbal')) dynamicTestType = 'non-verbal'
+          else if (quizId.includes('verbal')) dynamicTestType = 'verbal'
+          else dynamicTestType = 'academic'
         }
 
-        const isNV = dynamicTestType === 'non-verbal' || quizId.includes('non-verbal') || quizId.includes('matrix')
-        const isVerbal = !isNV && (dynamicTestType === 'verbal' || quizId.includes('verbal') || quizId.includes('intelligence'))
+        const isNV = dynamicTestType === 'non-verbal' || quizId.includes('non-verbal')
+        const isVerbal = !isNV && (dynamicTestType === 'verbal' || quizId.includes('verbal'))
         const isAcademic = !isNV && !isVerbal
 
         setIsNonVerbal(isNV)
@@ -166,7 +119,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
         setMaxQCount(maxQ)
         setTimeLeft(limitMin * 60)
 
-        // Set Quiz Title & Category
+        // Clean Quiz Metadata
         const branchCategory = quizId.includes('paf') 
           ? 'Pakistan Air Force' 
           : quizId.includes('navy') || quizId.includes('pn-') || quizId.includes('sailor')
@@ -185,33 +138,18 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
         }
         setQuiz(currentQuiz)
 
-        // Populate deterministic questions by test seed
-        const seedValue = dynamicTestNumber * 100 + (isNV ? 1 : isVerbal ? 2 : 3)
-
+        // ═════════════════════════════════════════════════════════════════════
+        // ZERO REPETITION GUARANTEE:
+        // Every test (1 to 20) receives its own dedicated non-overlapping set
+        // ═════════════════════════════════════════════════════════════════════
         let fetchedQuestions: any[] = []
-        if (isNV) {
-          fetchedQuestions = seededShuffle(NON_VERBAL_QUESTION_BANK, seedValue).slice(0, maxQ)
-        } else if (isVerbal) {
-          fetchedQuestions = seededShuffle(OFFICIAL_VERBAL_BANK, seedValue).slice(0, maxQ)
-        } else {
-          fetchedQuestions = seededShuffle(OFFICIAL_ACADEMIC_BANK, seedValue).slice(0, maxQ)
-        }
 
-        // Shuffle option choices for text MCQs
-        if (!isNV) {
-          fetchedQuestions = fetchedQuestions.map((q, qIdx) => {
-            const originalOptions = q.options || []
-            const originalCorrect = q.correct_option_index
-            let optionsWithIndices = originalOptions.map((opt: string, i: number) => ({ text: opt, originalIndex: i }))
-            optionsWithIndices = seededShuffle(optionsWithIndices, seedValue + qIdx)
-            const newCorrectIndex = optionsWithIndices.findIndex(opt => opt.originalIndex === originalCorrect)
-            
-            return {
-              ...q,
-              options: optionsWithIndices.map(opt => opt.text),
-              correct_option_index: newCorrectIndex
-            }
-          })
+        if (isNV) {
+          fetchedQuestions = getUniqueNonVerbalQuestions(dynamicTestNumber, maxQ)
+        } else if (isVerbal) {
+          fetchedQuestions = getUniqueVerbalQuestions(dynamicTestNumber, maxQ)
+        } else {
+          fetchedQuestions = getUniqueAcademicQuestions(dynamicTestNumber, maxQ)
         }
 
         setQuestions(fetchedQuestions)

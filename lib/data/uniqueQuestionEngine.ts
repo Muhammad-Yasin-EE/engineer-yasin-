@@ -32,7 +32,7 @@ function shuffleWithCorrectIndex<T>(items: T[], correctIdx: number, seed: number
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// 1. DIVERSE MULTI-TOPIC NON-VERBAL INTELLIGENCE ENGINE (64 MCQs / Test)
+// 1. COMPLETE MULTI-CONCEPT NON-VERBAL INTELLIGENCE ENGINE (64 MCQs / Test)
 // ═════════════════════════════════════════════════════════════════════════════
 export function getUniqueNonVerbalQuestions(
   testNumber: number, 
@@ -59,294 +59,574 @@ export function getUniqueNonVerbalQuestions(
   for (let i = 0; i < count; i++) {
     const qIndex = seedBase + i + 1
     const qSeed = (courseSalt * 37) + (testNumber * 10000) + (i * 149) + 23
-    const topicType = i % 8
+    const conceptType = i % 16
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // TOPIC 1: 3x3 Matrix Grid Completion (Find Missing 9th Cell)
-    // ─────────────────────────────────────────────────────────────────────────
-    if (topicType === 0) {
-      const baseCount = (qSeed % 2) + 1
-      const isCircle = (qSeed % 2 === 0)
-      const primaryShape: 'circle' | 'rect' = isCircle ? 'circle' : 'rect'
+    switch (conceptType) {
+      // ───────────────────────────────────────────────────────────────────────
+      // 1. 3x3 MATRIX GRID (Shape & Dot Logic across Rows & Columns)
+      // ───────────────────────────────────────────────────────────────────────
+      case 0: {
+        const shapeRow1: DiagramShape['type'] = (qSeed % 2 === 0) ? 'circle' : 'rect'
+        const shapeRow2: DiagramShape['type'] = 'triangle'
+        const shapeRow3: DiagramShape['type'] = 'diamond'
 
-      const matrixGrid = [
-        [
-          { shapes: [{ type: primaryShape, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }] },
-          { shapes: [{ type: primaryShape, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 40, y: 50, size: 8 }, { type: 'dot' as const, x: 60, y: 50, size: 8 }] },
-          { shapes: [{ type: primaryShape, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 35, y: 50, size: 8 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }, { type: 'dot' as const, x: 65, y: 50, size: 8 }] },
-        ],
-        [
-          { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }] },
-          { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 40, y: 50, size: 8 }, { type: 'dot' as const, x: 60, y: 50, size: 8 }] },
-          { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 35, y: 50, size: 8 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }, { type: 'dot' as const, x: 65, y: 50, size: 8 }] },
-        ],
-        [
-          { shapes: [{ type: 'diamond' as const, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }] },
-          { shapes: [{ type: 'diamond' as const, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 40, y: 50, size: 8 }, { type: 'dot' as const, x: 60, y: 50, size: 8 }] },
-          { shapes: [{ type: 'diamond' as const, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 35, y: 50, size: 8 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }, { type: 'dot' as const, x: 65, y: 50, size: 8 }], isMissing: true },
+        const matrixGrid = [
+          [
+            { shapes: [{ type: shapeRow1, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }] },
+            { shapes: [{ type: shapeRow1, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 40, y: 50, size: 8 }, { type: 'dot' as const, x: 60, y: 50, size: 8 }] },
+            { shapes: [{ type: shapeRow1, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 35, y: 50, size: 8 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }, { type: 'dot' as const, x: 65, y: 50, size: 8 }] },
+          ],
+          [
+            { shapes: [{ type: shapeRow2, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }] },
+            { shapes: [{ type: shapeRow2, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 40, y: 50, size: 8 }, { type: 'dot' as const, x: 60, y: 50, size: 8 }] },
+            { shapes: [{ type: shapeRow2, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 35, y: 50, size: 8 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }, { type: 'dot' as const, x: 65, y: 50, size: 8 }] },
+          ],
+          [
+            { shapes: [{ type: shapeRow3, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }] },
+            { shapes: [{ type: shapeRow3, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 40, y: 50, size: 8 }, { type: 'dot' as const, x: 60, y: 50, size: 8 }] },
+            { shapes: [{ type: shapeRow3, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 35, y: 50, size: 8 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }, { type: 'dot' as const, x: 65, y: 50, size: 8 }], isMissing: true },
+          ]
         ]
-      ]
 
-      const correctShape = { shapes: [{ type: 'diamond' as const, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 35, y: 50, size: 8 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }, { type: 'dot' as const, x: 65, y: 50, size: 8 }] }
-      const rawOptions = [
-        correctShape,
-        { shapes: [{ type: 'diamond' as const, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }] },
-        { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }] },
-        { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 40 }] }
-      ]
-
-      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOptions, 0, qSeed)
-
-      questions.push({
-        id: qIndex,
-        question_text: `Analyze the row-wise and column-wise rules in the 3x3 pattern matrix to find the missing 9th figure:`,
-        diagram: {
-          type: 'matrix',
-          matrixGrid: matrixGrid,
-          optionFigures: shuffled
-        },
-        correct_option_index: newCorrectIdx,
-        explanation: `Each row uses a distinct shape (Circles in Row 1, Triangles in Row 2, Diamonds in Row 3) while adding dots across columns (1 → 2 → 3). The 9th box requires a Diamond with 3 dots (Option ${String.fromCharCode(65 + newCorrectIdx)}).`
-      })
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // TOPIC 2: Classification (Odd One Out - 5 Selection Cards)
-    // ─────────────────────────────────────────────────────────────────────────
-    else if (topicType === 1) {
-      const oddRule = (qSeed % 3)
-      let raw5Options: any[] = []
-      let expText = ''
-
-      if (oddRule === 0) {
-        // 4 closed polygons, 1 open shape (Odd is open line/arc)
-        raw5Options = [
-          { shapes: [{ type: 'semicircle' as const, x: 50, y: 50, size: 50, fill: 'none' }], label: '(A)' }, // Odd (Open/Arc)
-          { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 50 }], label: '(B)' },
-          { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }], label: '(C)' },
-          { shapes: [{ type: 'pentagon' as const, x: 50, y: 50, size: 50 }], label: '(D)' },
-          { shapes: [{ type: 'hexagon' as const, x: 50, y: 50, size: 50 }], label: '(E)' }
+        const correctAns = { shapes: [{ type: shapeRow3, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 35, y: 50, size: 8 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }, { type: 'dot' as const, x: 65, y: 50, size: 8 }] }
+        const rawOpts = [
+          correctAns,
+          { shapes: [{ type: shapeRow3, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }] },
+          { shapes: [{ type: shapeRow2, x: 50, y: 50, size: 40 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }] },
+          { shapes: [{ type: shapeRow1, x: 50, y: 50, size: 40 }] }
         ]
-        expText = `All other figures are closed straight-line polygons, whereas Option (A) is an open curved arc.`
-      } else if (oddRule === 1) {
-        // 4 shapes with even vertices, 1 with odd vertices
-        raw5Options = [
-          { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 50 }], label: '(A)' }, // Odd (3 vertices)
-          { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }], label: '(B)' },
-          { shapes: [{ type: 'diamond' as const, x: 50, y: 50, size: 50 }], label: '(C)' },
-          { shapes: [{ type: 'hexagon' as const, x: 50, y: 50, size: 50 }], label: '(D)' },
-          { shapes: [{ type: 'plus' as const, x: 50, y: 50, size: 50 }], label: '(E)' }
-        ]
-        expText = `All other figures have an even number of vertices/axes of symmetry (4, 4, 6, 4), while Triangle has an odd count of 3.`
-      } else {
-        // 4 figures with internal centroid dot, 1 without
-        raw5Options = [
-          { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }], label: '(A)' }, // Odd (No dot)
-          { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 50 }, { type: 'dot' as const, x: 50, y: 50, size: 10 }], label: '(B)' },
-          { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }, { type: 'dot' as const, x: 50, y: 50, size: 10 }], label: '(C)' },
-          { shapes: [{ type: 'diamond' as const, x: 50, y: 50, size: 50 }, { type: 'dot' as const, x: 50, y: 50, size: 10 }], label: '(D)' },
-          { shapes: [{ type: 'pentagon' as const, x: 50, y: 50, size: 50 }, { type: 'dot' as const, x: 50, y: 50, size: 10 }], label: '(E)' }
-        ]
-        expText = `All other figures contain a centralized inner target dot except Option (A).`
+        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+        questions.push({
+          id: qIndex,
+          question_text: `3x3 MATRIX REASONING: Examine row and column patterns to discover the missing 9th figure:`,
+          diagram: {
+            type: 'matrix',
+            matrixGrid: matrixGrid,
+            optionFigures: shuffled
+          },
+          correct_option_index: newCorrectIdx,
+          explanation: `Rows dictate shape type while columns add internal dots (1 → 2 → 3). The 9th cell requires a Diamond with 3 dots (Option ${String.fromCharCode(65 + newCorrectIdx)}).`
+        })
+        break
       }
 
-      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(raw5Options, 0, qSeed)
+      // ───────────────────────────────────────────────────────────────────────
+      // 2. CLASSIFICATION / ODD ONE OUT (5-Card Selection)
+      // ───────────────────────────────────────────────────────────────────────
+      case 1: {
+        const oddRule = (qSeed % 3)
+        let raw5Opts: any[] = []
+        let exp = ''
 
-      questions.push({
-        id: qIndex,
-        question_text: `CLASSIFICATION: Identify the figure that does NOT belong to the group (Odd One Out):`,
-        diagram: {
-          type: 'odd_one_out',
-          optionFigures: shuffled
-        },
-        correct_option_index: newCorrectIdx,
-        explanation: `${expText} Therefore, Option ${String.fromCharCode(65 + newCorrectIdx)} is the odd one out.`
-      })
-    }
+        if (oddRule === 0) {
+          raw5Opts = [
+            { shapes: [{ type: 'semicircle' as const, x: 50, y: 50, size: 50 }], label: '(A)' }, // Odd (Open/Curved)
+            { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 50 }], label: '(B)' },
+            { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }], label: '(C)' },
+            { shapes: [{ type: 'pentagon' as const, x: 50, y: 50, size: 50 }], label: '(D)' },
+            { shapes: [{ type: 'hexagon' as const, x: 50, y: 50, size: 50 }], label: '(E)' }
+          ]
+          exp = `Figures B, C, D, E are all closed straight-line polygons. Option A is an open curved arc.`
+        } else if (oddRule === 1) {
+          raw5Opts = [
+            { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 50 }], label: '(A)' }, // Odd (3 sides)
+            { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }], label: '(B)' },
+            { shapes: [{ type: 'diamond' as const, x: 50, y: 50, size: 50 }], label: '(C)' },
+            { shapes: [{ type: 'hexagon' as const, x: 50, y: 50, size: 50 }], label: '(D)' },
+            { shapes: [{ type: 'plus' as const, x: 50, y: 50, size: 50 }], label: '(E)' }
+          ]
+          exp = `All other shapes have an even number of vertices (4, 4, 6, 4). Option A (Triangle) has an odd count of 3.`
+        } else {
+          raw5Opts = [
+            { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }], label: '(A)' }, // Odd (No dot)
+            { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 50 }, { type: 'dot' as const, x: 50, y: 50, size: 10 }], label: '(B)' },
+            { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }, { type: 'dot' as const, x: 50, y: 50, size: 10 }], label: '(C)' },
+            { shapes: [{ type: 'diamond' as const, x: 50, y: 50, size: 50 }, { type: 'dot' as const, x: 50, y: 50, size: 10 }], label: '(D)' },
+            { shapes: [{ type: 'pentagon' as const, x: 50, y: 50, size: 50 }, { type: 'dot' as const, x: 50, y: 50, size: 10 }], label: '(E)' }
+          ]
+          exp = `Every shape contains an internal target dot except Option A.`
+        }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // TOPIC 3: Clock Hands & Angular Time Progressions
-    // ─────────────────────────────────────────────────────────────────────────
-    else if (topicType === 2) {
-      const startHour = (qSeed % 6) + 1 // 1 to 6
-      const hourStep = 2 // +2 hours per frame
+        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(raw5Opts, 0, qSeed)
 
-      const h1 = startHour
-      const h2 = (h1 + hourStep)
-      const h3 = (h2 + hourStep)
-      const correctH = (h3 + hourStep)
+        questions.push({
+          id: qIndex,
+          question_text: `CLASSIFICATION: Choose the figure that does NOT belong to the group (Odd One Out):`,
+          diagram: {
+            type: 'odd_one_out',
+            optionFigures: shuffled
+          },
+          correct_option_index: newCorrectIdx,
+          explanation: `${exp} Therefore, Option ${String.fromCharCode(65 + newCorrectIdx)} is the odd figure.`
+        })
+        break
+      }
 
-      const rawOpts = [
-        { shapes: [{ type: 'clock_face' as const, x: 50, y: 50, size: 60, hours: correctH, minutes: 0 }] },
-        { shapes: [{ type: 'clock_face' as const, x: 50, y: 50, size: 60, hours: (correctH + 3) % 12, minutes: 0 }] },
-        { shapes: [{ type: 'clock_face' as const, x: 50, y: 50, size: 60, hours: (correctH + 5) % 12, minutes: 0 }] },
-        { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] }
-      ]
+      // ───────────────────────────────────────────────────────────────────────
+      // 3. CLOCK DIALS & ANGULAR TIME PROGRESSIONS
+      // ───────────────────────────────────────────────────────────────────────
+      case 2: {
+        const startH = (qSeed % 5) + 1
+        const hStep = 2
+        const h1 = startH
+        const h2 = (h1 + hStep)
+        const h3 = (h2 + hStep)
+        const correctH = (h3 + hStep)
 
-      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+        const rawOpts = [
+          { shapes: [{ type: 'clock_face' as const, x: 50, y: 50, size: 60, hours: correctH, minutes: 0 }] },
+          { shapes: [{ type: 'clock_face' as const, x: 50, y: 50, size: 60, hours: (correctH + 3) % 12, minutes: 0 }] },
+          { shapes: [{ type: 'clock_face' as const, x: 50, y: 50, size: 60, hours: (correctH + 5) % 12, minutes: 0 }] },
+          { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] }
+        ]
+        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
 
-      questions.push({
-        id: qIndex,
-        question_text: `Analyze the ${hourStep}-hour progressive movement of the clock hands to find the next dial:`,
-        diagram: {
-          type: 'series',
-          problemFigures: [
-            { shapes: [{ type: 'clock_face', x: 50, y: 50, size: 60, hours: h1, minutes: 0 }], label: `(${h1}:00)` },
-            { shapes: [{ type: 'clock_face', x: 50, y: 50, size: 60, hours: h2, minutes: 0 }], label: `(${h2}:00)` },
-            { shapes: [{ type: 'clock_face', x: 50, y: 50, size: 60, hours: h3, minutes: 0 }], label: `(${h3}:00)` },
-          ],
-          optionFigures: shuffled
-        },
-        correct_option_index: newCorrectIdx,
-        explanation: `The hour hand advances by exactly +${hourStep} hours in each step (${h1}:00 → ${h2}:00 → ${h3}:00 → ${correctH}:00). Option ${String.fromCharCode(65 + newCorrectIdx)} is correct.`
-      })
-    }
+        questions.push({
+          id: qIndex,
+          question_text: `CLOCK DIAL LOGIC: Analyze the +${hStep} hour progressive rotation of the clock hand to find the next dial:`,
+          diagram: {
+            type: 'series',
+            problemFigures: [
+              { shapes: [{ type: 'clock_face', x: 50, y: 50, size: 60, hours: h1, minutes: 0 }], label: `(${h1}:00)` },
+              { shapes: [{ type: 'clock_face', x: 50, y: 50, size: 60, hours: h2, minutes: 0 }], label: `(${h2}:00)` },
+              { shapes: [{ type: 'clock_face', x: 50, y: 50, size: 60, hours: h3, minutes: 0 }], label: `(${h3}:00)` },
+            ],
+            optionFigures: shuffled
+          },
+          correct_option_index: newCorrectIdx,
+          explanation: `The hour hand advances by +${hStep} hours per stage (${h1}:00 → ${h2}:00 → ${h3}:00 → ${correctH}:00), identifying Option ${String.fromCharCode(65 + newCorrectIdx)}.`
+        })
+        break
+      }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // TOPIC 4: Paper Folding & Symmetrical Hole Punching
-    // ─────────────────────────────────────────────────────────────────────────
-    else if (topicType === 3) {
-      const rawOpts = [
-        { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 55 }, { type: 'dot' as const, x: 35, y: 35, size: 8 }, { type: 'dot' as const, x: 65, y: 35, size: 8 }, { type: 'dot' as const, x: 35, y: 65, size: 8 }, { type: 'dot' as const, x: 65, y: 65, size: 8 }] }, // Correct 4 symmetric holes
-        { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 55 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }] },
-        { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 55 }, { type: 'dot' as const, x: 35, y: 35, size: 8 }, { type: 'dot' as const, x: 65, y: 65, size: 8 }] },
-        { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] }
-      ]
+      // ───────────────────────────────────────────────────────────────────────
+      // 4. PAPER FOLDING & SYMMETRICAL HOLE PUNCHING
+      // ───────────────────────────────────────────────────────────────────────
+      case 3: {
+        const rawOpts = [
+          { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 55 }, { type: 'dot' as const, x: 35, y: 35, size: 8 }, { type: 'dot' as const, x: 65, y: 35, size: 8 }, { type: 'dot' as const, x: 35, y: 65, size: 8 }, { type: 'dot' as const, x: 65, y: 65, size: 8 }] },
+          { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 55 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }] },
+          { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 55 }, { type: 'dot' as const, x: 35, y: 35, size: 8 }, { type: 'dot' as const, x: 65, y: 65, size: 8 }] },
+          { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] }
+        ]
+        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
 
-      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+        questions.push({
+          id: qIndex,
+          question_text: `PAPER FOLDING: A square paper is folded into quarters and punched with a single hole. When unfolded, which pattern appears?`,
+          diagram: {
+            type: 'folding',
+            problemFigures: [
+              { shapes: [{ type: 'rect', x: 50, y: 50, size: 55 }], label: 'Square' },
+              { shapes: [{ type: 'triangle', x: 50, y: 50, size: 55 }], label: 'Folded' },
+              { shapes: [{ type: 'triangle', x: 50, y: 50, size: 55 }, { type: 'dot', x: 50, y: 60, size: 8 }], label: 'Punched' }
+            ],
+            optionFigures: shuffled
+          },
+          correct_option_index: newCorrectIdx,
+          explanation: `Unfolding diagonally across both axes creates 4 symmetrical holes in all 4 quadrant corners (Option ${String.fromCharCode(65 + newCorrectIdx)}).`
+        })
+        break
+      }
 
-      questions.push({
-        id: qIndex,
-        question_text: `A square paper is folded diagonally into quarters and punched with a single hole. When unfolded, which pattern does it produce?`,
-        diagram: {
-          type: 'folding',
-          problemFigures: [
-            { shapes: [{ type: 'rect', x: 50, y: 50, size: 55 }], label: 'Square' },
-            { shapes: [{ type: 'triangle', x: 50, y: 50, size: 55 }], label: 'Folded' },
-            { shapes: [{ type: 'triangle', x: 50, y: 50, size: 55 }, { type: 'dot', x: 50, y: 60, size: 8 }], label: 'Punched' }
-          ],
-          optionFigures: shuffled
-        },
-        correct_option_index: newCorrectIdx,
-        explanation: `Unfolding across both diagonals replicates the punch into all 4 quadrants symmetrically. Option ${String.fromCharCode(65 + newCorrectIdx)} displays all 4 mirrored holes.`
-      })
-    }
+      // ───────────────────────────────────────────────────────────────────────
+      // 5. DOT SITUATION LOGIC (Geometric Region Intersections)
+      // ───────────────────────────────────────────────────────────────────────
+      case 4: {
+        const rawOpts = [
+          { shapes: [{ type: 'overlapping_regions' as const, x: 50, y: 50, size: 50, x1: 45, y1: 50 }] },
+          { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }, { type: 'dot' as const, x: 50, y: 50, size: 10 }] },
+          { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] },
+          { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 50 }] }
+        ]
+        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // TOPIC 5: Dot Situation Logic (Geometric Overlaps)
-    // ─────────────────────────────────────────────────────────────────────────
-    else if (topicType === 4) {
-      const rawOpts = [
-        { shapes: [{ type: 'overlapping_regions' as const, x: 50, y: 50, size: 50, x1: 45, y1: 50 }] }, // Correct
-        { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }, { type: 'dot' as const, x: 50, y: 50, size: 10 }] },
-        { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] },
-        { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 50 }] }
-      ]
+        questions.push({
+          id: qIndex,
+          question_text: `DOT SITUATION: In the problem figure, a dot is placed in the region common to the Circle and Triangle only. Select the option satisfying the identical overlap:`,
+          diagram: {
+            type: 'dot_situation',
+            problemFigures: [
+              { shapes: [{ type: 'overlapping_regions', x: 50, y: 50, size: 50, x1: 45, y1: 50 }], label: 'Problem' }
+            ],
+            optionFigures: shuffled
+          },
+          correct_option_index: newCorrectIdx,
+          explanation: `The dot lies in the intersection of Circle and Triangle (outside Rectangle). Option ${String.fromCharCode(65 + newCorrectIdx)} is the only valid figure.`
+        })
+        break
+      }
 
-      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+      // ───────────────────────────────────────────────────────────────────────
+      // 6. LATERAL MIRROR IMAGE REFLECTION
+      // ───────────────────────────────────────────────────────────────────────
+      case 5: {
+        const baseShape = (qSeed % 2 === 0) ? 'arrow' : 'pinwheel'
+        const rawOpts = [
+          { shapes: [{ type: baseShape as any, x: 50, y: 50, size: 50, rotation: 180 }] },
+          { shapes: [{ type: baseShape as any, x: 50, y: 50, size: 50, rotation: 0 }] },
+          { shapes: [{ type: baseShape as any, x: 50, y: 50, size: 50, rotation: 90 }] },
+          { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 40 }] }
+        ]
+        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
 
-      questions.push({
-        id: qIndex,
-        question_text: `DOT SITUATION: In the problem figure, a dot is placed in the region common to the Circle and Triangle only. Select the option satisfying the identical overlap:`,
-        diagram: {
-          type: 'dot_situation',
-          problemFigures: [
-            { shapes: [{ type: 'overlapping_regions', x: 50, y: 50, size: 50, x1: 45, y1: 50 }], label: 'Problem' }
-          ],
-          optionFigures: shuffled
-        },
-        correct_option_index: newCorrectIdx,
-        explanation: `In the problem figure, the dot lies strictly in the intersection of the Circle and Triangle, outside the Rectangle. Option ${String.fromCharCode(65 + newCorrectIdx)} uniquely satisfies this exact condition.`
-      })
-    }
+        questions.push({
+          id: qIndex,
+          question_text: `MIRROR REFLECTION: Identify the exact lateral mirror reflection of the given figure across the vertical plane ( | ):`,
+          diagram: {
+            type: 'mirror',
+            problemFigures: [
+              { shapes: [{ type: baseShape as any, x: 50, y: 50, size: 50, rotation: 0 }], label: 'Object' },
+              { shapes: [{ type: 'line', x1: 50, y1: 10, x2: 50, y2: 90, stroke: '#B8212E', strokeWidth: 2 }], label: 'Mirror Plane' }
+            ],
+            optionFigures: shuffled
+          },
+          correct_option_index: newCorrectIdx,
+          explanation: `A vertical mirror reflection laterally reverses left and right orientations. Option ${String.fromCharCode(65 + newCorrectIdx)} is the exact true reflection.`
+        })
+        break
+      }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // TOPIC 6: Mirror Image Reflection Across Vertical Plane
-    // ─────────────────────────────────────────────────────────────────────────
-    else if (topicType === 5) {
-      const baseShape = (qSeed % 2 === 0) ? 'arrow' : 'pinwheel'
+      // ───────────────────────────────────────────────────────────────────────
+      // 7. UNFOLDED 3D CUBE NET LOGIC
+      // ───────────────────────────────────────────────────────────────────────
+      case 6: {
+        const rawOpts = [
+          { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] },
+          { shapes: [{ type: 'star' as const, x: 50, y: 50, size: 50 }] },
+          { shapes: [{ type: 'plus' as const, x: 50, y: 50, size: 50 }] },
+          { shapes: [{ type: 'dot' as const, x: 50, y: 50, size: 30 }] }
+        ]
+        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
 
-      const rawOpts = [
-        { shapes: [{ type: baseShape as any, x: 50, y: 50, size: 50, rotation: 180 }] }, // Correct reflection
-        { shapes: [{ type: baseShape as any, x: 50, y: 50, size: 50, rotation: 0 }] },
-        { shapes: [{ type: baseShape as any, x: 50, y: 50, size: 50, rotation: 90 }] },
-        { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 40 }] }
-      ]
+        questions.push({
+          id: qIndex,
+          question_text: `CUBE LOGIC: When the unfolded cross net is folded into a 3D cube, which face lies OPPOSITE to the shaded base?`,
+          diagram: {
+            type: 'series',
+            problemFigures: [
+              { shapes: [{ type: 'cube_net', x: 50, y: 50, size: 70, fill: '#B8212E', text: '★' }], label: 'Unfolded Net' }
+            ],
+            optionFigures: shuffled
+          },
+          correct_option_index: newCorrectIdx,
+          explanation: `In an unfolded cube cross net, alternate squares along the same line fold into opposite parallel faces (Option ${String.fromCharCode(65 + newCorrectIdx)}).`
+        })
+        break
+      }
 
-      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+      // ───────────────────────────────────────────────────────────────────────
+      // 8. PROPORTIONAL GEOMETRIC ANALOGIES (A : B :: C : ?)
+      // ───────────────────────────────────────────────────────────────────────
+      case 7: {
+        const rawOpts = [
+          { shapes: [{ type: 'star' as const, x: 50, y: 50, size: 60 }, { type: 'triangle' as const, x: 50, y: 50, size: 30, fill: '#0A192F' }] },
+          { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 60 }, { type: 'star' as const, x: 50, y: 50, size: 30 }] },
+          { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] },
+          { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }] }
+        ]
+        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
 
-      questions.push({
-        id: qIndex,
-        question_text: `MIRROR REFLECTION: Identify the exact lateral mirror reflection of the given figure across the vertical plane ( | ):`,
-        diagram: {
-          type: 'mirror',
-          problemFigures: [
-            { shapes: [{ type: baseShape as any, x: 50, y: 50, size: 50, rotation: 0 }], label: 'Object' },
-            { shapes: [{ type: 'line', x1: 50, y1: 10, x2: 50, y2: 90, stroke: '#B8212E', strokeWidth: 2 }], label: 'Mirror Plane' }
-          ],
-          optionFigures: shuffled
-        },
-        correct_option_index: newCorrectIdx,
-        explanation: `A vertical mirror reflection laterally inverts the left and right vectors. Option ${String.fromCharCode(65 + newCorrectIdx)} represents the exact true lateral reflection.`
-      })
-    }
+        questions.push({
+          id: qIndex,
+          question_text: `GEOMETRIC ANALOGY: Select the figure that satisfies the proportional relationship (A : B :: C : ?):`,
+          diagram: {
+            type: 'analogy',
+            problemFigures: [
+              { shapes: [{ type: 'rect', x: 50, y: 50, size: 60 }, { type: 'circle', x: 50, y: 50, size: 30, fill: '#0A192F' }], label: '(A)' },
+              { shapes: [{ type: 'circle', x: 50, y: 50, size: 60 }, { type: 'rect', x: 50, y: 50, size: 30, fill: '#0A192F' }], label: '(B)' },
+              { shapes: [{ type: 'triangle', x: 50, y: 50, size: 60 }, { type: 'star', x: 50, y: 50, size: 30, fill: '#0A192F' }], label: '(C)' },
+            ],
+            optionFigures: shuffled
+          },
+          correct_option_index: newCorrectIdx,
+          explanation: `In pair (A : B), inner and outer figures swap positions with inverted shading. Applying this to (C) yields Option ${String.fromCharCode(65 + newCorrectIdx)}.`
+        })
+        break
+      }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // TOPIC 7: Unfolded 3D Cube Net Logic
-    // ─────────────────────────────────────────────────────────────────────────
-    else if (topicType === 6) {
-      const rawOpts = [
-        { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] }, // Correct opposite face
-        { shapes: [{ type: 'star' as const, x: 50, y: 50, size: 50 }] },
-        { shapes: [{ type: 'plus' as const, x: 50, y: 50, size: 50 }] },
-        { shapes: [{ type: 'dot' as const, x: 50, y: 50, size: 30 }] }
-      ]
+      // ───────────────────────────────────────────────────────────────────────
+      // 9. PIE QUADRANT SHADING SWEEPS
+      // ───────────────────────────────────────────────────────────────────────
+      case 8: {
+        const isClockwise = (qSeed % 2) === 0
+        const step = isClockwise ? 1 : 3
+        const q1 = (qSeed) % 4
+        const q2 = (q1 + step) % 4
+        const q3 = (q2 + step) % 4
+        const correctQuad = (q3 + step) % 4
 
-      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+        const rawOpts = [
+          { shapes: [{ type: 'pie_quadrant' as const, x: 50, y: 50, size: 50, quadrant: correctQuad }] },
+          { shapes: [{ type: 'pie_quadrant' as const, x: 50, y: 50, size: 50, quadrant: (correctQuad + 1) % 4 }] },
+          { shapes: [{ type: 'pie_quadrant' as const, x: 50, y: 50, size: 50, quadrant: (correctQuad + 2) % 4 }] },
+          { shapes: [{ type: 'pie_quadrant' as const, x: 50, y: 50, size: 50, quadrant: (correctQuad + 3) % 4 }] },
+        ]
+        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
 
-      questions.push({
-        id: qIndex,
-        question_text: `CUBE LOGIC: When the unfolded cross net is folded to form a 3D cube, which symbol will appear on the face OPPOSITE to the shaded base?`,
-        diagram: {
-          type: 'series',
-          problemFigures: [
-            { shapes: [{ type: 'cube_net', x: 50, y: 50, size: 70, fill: '#B8212E', text: '★' }], label: 'Unfolded Net' }
-          ],
-          optionFigures: shuffled
-        },
-        correct_option_index: newCorrectIdx,
-        explanation: `In an unfolded standard cube cross, alternate squares on the same strip fold to become opposite faces. The opposite face is Option ${String.fromCharCode(65 + newCorrectIdx)}.`
-      })
-    }
+        questions.push({
+          id: qIndex,
+          question_text: `QUADRANT SWEEP: Analyze the 90° ${isClockwise ? 'clockwise' : 'anti-clockwise'} sector shading sequence to find the next state:`,
+          diagram: {
+            type: 'series',
+            problemFigures: [
+              { shapes: [{ type: 'pie_quadrant', x: 50, y: 50, size: 50, quadrant: q1 }] },
+              { shapes: [{ type: 'pie_quadrant', x: 50, y: 50, size: 50, quadrant: q2 }] },
+              { shapes: [{ type: 'pie_quadrant', x: 50, y: 50, size: 50, quadrant: q3 }] },
+            ],
+            optionFigures: shuffled
+          },
+          correct_option_index: newCorrectIdx,
+          explanation: `The shaded quadrant rotates ${isClockwise ? 'clockwise' : 'anti-clockwise'} by 90° at each step, pointing to Option ${String.fromCharCode(65 + newCorrectIdx)}.`
+        })
+        break
+      }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // TOPIC 8: Geometric Analogy & Shape Swaps (A : B :: C : ?)
-    // ─────────────────────────────────────────────────────────────────────────
-    else {
-      const rawOpts = [
-        { shapes: [{ type: 'star' as const, x: 50, y: 50, size: 60 }, { type: 'triangle' as const, x: 50, y: 50, size: 30, fill: '#0A192F' }] }, // Correct
-        { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 60 }, { type: 'star' as const, x: 50, y: 50, size: 30 }] },
-        { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] },
-        { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }] }
-      ]
+      // ───────────────────────────────────────────────────────────────────────
+      // 10. CONCENTRIC TARGET RINGS LINEAR ADDITION
+      // ───────────────────────────────────────────────────────────────────────
+      case 9: {
+        const startR = (qSeed % 2) + 1
+        const c1 = startR
+        const c2 = c1 + 1
+        const c3 = c2 + 1
+        const correctCount = c3 + 1
 
-      const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+        const rawOpts = [
+          { shapes: [{ type: 'target_rings' as const, x: 50, y: 50, size: 60, val: correctCount }] },
+          { shapes: [{ type: 'target_rings' as const, x: 50, y: 50, size: 60, val: 1 }] },
+          { shapes: [{ type: 'target_rings' as const, x: 50, y: 50, size: 60, val: 2 }] },
+          { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] }
+        ]
+        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
 
-      questions.push({
-        id: qIndex,
-        question_text: `ANALOGY: Select the figure that satisfies the proportional relationship (A : B :: C : ?):`,
-        diagram: {
-          type: 'analogy',
-          problemFigures: [
-            { shapes: [{ type: 'rect', x: 50, y: 50, size: 60 }, { type: 'circle', x: 50, y: 50, size: 30, fill: '#0A192F' }], label: '(A)' },
-            { shapes: [{ type: 'circle', x: 50, y: 50, size: 60 }, { type: 'rect', x: 50, y: 50, size: 30, fill: '#0A192F' }], label: '(B)' },
-            { shapes: [{ type: 'triangle', x: 50, y: 50, size: 60 }, { type: 'star', x: 50, y: 50, size: 30, fill: '#0A192F' }], label: '(C)' },
-          ],
-          optionFigures: shuffled
-        },
-        correct_option_index: newCorrectIdx,
-        explanation: `In pair (A : B), inner and outer figures swap positions with shaded inversion. Applying this rule to (C) yields Option ${String.fromCharCode(65 + newCorrectIdx)}.`
-      })
+        questions.push({
+          id: qIndex,
+          question_text: `CONCENTRIC SHELLS: Which figure continues the progressive boundary ring expansion?`,
+          diagram: {
+            type: 'series',
+            problemFigures: [
+              { shapes: [{ type: 'target_rings', x: 50, y: 50, size: 60, val: c1 }] },
+              { shapes: [{ type: 'target_rings', x: 50, y: 50, size: 60, val: c2 }] },
+              { shapes: [{ type: 'target_rings', x: 50, y: 50, size: 60, val: c3 }] },
+            ],
+            optionFigures: shuffled
+          },
+          correct_option_index: newCorrectIdx,
+          explanation: `Each consecutive box adds exactly 1 outer boundary ring. The next figure must have ${correctCount} rings (Option ${String.fromCharCode(65 + newCorrectIdx)}).`
+        })
+        break
+      }
+
+      // ───────────────────────────────────────────────────────────────────────
+      // 11. DICE / DOMINO POINT FACE MATHEMATICS
+      // ───────────────────────────────────────────────────────────────────────
+      case 10: {
+        const v1 = (qSeed % 3) + 1
+        const v2 = v1 + 1
+        const v3 = v2 + 1
+        const correctVal = v3 + 1
+
+        const rawOpts = [
+          { shapes: [{ type: 'dice_face' as const, x: 50, y: 50, size: 50, val: correctVal }] },
+          { shapes: [{ type: 'dice_face' as const, x: 50, y: 50, size: 50, val: (correctVal === 6 ? 1 : correctVal + 1) }] },
+          { shapes: [{ type: 'dice_face' as const, x: 50, y: 50, size: 50, val: (correctVal === 1 ? 5 : correctVal - 1) }] },
+          { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }] }
+        ]
+        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+        questions.push({
+          id: qIndex,
+          question_text: `DOMINO VALUE LOGIC: Determine the missing face following the point addition progression:`,
+          diagram: {
+            type: 'series',
+            problemFigures: [
+              { shapes: [{ type: 'dice_face', x: 50, y: 50, size: 50, val: v1 }] },
+              { shapes: [{ type: 'dice_face', x: 50, y: 50, size: 50, val: v2 }] },
+              { shapes: [{ type: 'dice_face', x: 50, y: 50, size: 50, val: v3 }] },
+            ],
+            optionFigures: shuffled
+          },
+          correct_option_index: newCorrectIdx,
+          explanation: `Point count increases by +1 each stage (${v1} → ${v2} → ${v3} → ${correctVal}). Option ${String.fromCharCode(65 + newCorrectIdx)} has ${correctVal} points.`
+        })
+        break
+      }
+
+      // ───────────────────────────────────────────────────────────────────────
+      // 12. MILITARY CHEVRON RANK STRIPE PROGRESSION
+      // ───────────────────────────────────────────────────────────────────────
+      case 11: {
+        const startC = (qSeed % 2) + 1
+        const p1 = startC
+        const p2 = p1 + 1
+        const p3 = p2 + 1
+        const correctCount = p3 + 1
+
+        const makeChevrons = (c: number) => {
+          const list: DiagramShape[] = []
+          for (let idx = 0; idx < c; idx++) {
+            list.push({ type: 'chevron', x: 50, y: 35 + idx * 12, size: 40 })
+          }
+          return list
+        }
+
+        const rawOpts = [
+          { shapes: makeChevrons(correctCount) },
+          { shapes: makeChevrons(1) },
+          { shapes: [{ type: 'star' as const, x: 50, y: 50, size: 40 }] },
+          { shapes: [{ type: 'cross' as const, x: 50, y: 50, size: 40 }] }
+        ]
+        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+        questions.push({
+          id: qIndex,
+          question_text: `CHEVRON RANK PROGRESSION: Identify the figure that follows the ascending chevron stripe sequence:`,
+          diagram: {
+            type: 'series',
+            problemFigures: [
+              { shapes: makeChevrons(p1) },
+              { shapes: makeChevrons(p2) },
+              { shapes: makeChevrons(p3) },
+            ],
+            optionFigures: shuffled
+          },
+          correct_option_index: newCorrectIdx,
+          explanation: `Each box increments by +1 chevron stripe. Figure 4 requires ${correctCount} chevrons (Option ${String.fromCharCode(65 + newCorrectIdx)}).`
+        })
+        break
+      }
+
+      // ───────────────────────────────────────────────────────────────────────
+      // 13. DIVIDED BOX STRIPE PARTITIONS
+      // ───────────────────────────────────────────────────────────────────────
+      case 12: {
+        const rawOpts = [
+          { shapes: [{ type: 'divided_box' as const, x: 50, y: 50, size: 55, stripes: 4 }] },
+          { shapes: [{ type: 'divided_box' as const, x: 50, y: 50, size: 55, stripes: 1 }] },
+          { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }] },
+          { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] }
+        ]
+        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+        questions.push({
+          id: qIndex,
+          question_text: `CROSSHATCH PARTITION: Which figure correctly completes the internal box partitioning sequence?`,
+          diagram: {
+            type: 'series',
+            problemFigures: [
+              { shapes: [{ type: 'divided_box', x: 50, y: 50, size: 55, stripes: 1 }] },
+              { shapes: [{ type: 'divided_box', x: 50, y: 50, size: 55, stripes: 2 }] },
+              { shapes: [{ type: 'divided_box', x: 50, y: 50, size: 55, stripes: 3 }] },
+            ],
+            optionFigures: shuffled
+          },
+          correct_option_index: newCorrectIdx,
+          explanation: `The box adds internal division lines progressively (1 vertical → 2 orthogonal → 3 diagonal → 4 quad-intersecting). Option ${String.fromCharCode(65 + newCorrectIdx)} has 4 divisions.`
+        })
+        break
+      }
+
+      // ───────────────────────────────────────────────────────────────────────
+      // 14. POLYGON SIDE INCREMENTS (3 -> 4 -> 5 -> 6 sides)
+      // ───────────────────────────────────────────────────────────────────────
+      case 13: {
+        const rawOpts = [
+          { shapes: [{ type: 'hexagon' as const, x: 50, y: 50, size: 55 }] },
+          { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] },
+          { shapes: [{ type: 'star' as const, x: 50, y: 50, size: 50 }] },
+          { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 50 }] }
+        ]
+        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+        questions.push({
+          id: qIndex,
+          question_text: `POLYGON SIDES: Which regular polygon correctly continues the side-count progression?`,
+          diagram: {
+            type: 'series',
+            problemFigures: [
+              { shapes: [{ type: 'triangle', x: 50, y: 50, size: 50 }] },
+              { shapes: [{ type: 'rect', x: 50, y: 50, size: 50 }] },
+              { shapes: [{ type: 'pentagon', x: 50, y: 50, size: 55 }] },
+            ],
+            optionFigures: shuffled
+          },
+          correct_option_index: newCorrectIdx,
+          explanation: `Number of polygon edges increases by +1 each time (Triangle 3 → Square 4 → Pentagon 5 → Hexagon 6). Option ${String.fromCharCode(65 + newCorrectIdx)} is the 6-sided hexagon.`
+        })
+        break
+      }
+
+      // ───────────────────────────────────────────────────────────────────────
+      // 15. HOURGLASS FLIP & TILTS
+      // ───────────────────────────────────────────────────────────────────────
+      case 14: {
+        const h1 = 0
+        const h2 = 45
+        const h3 = 90
+        const correctH = 135
+
+        const rawOpts = [
+          { shapes: [{ type: 'hourglass' as const, x: 50, y: 50, size: 50, rotation: correctH }] },
+          { shapes: [{ type: 'hourglass' as const, x: 50, y: 50, size: 50, rotation: (correctH + 90) % 360 }] },
+          { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 40 }] },
+          { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 40 }] }
+        ]
+        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+        questions.push({
+          id: qIndex,
+          question_text: `HOURGLASS TILT: Select the figure that satisfies the progressive 45° angular tilt:`,
+          diagram: {
+            type: 'series',
+            problemFigures: [
+              { shapes: [{ type: 'hourglass', x: 50, y: 50, size: 50, rotation: h1 }] },
+              { shapes: [{ type: 'hourglass', x: 50, y: 50, size: 50, rotation: h2 }] },
+              { shapes: [{ type: 'hourglass', x: 50, y: 50, size: 50, rotation: h3 }] },
+            ],
+            optionFigures: shuffled
+          },
+          correct_option_index: newCorrectIdx,
+          explanation: `The hourglass shape tilts clockwise by 45° in each step, leading directly to Option ${String.fromCharCode(65 + newCorrectIdx)}.`
+        })
+        break
+      }
+
+      // ───────────────────────────────────────────────────────────────────────
+      // 16. PINWHEEL / PROPELLER ROTATION
+      // ───────────────────────────────────────────────────────────────────────
+      default: {
+        const r1 = 0
+        const r2 = 45
+        const r3 = 90
+        const correctRot = 135
+
+        const rawOpts = [
+          { shapes: [{ type: 'pinwheel' as const, x: 50, y: 50, size: 50, rotation: correctRot }] },
+          { shapes: [{ type: 'pinwheel' as const, x: 50, y: 50, size: 50, rotation: (correctRot + 90) % 360 }] },
+          { shapes: [{ type: 'pinwheel' as const, x: 50, y: 50, size: 50, rotation: (correctRot + 180) % 360 }] },
+          { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] }
+        ]
+        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+        questions.push({
+          id: qIndex,
+          question_text: `PINWHEEL ROTATION: Which propeller figure correctly completes the 45° rotation series?`,
+          diagram: {
+            type: 'series',
+            problemFigures: [
+              { shapes: [{ type: 'pinwheel', x: 50, y: 50, size: 50, rotation: r1 }] },
+              { shapes: [{ type: 'pinwheel', x: 50, y: 50, size: 50, rotation: r2 }] },
+              { shapes: [{ type: 'pinwheel', x: 50, y: 50, size: 50, rotation: r3 }] },
+            ],
+            optionFigures: shuffled
+          },
+          correct_option_index: newCorrectIdx,
+          explanation: `The vanes rotate clockwise by 45° per frame, leading to Option ${String.fromCharCode(65 + newCorrectIdx)}.`
+        })
+        break
+      }
     }
   }
 
@@ -384,7 +664,6 @@ export function getUniqueVerbalQuestions(
     const questionSeed = (courseSalt * 43) + (testNumber * 1000) + (i * 17)
 
     switch (categoryMod) {
-      // 1. Arithmetic Progression
       case 0: {
         const start = 2 + ((questionSeed % 7) * 3) + ((i % 5) * 4)
         const diff = ((questionSeed + i) % 6) + 3
@@ -407,7 +686,6 @@ export function getUniqueVerbalQuestions(
         break
       }
 
-      // 2. Geometric Multiplicative Series
       case 1: {
         const factor = (i % 3) + 2
         const base = (questionSeed % 4) + 2
@@ -429,7 +707,6 @@ export function getUniqueVerbalQuestions(
         break
       }
 
-      // 3. Concrete Military Coding & Decoding
       case 2: {
         const cipherPairs = [
           { original: 'ARMY', code: 'BSNZ', target: 'NAVY', targetCode: 'OBWZ', wrong: ['PBXA', 'MCUX', 'NAWZ'], rule: '+1 to each letter' },
@@ -452,7 +729,6 @@ export function getUniqueVerbalQuestions(
         break
       }
 
-      // 4. Direction Sense Logic
       case 3: {
         const directions = [
           { text: "A cadet marches 10 meters North, turns right and walks 5 meters, then turns right again and walks 10 meters. In which direction is the cadet from the starting point?", ans: "East", wrong: ["North", "South", "West"] },
@@ -474,7 +750,6 @@ export function getUniqueVerbalQuestions(
         break
       }
 
-      // 5. Calendar & Day Calculation Logic
       case 4: {
         const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
         const startDayIdx = (questionSeed + i) % 7
@@ -496,7 +771,6 @@ export function getUniqueVerbalQuestions(
         break
       }
 
-      // 6. Speed, Distance & Train Math
       case 5: {
         const speedKmh = 54 + ((i % 6) * 18)
         const speedMs = (speedKmh * 5) / 18
@@ -516,7 +790,6 @@ export function getUniqueVerbalQuestions(
         break
       }
 
-      // 7. Percentage & Examination Marks Logic
       case 6: {
         const totalMarks = 120 + ((i % 6) * 20)
         const percentage = 65 + ((i % 5) * 5)
@@ -535,7 +808,6 @@ export function getUniqueVerbalQuestions(
         break
       }
 
-      // 8. Military Rank Hierarchy
       case 7: {
         const rankPuzzles = [
           { q: "Which rank in the Pakistan Army is equivalent to a 'Squadron Leader' in the PAF?", a: "Major", w: ["Captain", "Lieutenant Colonel", "Brigadier"], exp: "Squadron Leader (PAF), Major (Army), and Lieutenant Commander (Navy) are equivalent OF-3 ranks." },
@@ -557,7 +829,6 @@ export function getUniqueVerbalQuestions(
         break
       }
 
-      // 9. Blood Relation Logic
       case 8: {
         const relations = [
           { q: "Pointing to a photograph, a cadet said: 'He is the son of the only son of my grandfather.' How is the person in the photo related to the cadet?", a: "Brother", w: ["Father", "Uncle", "Cousin"], exp: "The only son of grandfather is father; the son of father is the cadet's brother." },
@@ -578,7 +849,6 @@ export function getUniqueVerbalQuestions(
         break
       }
 
-      // 10. Odd Word Out
       case 9: {
         const oddSets = [
           { items: ["Submarine", "Frigate", "Destroyer", "Helicopter"], odd: "Helicopter", exp: "Helicopter is an aircraft; the others are naval warships." },
@@ -601,7 +871,6 @@ export function getUniqueVerbalQuestions(
         break
       }
 
-      // 11. Word Analogies
       case 10: {
         const analogies = [
           { q: "SOLDIER is to REGIMENT as PILOT is to:", a: "SQUADRON", w: ["AIRCRAFT", "AIRPORT", "FLIGHT"], exp: "Soldiers belong to a regiment; pilots belong to a squadron." },
@@ -622,7 +891,6 @@ export function getUniqueVerbalQuestions(
         break
       }
 
-      // 12. Military Vocabulary & Antonyms
       default: {
         const vocabBank = [
           { q: "FORTITUDE", ant: "Cowardice", w: ["Courage", "Resilience", "Stamina"], exp: "Fortitude means mental strength in facing adversity; cowardice is the antonym." },
@@ -679,7 +947,6 @@ export function getUniqueAcademicQuestions(
     const subjectMod = i % 5
     const questionSeed = (courseSalt * 53) + (testNumber * 3000) + (i * 29)
 
-    // 1. Physics
     if (subjectMod === 0) {
       const physicsPool = [
         { q: `What is the standard value of acceleration due to gravity (g) at Earth's surface?`, a: `9.8 m/s²`, w: [`8.9 m/s²`, `10.8 m/s²`, `9.2 m/s²`], exp: `Standard gravitational acceleration g ≈ 9.8 m/s² (or 9.81 m/s²).` },
@@ -699,10 +966,7 @@ export function getUniqueAcademicQuestions(
         correct_option_index: newCorrectIdx,
         explanation: item.exp
       })
-    }
-
-    // 2. Mathematics
-    else if (subjectMod === 1) {
+    } else if (subjectMod === 1) {
       const mathPool = [
         { q: `The derivative of sin(x) with respect to x is:`, a: `cos(x)`, w: [`-cos(x)`, `tan(x)`, `-sin(x)`], exp: `d/dx[sin(x)] = cos(x).` },
         { q: `If the determinant of a square matrix A is zero (|A| = 0), the matrix is termed:`, a: `Singular Matrix`, w: [`Non-Singular Matrix`, `Identity Matrix`, `Diagonal Matrix`], exp: `A matrix whose determinant is 0 has no inverse and is called a singular matrix.` },
@@ -721,10 +985,7 @@ export function getUniqueAcademicQuestions(
         correct_option_index: newCorrectIdx,
         explanation: item.exp
       })
-    }
-
-    // 3. English Grammar
-    else if (subjectMod === 2) {
+    } else if (subjectMod === 2) {
       const engPool = [
         { q: `Complete the sentence: The officer was congratulated ______ his outstanding valor.`, a: `on`, w: [`for`, `with`, `at`], exp: `The appropriate preposition after 'congratulate' is 'on'.` },
         { q: `Choose the correct passive voice: 'The cadets raised the national flag.'`, a: `The national flag was raised by the cadets.`, w: [`The national flag is raised by the cadets.`, `The national flag had been raised.`, `The cadets were raising the flag.`], exp: `Past simple active ('raised') becomes 'was raised' in the passive voice.` },
@@ -743,10 +1004,7 @@ export function getUniqueAcademicQuestions(
         correct_option_index: newCorrectIdx,
         explanation: item.exp
       })
-    }
-
-    // 4. Chemistry & General Science
-    else if (subjectMod === 3) {
+    } else if (subjectMod === 3) {
       const chemPool = [
         { q: `The pH value of pure neutral water at 25°C is:`, a: `7.0`, w: [`5.5`, `8.5`, `0.0`], exp: `Pure neutral water has equal concentrations of H+ and OH- ions, yielding pH = 7.0.` },
         { q: `Avogadro's constant (particles per mole) is approximately equal to:`, a: `6.022 × 10²³`, w: [`6.022 × 10²²`, `3.00 × 10⁸`, `1.602 × 10⁻¹⁹`], exp: `Avogadro's number NA ≈ 6.022 × 10²³ mol⁻¹.` },
@@ -764,10 +1022,7 @@ export function getUniqueAcademicQuestions(
         correct_option_index: newCorrectIdx,
         explanation: item.exp
       })
-    }
-
-    // 5. Pakistan Affairs & General Knowledge
-    else {
+    } else {
       const gkPool = [
         { q: `The highest military decoration of the Islamic Republic of Pakistan is:`, a: `Nishan-e-Haider`, w: [`Hilal-e-Jurat`, `Sitara-e-Jurat`, `Tamgha-e-Basalat`], exp: `Nishan-e-Haider is Pakistan's highest military gallantry award.` },
         { q: `In which year did Pakistan conduct its historic nuclear tests (Youm-e-Takbeer)?`, a: `1998`, w: [`1974`, `1988`, `2002`], exp: `Pakistan became a declared nuclear power following tests in Chagai on May 28, 1998.` },

@@ -1,38 +1,34 @@
 'use client'
 
+import React, { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import React, { useEffect, useState, useRef } from 'react'
-import { useCart } from '@/lib/context/CartContext'
 import { createClient } from '@/lib/supabase/client'
 import { 
-  BookOpen, ShoppingCart, User, ShieldAlert, LogOut, Search, Menu, X, 
-  ChevronDown, FileText, Clock, Newspaper, Sparkles, BookMarked, Globe, Award
+  Search, Menu, X, ChevronDown, User, LogOut, Shield, Award, 
+  BookOpen, Sparkles, LogIn, Briefcase, GraduationCap, FileText, Lock
 } from 'lucide-react'
 
 export default function Navbar() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { cart } = useCart()
   const supabase = createClient()
   
   const [session, setSession] = useState<any>(null)
   const [isAdmin, setIsAdmin] = useState(false)
-  const [customPages, setCustomPages] = useState<any[]>([])
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   
-  // Search Autocomplete Suggestion States
+  // Search state
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '')
   const [suggestions, setSuggestions] = useState<any[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [loadingSuggestions, setLoadingSuggestions] = useState(false)
   const suggestionsRef = useRef<HTMLDivElement>(null)
 
-  // Dropdown States
-  const [activeDropdown, setActiveDropdown] = useState<'prep' | 'resources' | 'books' | 'blog' | 'army' | 'navy' | 'paf' | 'issb' | null>(null)
+  // Active Dropdown
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
 
   useEffect(() => {
-    // 1. Fetch Auth Session & Admin Level Checks
     const checkAuth = async () => {
       const { data: { session: currentSession } } = await supabase.auth.getSession()
       setSession(currentSession)
@@ -46,31 +42,15 @@ export default function Navbar() {
         setIsAdmin(profile?.is_admin || false)
       }
     }
-    
-    // 2. Fetch Dynamic informational pages
-    const fetchCustomPages = async () => {
-      const { data } = await supabase
-        .from('custom_pages')
-        .select('slug, title')
-        .order('title', { ascending: true })
-      setCustomPages(data || [])
-    }
-
-    // Ensure clean light mode
-    document.documentElement.classList.remove('dark')
-    localStorage.removeItem('theme')
-
     checkAuth()
-    fetchCustomPages()
 
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-      if (session?.user) {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession)
+      if (newSession?.user) {
         supabase
           .from('profiles')
           .select('is_admin')
-          .eq('id', session.user.id)
+          .eq('id', newSession.user.id)
           .single()
           .then(({ data }) => setIsAdmin(data?.is_admin || false))
       } else {
@@ -78,7 +58,6 @@ export default function Navbar() {
       }
     })
 
-    // Outside clicks listener for suggestions
     const handleOutsideClick = (e: MouseEvent) => {
       if (suggestionsRef.current && !suggestionsRef.current.contains(e.target as Node)) {
         setShowSuggestions(false)
@@ -90,34 +69,32 @@ export default function Navbar() {
       subscription.unsubscribe()
       document.removeEventListener('mousedown', handleOutsideClick)
     }
-  }, [])
+  }, [supabase])
 
-  // Instant Search Autocomplete Suggestion Fetcher (with basic debounce)
+  // Search debounce
   useEffect(() => {
-    const delayDebounce = setTimeout(async () => {
+    const timer = setTimeout(async () => {
       const query = searchQuery.trim()
       if (query.length < 2) {
         setSuggestions([])
         return
       }
-
       setLoadingSuggestions(true)
       try {
         const { data } = await supabase
-          .from('items')
-          .select('id, title, resource_type')
+          .from('quizzes')
+          .select('id, title, category')
           .ilike('title', `%${query}%`)
           .limit(5)
         setSuggestions(data || [])
       } catch (err) {
-        console.error('Fetch autocomplete suggestions error:', err)
+        console.error('Search error:', err)
       } finally {
         setLoadingSuggestions(false)
       }
-    }, 300) // 300ms debounce delay to optimize database calls
-
-    return () => clearTimeout(delayDebounce)
-  }, [searchQuery])
+    }, 250)
+    return () => clearTimeout(timer)
+  }, [searchQuery, supabase])
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -134,62 +111,59 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-150 text-[#222222] shadow-sm transition-colors duration-200">
+    <nav className="sticky top-0 z-50 glass-nav border-b border-slate-200/80 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-4">
           
-          {/* Logo */}
-          <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-md overflow-hidden flex items-center justify-center border border-gray-200 shadow-sm group-hover:border-[#B8212E] transition-all bg-white">
-                <img src="/logo.jpg" alt="Engineer Yasin Logo" className="w-full h-full object-cover" />
-              </div>
-              <span className="font-extrabold text-lg tracking-tight text-gray-900 uppercase">
-                Eng <span className="text-[#B8212E]">Yasin</span>
+          {/* Brand Logo */}
+          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+            <div className="w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center border border-slate-200 shadow-sm group-hover:border-[#B8212E] transition-all bg-white">
+              <img src="/logo.jpg" alt="Engineer Yasin Logo" className="w-full h-full object-cover" />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-black text-base sm:text-lg tracking-tight text-slate-900 leading-none">
+                Engineer <span className="text-[#B8212E]">Yasin</span>
               </span>
-            </Link>
-          </div>
+              <span className="text-[9px] uppercase tracking-widest text-slate-400 font-extrabold mt-0.5">
+                Forces Academy
+              </span>
+            </div>
+          </Link>
 
-          {/* Search bar with Autocomplete Suggestions */}
-          <div ref={suggestionsRef} className="hidden md:block flex-grow max-w-xs relative">
+          {/* Search Input (Desktop) */}
+          <div ref={suggestionsRef} className="hidden md:block flex-grow max-w-xs lg:max-w-sm relative">
             <form onSubmit={handleSearchSubmit} className="relative w-full">
               <input
                 type="text"
-                placeholder="Search resources..."
+                placeholder="Search PMA, GD Pilot, PN Cadet, Tests..."
                 value={searchQuery}
                 onFocus={() => setShowSuggestions(true)}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value)
-                  setShowSuggestions(true)
-                }}
-                className="w-full bg-gray-50 border border-gray-200 rounded-md py-1.5 pl-4 pr-10 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-[#B8212E] focus:ring-1 focus:ring-[#B8212E]/20 transition-all font-semibold"
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-slate-100/80 hover:bg-slate-100 focus:bg-white border border-slate-200 rounded-full py-2 pl-4 pr-10 text-xs font-semibold text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#B8212E] focus:ring-2 focus:ring-[#B8212E]/10 transition-all"
               />
-              <button type="submit" className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#B8212E] transition-colors">
-                <Search className="w-3.5 h-3.5" />
+              <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#B8212E] transition-colors">
+                <Search className="w-4 h-4" />
               </button>
             </form>
 
-            {/* Suggestions Overlay Dropdown */}
+            {/* Autocomplete Dropdown */}
             {showSuggestions && searchQuery.trim().length >= 2 && (
-              <div className="absolute left-0 right-0 mt-2 bg-white border border-gray-200 shadow-xl rounded-none py-2 z-50 text-xs animate-scale-in">
+              <div className="absolute left-0 right-0 mt-2 bg-white border border-slate-200 shadow-2xl rounded-2xl py-2 z-50 text-xs animate-fadeIn overflow-hidden">
                 {loadingSuggestions ? (
-                  <div className="px-4 py-2 text-gray-400 font-semibold">Searching database...</div>
+                  <div className="px-4 py-2 text-slate-400 font-medium">Searching selection test bank...</div>
                 ) : suggestions.length === 0 ? (
-                  <div className="px-4 py-2 text-gray-400 font-semibold">No results match query</div>
+                  <div className="px-4 py-2 text-slate-400 font-medium">No tests found for "{searchQuery}"</div>
                 ) : (
-                  <div className="divide-y divide-gray-100">
+                  <div className="divide-y divide-slate-100">
                     {suggestions.map((item) => (
                       <Link
                         key={item.id}
-                        href={`/items/${item.id}`}
-                        onClick={() => {
-                          setShowSuggestions(false)
-                          setSearchQuery(item.title)
-                        }}
-                        className="block px-4 py-2 hover:bg-gray-50 text-gray-700 hover:text-[#B8212E] font-bold truncate transition-colors"
+                        href={`/prep/quiz/${item.id}`}
+                        onClick={() => setShowSuggestions(false)}
+                        className="block px-4 py-2.5 hover:bg-rose-50 text-slate-700 hover:text-[#B8212E] font-bold transition-colors"
                       >
-                        <span className="inline-block text-[8px] uppercase tracking-wider font-extrabold text-[#B8212E] mr-1.5 border border-[#B8212E]/20 px-1 rounded-sm bg-[#B8212E]/5">
-                          {item.resource_type}
+                        <span className="inline-block text-[9px] uppercase tracking-wider font-extrabold text-[#B8212E] mr-2 bg-rose-100/60 px-1.5 py-0.5 rounded">
+                          {item.category || 'Test'}
                         </span>
                         {item.title}
                       </Link>
@@ -201,120 +175,100 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center gap-3.5 xl:gap-5 text-xs font-black">
-            <Link href="/" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
+          <div className="hidden lg:flex items-center gap-1 xl:gap-2 text-xs font-bold text-slate-700">
+            <Link href="/" className="px-3 py-2 rounded-lg hover:text-[#B8212E] hover:bg-slate-100/60 transition-colors">
               Home
             </Link>
 
-            {/* Direct Links without dropdowns as requested */}
-            <Link href="/army" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
-              Join Army
-            </Link>
-            <Link href="/navy" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
-              Join Navy
-            </Link>
-            <Link href="/paf" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
-              Join PAF
-            </Link>
-
-            {/* ISSB Dropdown */}
+            {/* Forces Dropdown */}
             <div 
-              className="relative py-2"
+              className="relative"
+              onMouseEnter={() => setActiveDropdown('forces')}
+              onMouseLeave={() => setActiveDropdown(null)}
+            >
+              <button className="flex items-center gap-1 px-3 py-2 rounded-lg hover:text-[#B8212E] hover:bg-slate-100/60 transition-colors cursor-pointer">
+                <span>Forces Prep</span>
+                <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+              </button>
+              {activeDropdown === 'forces' && (
+                <div className="absolute top-full left-0 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl py-2 z-50 animate-fadeIn">
+                  <Link href="/prep/army" className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] transition-colors">
+                    Pak Army (PMA, TCC, LCC)
+                  </Link>
+                  <Link href="/prep/navy" className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] transition-colors">
+                    Pak Navy (PN Cadet, SSC)
+                  </Link>
+                  <Link href="/prep/paf" className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] transition-colors">
+                    Pak Air Force (GD Pilot, Aero)
+                  </Link>
+                  <div className="border-t border-slate-100 my-1" />
+                  <Link href="/prep" className="block px-4 py-2 text-[#B8212E] font-black hover:bg-rose-50 transition-colors">
+                    All Selection Tests →
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* ISSB Master Suite Dropdown */}
+            <div 
+              className="relative"
               onMouseEnter={() => setActiveDropdown('issb')}
               onMouseLeave={() => setActiveDropdown(null)}
             >
-              <Link href="/issb" prefetch={false} className="text-gray-700 hover:text-[#B8212E] flex items-center gap-0.5 uppercase tracking-wider transition-colors font-extrabold">
-                ISSB
-                <ChevronDown className="w-3 h-3" />
-              </Link>
+              <button className="flex items-center gap-1 px-3 py-2 rounded-lg hover:text-[#B8212E] hover:bg-slate-100/60 transition-colors cursor-pointer">
+                <span>ISSB Suite</span>
+                <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+              </button>
               {activeDropdown === 'issb' && (
-                <div className="absolute left-0 mt-0 w-60 bg-white border border-gray-150 shadow-xl py-2 z-50 animate-scale-in">
-                  <Link href="/issb" prefetch={false} className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] font-bold transition-colors">ISSB Information</Link>
-                  <Link href="/issb" prefetch={false} className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] font-bold transition-colors">Free ISSB Prep</Link>
-                  <Link href="/issb/mock-exam" prefetch={false} className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] font-bold transition-colors">ISSB Mock Exam</Link>
-                  <Link href="/issb/coaching" prefetch={false} className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] font-bold transition-colors">ISSB Coaching &amp; Training</Link>
+                <div className="absolute top-full left-0 w-60 bg-white border border-slate-200 rounded-2xl shadow-xl py-2 z-50 animate-fadeIn">
+                  <Link href="/issb" className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] transition-colors">
+                    ISSB Information & Guide
+                  </Link>
+                  <Link href="/issb/ai-interview" className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] transition-colors">
+                    AI Mock Interview Simulator
+                  </Link>
+                  <Link href="/issb/tat" className="block px-4 py-2 hover:bg-rose-50 hover:text-[#B8212E] transition-colors">
+                    TAT Picture Story Writing
+                  </Link>
+                  <Link href="/issb/coaching" className="block px-4 py-2 text-[#B8212E] font-black hover:bg-rose-50 transition-colors">
+                    ISSB Coaching Batches →
+                  </Link>
                 </div>
               )}
             </div>
 
-            <Link href="/scholarships" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
+            <Link href="/scholarships" className="px-3 py-2 rounded-lg hover:text-[#B8212E] hover:bg-slate-100/60 transition-colors">
               Scholarships
             </Link>
-            <Link href="/quizzes" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
-              Quizzes
-            </Link>
-            <Link href="/ebooks" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
+
+            <Link href="/ebooks" className="px-3 py-2 rounded-lg hover:text-[#B8212E] hover:bg-slate-100/60 transition-colors">
               E-Books
             </Link>
-            <Link href="/videos" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
-              Videos
-            </Link>
-            <Link href="/jobs" prefetch={false} className="text-gray-700 hover:text-[#B8212E] transition-colors uppercase tracking-wider">
-              Jobs
+
+            <Link href="/jobs" className="px-3 py-2 rounded-lg hover:text-[#B8212E] hover:bg-slate-100/60 transition-colors">
+              Jobs & Updates
             </Link>
 
-            {/* Blogs Dropdown */}
-            <div 
-              className="relative py-2"
-              onMouseEnter={() => setActiveDropdown('blog')}
-              onMouseLeave={() => setActiveDropdown(null)}
-            >
-              <Link href="/blog" prefetch={false} className="text-gray-700 hover:text-[#B8212E] flex items-center gap-0.5 uppercase tracking-wider transition-colors">
-                Blogs
-                <ChevronDown className="w-3 h-3" />
-              </Link>
-              {activeDropdown === 'blog' && (
-                <div className="absolute left-0 mt-0 w-48 bg-white border border-gray-150 shadow-xl py-2 z-50 animate-scale-in">
-                  <Link href="/blog" prefetch={false} className="block px-4 py-2 hover:bg-gray-50 hover:text-[#B8212E] transition-colors">Latest Forces Blogs</Link>
-                  {customPages.map(page => (
-                    <Link
-                      key={page.slug}
-                      href={`/p/${page.slug}`}
-                      prefetch={false}
-                      className="block px-4 py-2 hover:bg-gray-50 hover:text-[#B8212E] transition-colors"
-                    >
-                      {page.title}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-            
             {isAdmin && (
-              <Link href="/admin" className="flex items-center gap-1 text-xs font-black text-amber-600 hover:text-amber-500 uppercase tracking-wider transition-colors">
-                <ShieldAlert className="w-3.5 h-3.5" />
+              <Link href="/admin" className="px-3 py-2 rounded-lg text-amber-600 font-extrabold hover:bg-amber-50 transition-colors">
                 Admin
               </Link>
             )}
-
           </div>
 
-          {/* User Controls and Widgets (Right) */}
+          {/* Right User Auth Controls */}
           <div className="flex items-center gap-3">
-            
-            {/* Cart Widget */}
-            <Link href="/cart" className="relative p-2 rounded-md border border-gray-200 text-gray-500 hover:text-[#B8212E] hover:border-[#B8212E]/30 transition-all flex items-center bg-white">
-              <ShoppingCart className="w-4 h-4" />
-              {cart.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[#B8212E] text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white">
-                  {cart.length}
-                </span>
-              )}
-            </Link>
-
-            {/* Auth Button */}
             {session ? (
               <div className="flex items-center gap-2">
                 <Link
                   href="/dashboard"
-                  className="hidden sm:flex items-center gap-1 px-4.5 py-1.5 rounded-md border border-gray-200 hover:border-[#B8212E] text-xs font-bold text-gray-600 hover:text-[#B8212E] shadow-sm transition-all bg-white"
+                  className="px-4 py-2 rounded-full border border-slate-300 hover:border-[#B8212E] text-xs font-bold text-slate-700 hover:text-[#B8212E] transition-all flex items-center gap-1.5 bg-white shadow-xs"
                 >
-                  <User className="w-3.5 h-3.5" />
-                  Dashboard
+                  <User className="w-3.5 h-3.5" /> Dashboard
                 </Link>
                 <button
                   onClick={handleSignOut}
-                  className="p-2 rounded-md border border-gray-200 text-gray-500 hover:text-[#B8212E] hover:border-[#B8212E]/30 transition-all cursor-pointer bg-white"
+                  className="p-2 rounded-full border border-slate-300 text-slate-500 hover:text-rose-600 hover:border-rose-300 transition-all bg-white cursor-pointer"
                   title="Sign Out"
                 >
                   <LogOut className="w-4 h-4" />
@@ -323,21 +277,20 @@ export default function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className="hidden sm:flex px-4.5 py-1.5 bg-[#B8212E] hover:bg-[#A31C28] text-white text-xs font-bold rounded-md shadow-sm transition-all items-center gap-1 uppercase tracking-wider"
+                className="px-5 py-2 bg-[#B8212E] hover:bg-[#961A25] text-white text-xs font-black rounded-full uppercase tracking-wider shadow-md transition-all flex items-center gap-1.5"
               >
-                <User className="w-3.5 h-3.5" />
-                Sign In
+                <LogIn className="w-3.5 h-3.5" /> Sign In
               </Link>
             )}
 
-            {/* Mobile Menu Trigger */}
+            {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-md border border-gray-200 text-gray-500 hover:text-[#B8212E] focus:outline-none bg-white"
+              className="lg:hidden p-2 rounded-xl border border-slate-200 text-slate-600 hover:text-[#B8212E] bg-white cursor-pointer"
+              aria-label="Toggle Navigation"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
-
           </div>
 
         </div>
@@ -345,103 +298,46 @@ export default function Navbar() {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-gray-150 bg-white px-4 pt-4 pb-6 space-y-4 shadow-inner">
+        <div className="lg:hidden bg-white border-t border-slate-200 px-4 py-6 space-y-4 shadow-2xl animate-fadeIn max-h-[85vh] overflow-y-auto">
+          {/* Mobile Search */}
           <form onSubmit={handleSearchSubmit} className="relative w-full">
             <input
               type="text"
-              placeholder="Search website..."
+              placeholder="Search tests, branches..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-gray-50 border border-gray-200 rounded-md py-2.5 pl-4 pr-10 text-sm text-gray-800 focus:outline-none focus:border-[#B8212E] font-semibold"
+              className="w-full bg-slate-100 border border-slate-200 rounded-xl py-2.5 pl-4 pr-10 text-xs font-semibold text-slate-800"
             />
-            <button type="submit" className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+            <button type="submit" className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400">
               <Search className="w-4 h-4" />
             </button>
           </form>
 
-          {/* Quick settings row at the top of the menu */}
-          <div className="flex items-center justify-between gap-3 border-b border-gray-150 pb-4">
-            {session ? (
-              <div className="flex gap-2 w-full justify-between">
-                <Link
-                  href="/dashboard"
-                  onClick={() => setMobileMenuOpen(false)}
-                  prefetch={false}
-                  className="px-4 py-2 rounded-md border border-gray-200 text-xs font-bold text-gray-700 bg-white text-center flex-grow"
-                >
-                  Dashboard
-                </Link>
-                <button
-                  onClick={() => {
-                    handleSignOut()
-                    setMobileMenuOpen(false)
-                  }}
-                  className="px-4 py-2 rounded-md border border-gray-200 text-xs font-bold text-gray-500 cursor-pointer bg-white text-center flex-grow"
-                >
-                  Logout
-                </button>
-              </div>
-            ) : (
-              <Link
-                href="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                prefetch={false}
-                className="px-6 py-2 bg-[#B8212E] text-white text-xs font-bold rounded-md uppercase tracking-wider text-center w-full"
-              >
-                Sign In
-              </Link>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2 text-xs font-black text-gray-700 uppercase tracking-wide">
-            <div className="text-[9px] uppercase tracking-wider text-gray-400 font-extrabold pb-0.5 border-b border-gray-100 mb-1">Navigation</div>
-
-            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block font-black">
+          <div className="flex flex-col gap-1 text-sm font-bold text-slate-700 divide-y divide-slate-100">
+            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="py-2.5 hover:text-[#B8212E]">
               Home
             </Link>
-            
-            <Link href="/army" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block font-black">
-              Join Army
+            <Link href="/prep/army" onClick={() => setMobileMenuOpen(false)} className="py-2.5 hover:text-[#B8212E] flex justify-between items-center">
+              <span>Pak Army (PMA, TCC, LCC)</span>
+              <span className="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded font-extrabold">Active</span>
             </Link>
-
-            <Link href="/navy" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block font-black">
-              Join Navy
+            <Link href="/prep/navy" onClick={() => setMobileMenuOpen(false)} className="py-2.5 hover:text-[#B8212E]">
+              Pak Navy (PN Cadet, SSC)
             </Link>
-
-            <Link href="/paf" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block font-black">
-              Join PAF
+            <Link href="/prep/paf" onClick={() => setMobileMenuOpen(false)} className="py-2.5 hover:text-[#B8212E]">
+              Pak Air Force (GD Pilot, Aero)
             </Link>
-
-            <details className="group border-b border-gray-100 pb-2">
-              <summary className="flex items-center justify-between py-1.5 cursor-pointer text-gray-700 hover:text-[#B8212E] select-none list-none [&::-webkit-details-marker]:hidden font-black">
-                <span>ISSB</span>
-                <ChevronDown className="w-3.5 h-3.5 text-gray-500 group-hover:text-[#B8212E] group-open:rotate-180 transition-transform" />
-              </summary>
-              <div className="pl-4 flex flex-col gap-2 mt-1 pb-1 font-bold text-gray-500 capitalize">
-                <Link href="/issb" onClick={() => setMobileMenuOpen(false)}>ISSB Information</Link>
-                <Link href="/issb" onClick={() => setMobileMenuOpen(false)}>Free ISSB Prep</Link>
-                <Link href="/issb/mock-exam" onClick={() => setMobileMenuOpen(false)}>ISSB Mock Exam</Link>
-                <Link href="/issb/coaching" onClick={() => setMobileMenuOpen(false)}>ISSB Coaching &amp; Training</Link>
-              </div>
-            </details>
-
-            <Link href="/scholarships" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
-              Scholarships
+            <Link href="/issb" onClick={() => setMobileMenuOpen(false)} className="py-2.5 hover:text-[#B8212E]">
+              ISSB Preparation Suite
             </Link>
-            <Link href="/quizzes" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
-              Quizzes
+            <Link href="/scholarships" onClick={() => setMobileMenuOpen(false)} className="py-2.5 hover:text-[#B8212E]">
+              Scholarships & Cadet Colleges
             </Link>
-            <Link href="/ebooks" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
-              E-Books
+            <Link href="/ebooks" onClick={() => setMobileMenuOpen(false)} className="py-2.5 hover:text-[#B8212E]">
+              E-Books & Solved Notes
             </Link>
-            <Link href="/videos" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
-              Videos
-            </Link>
-            <Link href="/jobs" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 border-b border-gray-100 block">
-              Jobs
-            </Link>
-            <Link href="/blog" onClick={() => setMobileMenuOpen(false)} className="hover:text-[#B8212E] py-2 block">
-              Blogs
+            <Link href="/jobs" onClick={() => setMobileMenuOpen(false)} className="py-2.5 hover:text-[#B8212E]">
+              Public Service Jobs (BPSC, FPSC)
             </Link>
           </div>
         </div>

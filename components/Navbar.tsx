@@ -125,7 +125,7 @@ export default function Navbar() {
                 Engineer <span className="text-[#B8212E]">Yasin</span>
               </span>
               <span className="text-[9px] uppercase tracking-widest text-slate-400 font-extrabold mt-0.5">
-                Forces Academy
+                Official Portal
               </span>
             </div>
           </Link>

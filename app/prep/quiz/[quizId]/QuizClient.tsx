@@ -145,11 +145,11 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
         let fetchedQuestions: any[] = []
 
         if (isNV) {
-          fetchedQuestions = getUniqueNonVerbalQuestions(dynamicTestNumber, maxQ)
+          fetchedQuestions = getUniqueNonVerbalQuestions(dynamicTestNumber, maxQ, quizId)
         } else if (isVerbal) {
-          fetchedQuestions = getUniqueVerbalQuestions(dynamicTestNumber, maxQ)
+          fetchedQuestions = getUniqueVerbalQuestions(dynamicTestNumber, maxQ, quizId)
         } else {
-          fetchedQuestions = getUniqueAcademicQuestions(dynamicTestNumber, maxQ)
+          fetchedQuestions = getUniqueAcademicQuestions(dynamicTestNumber, maxQ, quizId)
         }
 
         setQuestions(fetchedQuestions)

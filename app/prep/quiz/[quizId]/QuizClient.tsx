@@ -614,7 +614,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
                   This certifies that <strong>{studentName}</strong> achieved a score of <strong>{finalScore}/{questions.length} ({percentage.toFixed(1)}%)</strong> under official timed conditions.
                 </p>
                 <div className="text-[10px] text-slate-400 font-mono">
-                  Verified by Engineer Yasin Forces Academy • ID: {quizId.toUpperCase()}-{Math.floor(1000 + Math.random() * 9000)}
+                  Verified by Engineer Yasin • ID: {quizId.toUpperCase()}-{Math.floor(1000 + Math.random() * 9000)}
                 </div>
               </div>
 

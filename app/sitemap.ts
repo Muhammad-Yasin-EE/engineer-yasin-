@@ -1,101 +1,171 @@
 import { MetadataRoute } from 'next'
-import { createAdminClient } from '@/lib/supabase/admin'
-
-export const revalidate = 3600 // Cache sitemap for 1 hour
+import { createPublicClient } from '@/lib/supabase/public'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.engineeryasin.xyz'
-  
-  // Static root listing routes
-  const routes = [
-    '',
-    '/scholarships',
-    '/jobs',
-    '/software',
-    '/services',
-    '/courses',
-    '/books',
-    '/track',
-    '/blog',
-    '/login',
-    '/signup',
-    '/issb',
-    '/army',
-    '/navy',
-    '/paf',
-    '/bpsc'
-  ].map((route) => ({
-    url: `${baseUrl}${route}`,
-    lastModified: new Date(),
-    changeFrequency: 'daily' as const,
-    priority: route === '' ? 1.0 : 0.8
-  }))
+  const currentDate = new Date().toISOString()
 
-  const adminSupabase = createAdminClient()
+  // 1. Core Static Routes
+  const staticRoutes: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}`,
+      lastModified: currentDate,
+      changeFrequency: 'daily',
+      priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/prep`,
+      lastModified: currentDate,
+      changeFrequency: 'daily',
+      priority: 0.95,
+    },
+    {
+      url: `${baseUrl}/prep/army`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/prep/navy`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/prep/paf`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/issb`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/issb/ai-interview`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/issb/tat`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/issb/ranks`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/scholarships`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/ebooks`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/jobs`,
+      lastModified: currentDate,
+      changeFrequency: 'daily',
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/study-planner`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.75,
+    },
+    {
+      url: `${baseUrl}/flashcards`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.75,
+    },
+    {
+      url: `${baseUrl}/ranks/pak-army`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/ranks/pak-navy`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/ranks/pak-paf`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/login`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/signup`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    },
+  ]
 
-  // 1. Fetch dynamic catalog items (jobs, scholarships, books, software, services, courses)
-  let itemsUrls: any[] = []
+  // 2. Dynamic Quizzes & Custom Pages from Supabase
+  let dynamicQuizRoutes: MetadataRoute.Sitemap = []
+  let dynamicCustomPageRoutes: MetadataRoute.Sitemap = []
+
   try {
-    const { data } = await adminSupabase.from('items').select('id, updated_at')
-    if (data) {
-      itemsUrls = data.map((item) => ({
-        url: `${baseUrl}/items/${item.id}`,
-        lastModified: item.updated_at ? new Date(item.updated_at) : new Date(),
-        changeFrequency: 'weekly' as const,
-        priority: 0.6
-      }))
-    }
-  } catch (err) {
-    console.error('Sitemap items fetch failure:', err)
-  }
+    const supabase = createPublicClient()
 
-  // 2. Fetch dynamic blog posts
-  let blogUrls: any[] = []
-  try {
-    const { data } = await adminSupabase.from('blog_posts').select('slug, updated_at')
-    if (data) {
-      blogUrls = data.map((post) => ({
-        url: `${baseUrl}/blog/${post.slug}`,
-        lastModified: post.updated_at ? new Date(post.updated_at) : new Date(),
-        changeFrequency: 'weekly' as const,
-        priority: 0.6
-      }))
-    }
-  } catch (err) {
-    console.error('Sitemap blog posts fetch failure:', err)
-  }
+    // Fetch all published quizzes
+    const { data: quizzes } = await supabase
+      .from('quizzes')
+      .select('id, updated_at')
+      .limit(100)
 
-  // 3. Fetch custom pages
-  let customPageUrls: any[] = []
-  try {
-    const { data } = await adminSupabase.from('custom_pages').select('slug, created_at')
-    if (data) {
-      customPageUrls = data.map((page) => ({
-        url: `${baseUrl}/p/${page.slug}`,
-        lastModified: page.created_at ? new Date(page.created_at) : new Date(),
-        changeFrequency: 'monthly' as const,
-        priority: 0.4
-      }))
-    }
-  } catch (err) {
-    console.error('Sitemap custom pages fetch failure:', err)
-  }
-
-  // 4. Fetch dynamic quizzes
-  let quizUrls: any[] = []
-  try {
-    const { data } = await adminSupabase.from('quizzes').select('id, created_at')
-    if (data) {
-      quizUrls = data.map((quiz) => ({
+    if (quizzes && quizzes.length > 0) {
+      dynamicQuizRoutes = quizzes.map((quiz) => ({
         url: `${baseUrl}/prep/quiz/${quiz.id}`,
-        lastModified: quiz.created_at ? new Date(quiz.created_at) : new Date(),
-        changeFrequency: 'weekly' as const,
-        priority: 0.9 // High priority for Armed forces quizzes
+        lastModified: quiz.updated_at || currentDate,
+        changeFrequency: 'weekly',
+        priority: 0.85,
+      }))
+    }
+
+    // Fetch all custom pages
+    const { data: customPages } = await supabase
+      .from('custom_pages')
+      .select('slug, updated_at')
+      .limit(50)
+
+    if (customPages && customPages.length > 0) {
+      dynamicCustomPageRoutes = customPages.map((page) => ({
+        url: `${baseUrl}/p/${page.slug}`,
+        lastModified: page.updated_at || currentDate,
+        changeFrequency: 'monthly',
+        priority: 0.7,
       }))
     }
   } catch (err) {
-    console.error('Sitemap quizzes fetch failure:', err)
+    console.warn('Sitemap dynamic data fetch error (fallback to static):', err)
   }
 
-  return [...routes, ...itemsUrls, ...blogUrls, ...customPageUrls, ...quizUrls]
+  return [
+    ...staticRoutes,
+    ...dynamicQuizRoutes,
+    ...dynamicCustomPageRoutes,
+  ]
 }

@@ -23,12 +23,12 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.engineeryasin.xyz"),
   title: {
-    default: "Engineer Yasin Forces Academy | Pakistan Armed Forces & ISSB Preparation",
-    template: "%s | Engineer Yasin Forces Academy",
+    default: "Engineer Yasin | Pakistan Armed Forces & ISSB Preparation",
+    template: "%s | Engineer Yasin",
   },
-  description: "Official online portal of Engineer Yasin Forces Academy. Free authentic computerized mock tests for Pakistan Army (PMA Long Course, TCC, LCC, AFNS), Pak Air Force (GD Pilot, CAE Aeronautical), Pak Navy (PN Cadet, SSC), and ISSB comprehensive training.",
+  description: "Official online portal of Engineer Yasin. Free authentic computerized mock tests for Pakistan Army (PMA Long Course, TCC, LCC, AFNS), Pak Air Force (GD Pilot, CAE Aeronautical), Pak Navy (PN Cadet, SSC), and ISSB comprehensive training.",
   keywords: [
-    "Engineer Yasin", "Engineer Yasin Forces Academy", "PMA Long Course Preparation", 
+    "Engineer Yasin", "PMA Long Course Preparation", 
     "ISSB Preparation", "PAF GD Pilot Test", "PN Cadet Test", "Cadet Colleges Entry Test", 
     "Armed Forces MCQs Online", "Pakistan Army Initial Test", "Join Pak Army", "Join PAF", "Join Pak Navy",
     "AFNS Preparation", "TCC Technical Cadet Course", "LCC Lady Cadet Course", "ISSB WAT Test",
@@ -36,17 +36,17 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Engineer Yasin", url: "https://www.engineeryasin.xyz" }],
   creator: "Engineer Yasin",
-  publisher: "Engineer Yasin Forces Academy",
+  publisher: "Engineer Yasin",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
   openGraph: {
-    title: "Engineer Yasin Forces Academy | Premier Armed Forces & ISSB Portal",
+    title: "Engineer Yasin | Premier Armed Forces & ISSB Portal",
     description: "Prepare for PMA Long Course, PAF GD Pilot, PN Cadet, and ISSB with Pakistan's premier online timed mock test engine and study resources.",
     url: "https://www.engineeryasin.xyz",
-    siteName: "Engineer Yasin Forces Academy",
+    siteName: "Engineer Yasin",
     locale: "en_PK",
     type: "website",
     images: [
@@ -54,13 +54,13 @@ export const metadata: Metadata = {
         url: "/logo.jpg",
         width: 1200,
         height: 630,
-        alt: "Engineer Yasin Forces Academy Pakistan",
+        alt: "Engineer Yasin Pakistan",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Engineer Yasin Forces Academy | Premier Armed Forces & ISSB Portal",
+    title: "Engineer Yasin | Premier Armed Forces & ISSB Portal",
     description: "Free official initial tests, ISSB coaching, solved notes, and public service job updates.",
     images: ["/logo.jpg"],
     creator: "@engineer_yasin",
@@ -93,10 +93,10 @@ export default function RootLayout({
       {
         '@type': 'EducationalOrganization',
         '@id': 'https://www.engineeryasin.xyz/#organization',
-        name: 'Engineer Yasin Forces Academy',
+        name: 'Engineer Yasin',
         url: 'https://www.engineeryasin.xyz',
         logo: 'https://www.engineeryasin.xyz/logo.jpg',
-        description: 'Premier online training academy for Pakistan Armed Forces initial computer tests, ISSB evaluations, and Cadet College entrance exams.',
+        description: 'Premier online training portal for Pakistan Armed Forces initial computer tests, ISSB evaluations, and Cadet College entrance exams.',
         sameAs: [
           'https://youtube.com/@engineer_yasin',
           'https://www.facebook.com/muhammad.yaseen.102260',
@@ -107,7 +107,7 @@ export default function RootLayout({
         '@type': 'WebSite',
         '@id': 'https://www.engineeryasin.xyz/#website',
         url: 'https://www.engineeryasin.xyz',
-        name: 'Engineer Yasin Forces Academy',
+        name: 'Engineer Yasin',
         publisher: { '@id': 'https://www.engineeryasin.xyz/#organization' },
         potentialAction: {
           '@type': 'SearchAction',

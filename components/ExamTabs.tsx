@@ -6,10 +6,9 @@ import {
   ArrowRight, CheckCircle2, ExternalLink,
   Users, Calendar, Clock, UserCheck,
   ChevronRight, Zap, FileText, BookOpen,
-  ListChecks, Info, GraduationCap, Lock, ShoppingCart
+  ListChecks, Info, GraduationCap, Lock, ShoppingCart, Brain, Sparkles, Flame
 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useCart } from '@/lib/context/CartContext'
+import { generateCourseTests, CourseTestItem } from '@/lib/data/branchTestsData'
 
 interface SelectionStep {
   step: number
@@ -20,15 +19,6 @@ interface SelectionStep {
 interface QuickFact {
   label: string
   value: string
-}
-
-interface Quiz {
-  id: string
-  title: string
-  description?: string
-  category?: string
-  is_paid?: boolean
-  price?: number
 }
 
 interface ExamTabsProps {
@@ -45,7 +35,7 @@ interface ExamTabsProps {
     commission: string
     officialUrl: string
   }
-  quizzes: Quiz[]
+  quizzes: any[]
   clr: {
     primary: string
     bg: string
@@ -55,27 +45,35 @@ interface ExamTabsProps {
 }
 
 export default function ExamTabs({ info, quizzes, clr }: ExamTabsProps) {
-  const [activeTab, setActiveTab] = useState<'information' | 'preparation'>('information')
-  const { addToCart } = useCart()
-  const router = useRouter()
+  const [activeTab, setActiveTab] = useState<'information' | 'preparation'>('preparation')
+  const [testFilter, setTestFilter] = useState<'all' | 'non-verbal' | 'verbal' | 'academic'>('all')
 
-  // Sort quizzes: free ones first
-  const sortedQuizzes = [...quizzes].sort((a, b) => {
-    if (a.is_paid === b.is_paid) return 0
-    return a.is_paid ? 1 : -1
-  })
+  // Generate 20+ Tests per Category dynamically for this course
+  const branchNormalized = (info.branchSlug || 'army').toLowerCase().includes('paf')
+    ? 'paf'
+    : (info.branchSlug || 'army').toLowerCase().includes('navy')
+    ? 'navy'
+    : 'army'
+
+  const courseSlugNormalized = info.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'course'
+
+  const allGeneratedTests = generateCourseTests(branchNormalized as any, courseSlugNormalized, info.title)
+
+  const filteredTests = testFilter === 'all' 
+    ? allGeneratedTests 
+    : allGeneratedTests.filter(t => t.type === testFilter)
 
   const tabs = [
-    { id: 'information' as const, label: 'Information', icon: Info },
-    { id: 'preparation' as const, label: 'Preparation', icon: GraduationCap },
+    { id: 'preparation' as const, label: 'Practice Tests (60+)', icon: GraduationCap },
+    { id: 'information' as const, label: 'Course Information', icon: Info },
   ]
 
   return (
     <div>
-      {/* ── Tab Bar ──────────────────────────────────────────────────────── */}
-      <div className="sticky top-16 z-30 bg-white border-b border-gray-200 shadow-sm">
+      {/* ── STICKY TAB HEADER BAR ────────────────────────────────────────── */}
+      <div className="sticky top-16 z-30 bg-white border-b border-slate-200 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex gap-0">
+          <div className="flex gap-2">
             {tabs.map((tab) => {
               const Icon = tab.icon
               const isActive = activeTab === tab.id
@@ -83,19 +81,14 @@ export default function ExamTabs({ info, quizzes, clr }: ExamTabsProps) {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`relative flex items-center gap-2 px-6 py-4 text-sm font-bold transition-all duration-200 cursor-pointer border-b-2 ${
+                  className={`relative flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-black transition-all cursor-pointer border-b-2 uppercase tracking-wider ${
                     isActive
-                      ? 'text-[#B8212E] border-[#B8212E]'
-                      : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
+                      ? 'text-[#B8212E] border-[#B8212E] bg-rose-50/40'
+                      : 'text-slate-500 border-transparent hover:text-slate-800 hover:border-slate-300'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
-                  {tab.label}
-                  {tab.id === 'preparation' && quizzes.length > 0 && (
-                    <span className="ml-1 inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#B8212E] text-white text-[10px] font-extrabold">
-                      {quizzes.length}
-                    </span>
-                  )}
+                  <span>{tab.label}</span>
                 </button>
               )
             })}
@@ -103,75 +96,183 @@ export default function ExamTabs({ info, quizzes, clr }: ExamTabsProps) {
         </div>
       </div>
 
-      {/* ── Tab Content ──────────────────────────────────────────────────── */}
+      {/* ── TAB CONTENT ─────────────────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-        {/* ════ INFORMATION TAB ════════════════════════════════════════════ */}
+        {/* TAB 1: PREPARATION (20+ Tests Matrix) */}
+        {activeTab === 'preparation' && (
+          <div className="space-y-8 animate-fadeIn">
+            
+            {/* Header & Filter Row */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
+              <div>
+                <span className="text-[10px] font-black text-[#B8212E] uppercase tracking-widest bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">
+                  Official Selection Bank
+                </span>
+                <h2 className="text-xl sm:text-3xl font-black text-slate-900 uppercase tracking-tight mt-1">
+                  {info.title} Practice Tests
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-500 font-medium">
+                  Attempt timed test batteries with official countdown timers, anti-cheat, and instant certificate evaluation.
+                </p>
+              </div>
+
+              {/* Filter Pills */}
+              <div className="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 self-start sm:self-auto overflow-x-auto">
+                <button
+                  onClick={() => setTestFilter('all')}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
+                    testFilter === 'all'
+                      ? 'bg-[#B8212E] text-white shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+                  }`}
+                >
+                  All (60)
+                </button>
+                <button
+                  onClick={() => setTestFilter('non-verbal')}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+                    testFilter === 'non-verbal'
+                      ? 'bg-rose-600 text-white shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+                  }`}
+                >
+                  <Brain className="w-3.5 h-3.5" /> Non-Verbal (20)
+                </button>
+                <button
+                  onClick={() => setTestFilter('verbal')}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
+                    testFilter === 'verbal'
+                      ? 'bg-emerald-700 text-white shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+                  }`}
+                >
+                  Verbal IQ (20)
+                </button>
+                <button
+                  onClick={() => setTestFilter('academic')}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
+                    testFilter === 'academic'
+                      ? 'bg-indigo-700 text-white shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+                  }`}
+                >
+                  Academic (20)
+                </button>
+              </div>
+            </div>
+
+            {/* Test Cards Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {filteredTests.map((test) => {
+                const isNV = test.type === 'non-verbal'
+                const isVerbal = test.type === 'verbal'
+
+                let typeColor = 'bg-indigo-50 border-indigo-200 text-indigo-700'
+                if (isNV) typeColor = 'bg-rose-50 border-rose-200 text-rose-700'
+                if (isVerbal) typeColor = 'bg-emerald-50 border-emerald-200 text-emerald-700'
+
+                return (
+                  <div
+                    key={test.id}
+                    className="bg-white border-2 border-slate-200/80 hover:border-[#B8212E] rounded-3xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 relative overflow-hidden"
+                  >
+                    <div className="space-y-3">
+                      {/* Top Badges */}
+                      <div className="flex items-center justify-between gap-2">
+                        <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-full border ${typeColor}`}>
+                          {isNV ? '🧩 Non-Verbal Shapes' : isVerbal ? '🧠 Verbal Intelligence' : '📚 Academic Screening'}
+                        </span>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                          Test #{test.testNumber}
+                        </span>
+                      </div>
+
+                      <h3 className="font-extrabold text-sm sm:text-base text-slate-900 group-hover:text-[#B8212E] transition-colors leading-snug">
+                        {test.title}
+                      </h3>
+
+                      {/* Meta Tags */}
+                      <div className="flex items-center gap-3 text-xs font-bold text-slate-500 pt-1">
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3.5 h-3.5 text-rose-600" /> {test.timeMinutes} Mins
+                        </span>
+                        <span>•</span>
+                        <span>{test.totalQuestions} Questions</span>
+                        <span>•</span>
+                        <span className="text-emerald-700">Pass: 50%</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-6 mt-4 border-t border-slate-100">
+                      <Link
+                        href={`/prep/quiz/${test.id}`}
+                        className="w-full py-3 bg-[#B8212E] hover:bg-[#961A25] text-white font-black rounded-xl text-xs uppercase tracking-wider shadow-md flex items-center justify-center gap-2 group-hover:scale-[1.02] transition-all cursor-pointer"
+                      >
+                        <Flame className="w-4 h-4 text-amber-300 fill-current" />
+                        Attempt Test {test.testNumber} <ArrowRight className="w-4 h-4" />
+                      </Link>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
+          </div>
+        )}
+
+        {/* TAB 2: COURSE INFORMATION */}
         {activeTab === 'information' && (
           <div className="space-y-12 animate-fadeIn">
 
             {/* Overview */}
-            <section>
-              <div className="flex items-center gap-2 mb-4">
-                <ChevronRight className="w-5 h-5" style={{ color: clr.primary }} />
-                <h2 className="text-xl font-extrabold text-gray-900">Overview</h2>
+            <section className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+              <div className="flex items-center gap-2">
+                <ChevronRight className="w-5 h-5 text-[#B8212E]" />
+                <h2 className="text-xl font-black text-slate-900 uppercase">Overview</h2>
               </div>
-              <p
-                className="text-gray-600 leading-relaxed text-sm sm:text-base border-l-4 pl-4 py-1"
-                style={{ borderColor: clr.primary }}
-              >
+              <p className="text-slate-600 leading-relaxed text-sm sm:text-base font-medium">
                 {info.overview}
               </p>
             </section>
 
-            {/* Two-column: Eligibility + Side Info */}
+            {/* Eligibility & Side Details */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-              {/* Eligibility Criteria */}
-              <section className={`lg:col-span-2 rounded-2xl border ${clr.border} ${clr.bg} p-6`}>
-                <div className="flex items-center gap-2 mb-5">
-                  <ListChecks className="w-5 h-5" style={{ color: clr.primary }} />
-                  <h2 className="text-lg font-extrabold text-gray-900">Eligibility Criteria</h2>
+              
+              {/* Eligibility */}
+              <section className="lg:col-span-2 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm space-y-4">
+                <div className="flex items-center gap-2">
+                  <ListChecks className="w-5 h-5 text-emerald-600" />
+                  <h2 className="text-lg font-black text-slate-900 uppercase">Eligibility Criteria</h2>
                 </div>
                 <ul className="space-y-3">
                   {info.eligibility.map((item, i) => (
                     <li key={i} className="flex items-start gap-3">
-                      <CheckCircle2
-                        className="w-4 h-4 shrink-0 mt-0.5"
-                        style={{ color: clr.primary }}
-                      />
-                      <span className="text-sm text-gray-700 leading-snug font-medium">{item}</span>
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <span className="text-xs sm:text-sm text-slate-700 leading-snug font-medium">{item}</span>
                     </li>
                   ))}
                 </ul>
               </section>
 
-              {/* Side Info Card */}
-              <section className="space-y-4">
-                <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-                  <div className="flex items-center gap-2 mb-4">
-                    <UserCheck className="w-4 h-4 text-gray-500" />
-                    <h3 className="text-sm font-extrabold text-gray-800">Commission & Training</h3>
+              {/* Commission & Training Side Box */}
+              <section className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+                <div className="flex items-center gap-2">
+                  <UserCheck className="w-4 h-4 text-slate-500" />
+                  <h3 className="text-sm font-black text-slate-900 uppercase">Commission Details</h3>
+                </div>
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Commissioned As</p>
+                    <p className="text-slate-900 font-extrabold mt-0.5">{info.commission}</p>
                   </div>
-                  <div className="space-y-4 text-xs">
-                    <div>
-                      <p className="text-gray-400 font-bold uppercase tracking-wider text-[10px]">
-                        Commissioned As
-                      </p>
-                      <p className="text-gray-800 font-bold mt-1">{info.commission}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400 font-bold uppercase tracking-wider text-[10px]">
-                        Training Duration
-                      </p>
-                      <p className="text-gray-700 font-semibold mt-1">{info.training}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400 font-bold uppercase tracking-wider text-[10px]">
-                        Commission Type
-                      </p>
-                      <p className="text-gray-700 font-semibold mt-1">{info.commissionType}</p>
-                    </div>
+                  <div>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Training Duration</p>
+                    <p className="text-slate-700 font-bold mt-0.5">{info.training}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Commission Type</p>
+                    <p className="text-slate-700 font-bold mt-0.5">{info.commissionType}</p>
                   </div>
                 </div>
 
@@ -179,119 +280,35 @@ export default function ExamTabs({ info, quizzes, clr }: ExamTabsProps) {
                   href={info.officialUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between gap-2 w-full px-5 py-3.5 rounded-xl text-white text-xs font-bold transition-all hover:opacity-90 shadow-md"
-                  style={{ backgroundColor: clr.primary }}
+                  className="flex items-center justify-between gap-2 w-full px-4 py-3 rounded-xl bg-[#0A192F] hover:bg-[#B8212E] text-white text-xs font-bold transition-all shadow-md mt-4"
                 >
-                  <span>Visit Official Website</span>
+                  <span>Official Recruitment Portal</span>
                   <ExternalLink className="w-4 h-4" />
                 </a>
               </section>
             </div>
 
-            {/* Selection Process */}
-            <section>
-              <div className="flex items-center gap-2 mb-6">
-                <Zap className="w-5 h-5" style={{ color: clr.primary }} />
-                <h2 className="text-xl font-extrabold text-gray-900">Selection Process</h2>
+            {/* Selection Steps */}
+            <section className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+              <div className="flex items-center gap-2">
+                <Zap className="w-5 h-5 text-amber-500" />
+                <h2 className="text-xl font-black text-slate-900 uppercase">Selection Process Roadmap</h2>
               </div>
-              <div className="relative">
-                <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-100 hidden sm:block" />
-                <div className="space-y-4">
-                  {info.selectionProcess.map((step, i) => (
-                    <div key={step.step} className="flex gap-4 sm:gap-6 items-start">
-                      <div
-                        className="w-12 h-12 rounded-full flex items-center justify-center text-white font-extrabold text-sm shrink-0 shadow-md z-10"
-                        style={{ backgroundColor: clr.primary }}
-                      >
-                        {step.step}
-                      </div>
-                      <div
-                        className={`flex-1 rounded-xl border p-4 hover:shadow-sm transition-shadow ${
-                          i === 0
-                            ? clr.bg + ' ' + clr.border
-                            : 'bg-white border-gray-200'
-                        }`}
-                      >
-                        <h3 className="font-extrabold text-gray-900 text-sm mb-1">{step.title}</h3>
-                        <p className="text-xs text-gray-500 leading-relaxed font-medium">{step.desc}</p>
-                      </div>
+              <div className="space-y-4">
+                {info.selectionProcess.map((step, i) => (
+                  <div key={step.step} className="flex gap-4 items-start p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                    <div className="w-9 h-9 rounded-xl bg-[#B8212E] text-white font-black text-xs flex items-center justify-center shrink-0">
+                      {step.step}
                     </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-          </div>
-        )}
-
-        {/* ════ PREPARATION TAB ════════════════════════════════════════════ */}
-        {activeTab === 'preparation' && (
-          <div className="animate-fadeIn">
-
-            <div className="flex items-center gap-2 mb-6">
-              <FileText className="w-5 h-5" style={{ color: clr.primary }} />
-              <h2 className="text-xl font-extrabold text-gray-900">Practice Tests</h2>
-              {quizzes.length > 0 && (
-                <span className="ml-2 text-xs font-bold text-gray-400">
-                  {quizzes.length} test{quizzes.length > 1 ? 's' : ''} available
-                </span>
-              )}
-            </div>
-
-            {sortedQuizzes.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-                {sortedQuizzes.map((quiz, i) => (
-                  <div
-                    key={quiz.id}
-                    className="group border border-gray-200 hover:border-[#B8212E] rounded-xl p-5 hover:shadow-lg transition-all duration-200 bg-white flex flex-col gap-4 relative overflow-hidden"
-                  >
-                    {/* Left accent bar */}
-                    <div className="absolute top-0 left-0 w-1 h-full transition-colors rounded-l-xl bg-gray-100 group-hover:bg-[#B8212E]" />
-
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">
-                          Test {i + 1}
-                        </span>
-                        <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-600 uppercase border border-emerald-200">
-                          100% Free
-                        </span>
-                      </div>
-                      <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${clr.badge}`}>
-                        {info.title}
-                      </span>
+                    <div>
+                      <h4 className="font-extrabold text-slate-900 text-sm">{step.title}</h4>
+                      <p className="text-xs text-slate-500 mt-0.5 leading-relaxed font-medium">{step.desc}</p>
                     </div>
-
-                    <h3 className="font-bold text-sm transition-colors line-clamp-2 flex-grow text-gray-900 group-hover:text-[#B8212E]">
-                      {quiz.title}
-                    </h3>
-
-                    {quiz.description && (
-                      <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
-                        {quiz.description}
-                      </p>
-                    )}
-
-                    <Link
-                      href={`/prep/quiz/${quiz.id}`}
-                      className="w-full py-2.5 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-colors uppercase tracking-wider mt-auto bg-[#B8212E] hover:bg-[#A31C28] text-white cursor-pointer shadow-sm"
-                    >
-                      Start Test <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
                   </div>
                 ))}
               </div>
-            ) : (
-              <div className="py-20 text-center flex flex-col items-center justify-center bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-                <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-sm mb-4 border border-gray-100">
-                  <BookOpen className="w-8 h-8 text-gray-300" />
-                </div>
-                <h3 className="text-base font-bold text-gray-700">Practice Tests Coming Soon</h3>
-                <p className="text-sm text-gray-500 mt-2 max-w-sm leading-relaxed">
-                  We are preparing mock tests specifically for <strong>{info.title}</strong>. Check back soon!
-                </p>
-              </div>
-            )}
+            </section>
+
           </div>
         )}
 

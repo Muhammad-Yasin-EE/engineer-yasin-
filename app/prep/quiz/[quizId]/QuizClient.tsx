@@ -4,14 +4,20 @@ import React, { useEffect, useState, useRef, use } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { ArrowLeft, Loader2, Award, CheckCircle2, XCircle, ChevronRight, ChevronLeft, RotateCcw, AlertTriangle, Clock, User, ShieldAlert, CheckSquare, Lock, UserPlus, LogIn, Shield, X, MessageCircle, Download } from 'lucide-react'
+import { 
+  ArrowLeft, Loader2, Award, CheckCircle2, XCircle, ChevronRight, ChevronLeft, 
+  RotateCcw, AlertTriangle, Clock, User, ShieldAlert, CheckSquare, Shield, X, MessageCircle, Download 
+} from 'lucide-react'
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import confetti from 'canvas-confetti'
 
-// Constants
-const QUIZ_TIME_LIMIT_MINUTES = 15
-const MAX_QUESTIONS = 30
+// ── Official Pakistan Armed Forces Selection & Recruitment Standards ───────
+const OFFICIAL_VERBAL_TIME_MINUTES = 30     // 30 Minutes for Verbal Intelligence
+const OFFICIAL_VERBAL_MAX_QUESTIONS = 84    // 84 MCQs for Verbal Intelligence
+const OFFICIAL_ACADEMIC_TIME_MINUTES = 25   // 25 Minutes for Academic Tests
+const OFFICIAL_ACADEMIC_MAX_QUESTIONS = 50  // 50 MCQs for Academic Tests
+
 const WHATSAPP_GROUP_LINK = "https://chat.whatsapp.com/IzPd4vwXbrjGhAkanhYvTp?s=cl&p=a&ilr=0"
 
 export default function QuizClient({ params }: { params: Promise<{ quizId: string }> }) {
@@ -31,12 +37,12 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
   const [showWhatsAppModal, setShowWhatsAppModal] = useState(false)
   const [examState, setExamState] = useState<'intro' | 'active' | 'completed'>('intro')
   
-  // Dynamic Limits
-  const [limitMinutes, setLimitMinutes] = useState(QUIZ_TIME_LIMIT_MINUTES)
-  const [maxQCount, setMaxQCount] = useState(MAX_QUESTIONS)
+  // Dynamic Limits (Official Selection Center format: 84 Verbal / 50 Academic)
+  const [limitMinutes, setLimitMinutes] = useState(OFFICIAL_ACADEMIC_TIME_MINUTES)
+  const [maxQCount, setMaxQCount] = useState(OFFICIAL_ACADEMIC_MAX_QUESTIONS)
   
   // Timer & Anti-Cheat
-  const [timeLeft, setTimeLeft] = useState(QUIZ_TIME_LIMIT_MINUTES * 60)
+  const [timeLeft, setTimeLeft] = useState(OFFICIAL_ACADEMIC_TIME_MINUTES * 60)
   const [autoSubmittedDueToCheat, setAutoSubmittedDueToCheat] = useState(false)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -49,11 +55,11 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
   const certificateRef = useRef<HTMLDivElement>(null)
   const [downloadingCert, setDownloadingCert] = useState(false)
 
-  // 1. Fetch Quiz Data
+  // 1. Fetch Quiz Data & Apply Official Limits
   useEffect(() => {
     const fetchQuizDetails = async () => {
       try {
-        let currentQuiz = null
+        let currentQuiz: any = null
         try {
           const { data: quizData } = await supabase
             .from('quizzes')
@@ -75,14 +81,42 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
         }
         setQuiz(currentQuiz)
 
-        let limitMin = 20
-        let maxQ = 20
+        // ── Check if Test is Verbal Intelligence or Academic ────────────────
+        let limitMin = OFFICIAL_ACADEMIC_TIME_MINUTES   // 25 Mins default
+        let maxQ = OFFICIAL_ACADEMIC_MAX_QUESTIONS       // 50 MCQs default
 
         if (currentQuiz) {
-          const isVerbal = currentQuiz.title.toLowerCase().includes('verbal') || currentQuiz.title.toLowerCase().includes('intelligence') || currentQuiz.title.toLowerCase().includes('pma')
+          const titleLower = (currentQuiz.title || '').toLowerCase()
+          const catLower = (currentQuiz.category || '').toLowerCase()
+
+          const isVerbal = 
+            titleLower.includes('verbal') || 
+            titleLower.includes('intelligence') ||
+            titleLower.includes('non-verbal')
+
+          const isAcademic = 
+            titleLower.includes('academic') || 
+            titleLower.includes('physics') || 
+            titleLower.includes('math') || 
+            titleLower.includes('english') || 
+            titleLower.includes('chemistry') || 
+            titleLower.includes('biology') || 
+            titleLower.includes('computer') ||
+            titleLower.includes('general knowledge') ||
+            catLower.includes('mdcat') ||
+            catLower.includes('nums')
+
           if (isVerbal) {
-            limitMin = 25
-            maxQ = 30
+            // 🔴 Official AS&RC / PAF / Navy Standard: 84 Questions in 30 Minutes
+            limitMin = OFFICIAL_VERBAL_TIME_MINUTES  // 30
+            maxQ = OFFICIAL_VERBAL_MAX_QUESTIONS     // 84
+          } else if (isAcademic) {
+            // 🔴 Official Selection Standard: 50 Questions in 25 Minutes
+            limitMin = OFFICIAL_ACADEMIC_TIME_MINUTES // 25
+            maxQ = OFFICIAL_ACADEMIC_MAX_QUESTIONS    // 50
+          } else {
+            limitMin = OFFICIAL_ACADEMIC_TIME_MINUTES
+            maxQ = OFFICIAL_ACADEMIC_MAX_QUESTIONS
           }
         }
 
@@ -101,45 +135,45 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
           console.warn('Questions DB query fallback triggered:', e)
         }
         
+        // If no questions in DB, provide official structured mock questions bank
         if (fetchedQuestions.length === 0) {
           fetchedQuestions = [
-            { id: 1, question_text: "Which number comes next in the sequence? 2, 6, 12, 20, 30, ...", options: ["40", "42", "44", "38"], correct_option_index: 1, explanation: "The differences are +4, +6, +8, +10. Next difference is +12, so 30 + 12 = 42." },
+            { id: 1, question_text: "Which number comes next in the sequence? 2, 6, 12, 20, 30, ...", options: ["40", "42", "44", "38"], correct_option_index: 1, explanation: "Differences are +4, +6, +8, +10. Next difference is +12, so 30 + 12 = 42." },
             { id: 2, question_text: "If TOWN is coded as 1234 and BIRD is coded as 5678, what is DOWN coded as?", options: ["8234", "5234", "8243", "5324"], correct_option_index: 0, explanation: "D = 8, O = 2, W = 3, N = 4. Therefore DOWN is 8234." },
             { id: 3, question_text: "A candidate completes 80% of a 150-mark test correctly. How many marks did the candidate score?", options: ["110", "120", "125", "115"], correct_option_index: 1, explanation: "(80 / 100) * 150 = 120 marks." },
-            { id: 4, question_text: "Choose the word that is most nearly OPPOSE in meaning to 'COURAGEOUS':", options: ["Bold", "Timid", "Valiant", "Heroic"], correct_option_index: 1, explanation: "Timid means fearful or easily frightened, opposite of courageous." },
+            { id: 4, question_text: "Choose the word that is most nearly OPPOSITE in meaning to 'COURAGEOUS':", options: ["Bold", "Timid", "Valiant", "Heroic"], correct_option_index: 1, explanation: "Timid means fearful or easily frightened, opposite of courageous." },
             { id: 5, question_text: "If 5 workers can build a defensive trench in 12 days, how many days will 6 workers take at the same pace?", options: ["10 days", "9 days", "8 days", "11 days"], correct_option_index: 0, explanation: "Total man-days = 5 * 12 = 60. For 6 workers: 60 / 6 = 10 days." },
             { id: 6, question_text: "Which of the following represents the highest operational military rank among the choices?", options: ["Lieutenant Colonel", "Brigadier", "Major General", "Colonel"], correct_option_index: 2, explanation: "Major General is a two-star general officer, higher than Lieutenant Colonel, Colonel, or Brigadier." },
             { id: 7, question_text: "A train running at 72 km/h crosses a pole in 15 seconds. What is the length of the train?", options: ["300 meters", "250 meters", "350 meters", "200 meters"], correct_option_index: 0, explanation: "72 km/h = 20 m/s. Length = Speed * Time = 20 * 15 = 300 meters." },
-            { id: 8, question_text: "Identify the odd word out among the following instruments:", options: ["Barometer", "Thermometer", "Diameter", "Hygrometer"], correct_option_index: 2, explanation: "Diameter is a geometric measurement of a circle, while all others are physical scientific measuring instruments." },
+            { id: 8, question_text: "Identify the odd word out among the following instruments:", options: ["Barometer", "Thermometer", "Diameter", "Hygrometer"], correct_option_index: 2, explanation: "Diameter is a geometric measurement of a circle, while all others are physical measuring instruments." },
             { id: 9, question_text: "Who was the first recipient of Nishan-e-Haider in Pakistan Armed Forces?", options: ["Major Raja Aziz Bhatti", "Captain Muhammad Sarwar", "Major Muhammad Akram", "Pilot Officer Rashid Minhas"], correct_option_index: 1, explanation: "Captain Muhammad Sarwar Shaheed (1948 Kashmir War) was the first recipient of Nishan-e-Haider." },
-            { id: 10, question_text: "If 'A' is taller than 'B' but shorter than 'C', and 'D' is taller than 'C', who is the tallest among them?", options: ["C", "A", "B", "D"], correct_option_index: 3, explanation: "The descending order of height is D > C > A > B. Thus, D is the tallest." },
+            { id: 10, question_text: "If 'A' is taller than 'B' but shorter than 'C', and 'D' is taller than 'C', who is the tallest among them?", options: ["C", "A", "B", "D"], correct_option_index: 3, explanation: "Descending order of height is D > C > A > B. Thus, D is the tallest." },
             { id: 11, question_text: "Which of the following atmospheric layers is closest to the Earth's surface where weather phenomena occur?", options: ["Stratosphere", "Troposphere", "Mesosphere", "Thermosphere"], correct_option_index: 1, explanation: "The Troposphere is the lowest layer of Earth's atmosphere." },
             { id: 12, question_text: "What is the capital city of Azad Jammu & Kashmir?", options: ["Gilgit", "Mirpur", "Muzaffarabad", "Rawalakot"], correct_option_index: 2, explanation: "Muzaffarabad is the capital of Azad Jammu and Kashmir." }
           ]
         }
 
-        // Shuffle and limit questions to maxQ
+        // Shuffle and limit questions to exact official max count (84 for Verbal, 50 for Academic)
         fetchedQuestions = fetchedQuestions.sort(() => 0.5 - Math.random()).slice(0, maxQ)
 
-        // Shuffle options dynamically so answers are unpredictable
+        // Shuffle options dynamically
         fetchedQuestions = fetchedQuestions.map(q => {
-          const originalOptions = q.options || [];
-          const originalCorrect = q.correct_option_index;
+          const originalOptions = q.options || []
+          const originalCorrect = q.correct_option_index
           
-          let optionsWithIndices = originalOptions.map((opt: string, i: number) => ({ text: opt, originalIndex: i }));
-          optionsWithIndices.sort(() => 0.5 - Math.random());
+          let optionsWithIndices = originalOptions.map((opt: string, i: number) => ({ text: opt, originalIndex: i }))
+          optionsWithIndices.sort(() => 0.5 - Math.random())
           
-          const newCorrectIndex = optionsWithIndices.findIndex(opt => opt.originalIndex === originalCorrect);
+          const newCorrectIndex = optionsWithIndices.findIndex(opt => opt.originalIndex === originalCorrect)
           
           return {
             ...q,
             options: optionsWithIndices.map(opt => opt.text),
             correct_option_index: newCorrectIndex
-          };
-        });
+          }
+        })
 
         setQuestions(fetchedQuestions)
-
       } catch (err) {
         console.error('Fetch quiz questions error:', err)
       } finally {
@@ -167,7 +201,6 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
     // Anti-Cheat: Visibility Change (Tab Switch Detection)
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'hidden') {
-        // User switched tabs or minimized!
         setAutoSubmittedDueToCheat(true)
         submitExam()
       }
@@ -220,9 +253,9 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
       console.error('Failed to save score:', err)
     }
 
-    // Trigger Confetti if passed with flying colors
+    // Trigger Confetti if passed with high marks
     const percentage = questions.length > 0 ? Math.round((calculatedScore / questions.length) * 100) : 0
-    if (percentage >= 85 && !autoSubmittedDueToCheat) {
+    if (percentage >= 80 && !autoSubmittedDueToCheat) {
       confetti({
         particleCount: 150,
         spread: 70,
@@ -245,7 +278,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
         format: [800, 560]
       })
       pdf.addImage(imgData, 'PNG', 0, 0, 800, 560)
-      pdf.save(`${studentName.replace(/ /g, '_')}_Certificate.pdf`)
+      pdf.save(`${studentName.replace(/ /g, '_')}_Official_Selection_Certificate.pdf`)
     } catch (err) {
       console.error('Certificate Generation Error:', err)
     } finally {
@@ -256,15 +289,13 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
   const startExam = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!studentName.trim()) return
-    // Check auth before starting quiz
+    
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
       setShowAuthModal(true)
       return
     }
 
-    // All quizzes are completely free now!
-    // Show WhatsApp Community group invitation popup before starting test timer
     setShowWhatsAppModal(true)
   }
 
@@ -307,20 +338,19 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
   }
 
-  // Formatting grades
   const getGradeDetails = () => {
     const percentage = questions.length > 0 ? (finalScore / questions.length) * 100 : 0
     if (percentage < 50) return { title: 'Needs Improvement / Hard Work Required', color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-50 dark:bg-rose-900/20', icon: <XCircle className="w-8 h-8" /> }
     if (percentage < 70) return { title: 'Good Effort, but you can do better', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/20', icon: <AlertTriangle className="w-8 h-8" /> }
-    if (percentage < 85) return { title: `Congratulations ${studentName}, Passed!`, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20', icon: <CheckCircle2 className="w-8 h-8" /> }
-    return { title: `Outstanding Performance ${studentName}! Excellent Concept Mastery.`, color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-50 dark:bg-indigo-900/20', icon: <Award className="w-8 h-8" /> }
+    if (percentage < 85) return { title: `Congratulations ${studentName}, Test Cleared!`, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20', icon: <CheckCircle2 className="w-8 h-8" /> }
+    return { title: `Outstanding Performance ${studentName}! Ready for Selection Center.`, color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-50 dark:bg-indigo-900/20', icon: <Award className="w-8 h-8" /> }
   }
 
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-40 gap-3 text-xs text-gray-500 dark:text-gray-400 w-full overflow-hidden">
         <Loader2 className="w-8 h-8 animate-spin text-[#B8212E]" />
-        <span>Loading secure exam environment...</span>
+        <span>Loading official selection test environment...</span>
       </div>
     )
   }
@@ -332,7 +362,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
         <h3 className="dark:text-white">Quiz Not Ready</h3>
         <p className="font-semibold text-gray-400 break-words">There are no questions uploaded for this quiz yet.</p>
         <Link href="/prep" className="inline-block px-5 py-2.5 bg-[#B8212E] text-white rounded-full uppercase tracking-wider text-[10px]">
-          Back to List
+          Back to Prep Hub
         </Link>
       </div>
     )
@@ -349,7 +379,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
       {!examStarted && (
         <div className="w-full">
           <Link href="/prep" className="inline-flex items-center gap-2 text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-[#B8212E] dark:hover:text-[#B8212E] transition-colors">
-            <ArrowLeft className="w-4 h-4 shrink-0" /> Back to Prep List
+            <ArrowLeft className="w-4 h-4 shrink-0" /> Back to Prep Hub
           </Link>
         </div>
       )}
@@ -361,22 +391,24 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#B8212E]/10 dark:bg-[#B8212E]/20 text-[#B8212E] dark:text-red-400 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 shrink-0">
               <ShieldAlert className="w-6 h-6 sm:w-8 sm:h-8" />
             </div>
-            <h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight break-words">Exam Rules & Regulations</h1>
+            <h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight break-words">Official Selection Center Pattern</h1>
             <p className="text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400 break-words">{quiz.title}</p>
           </div>
 
           <div className="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-4 sm:p-5 rounded-xl space-y-3 sm:space-y-4 text-[11px] sm:text-xs font-semibold text-gray-600 dark:text-gray-300 overflow-hidden">
             <div className="flex items-start gap-3">
               <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-500 shrink-0" />
-              <p className="break-words">Strict Time Limit of <strong className="text-gray-900 dark:text-white">{limitMinutes} Minutes</strong>. The exam will auto-submit when time is up.</p>
+              <p className="break-words">
+                Strict Time Limit of <strong className="text-gray-900 dark:text-white">{limitMinutes} Minutes</strong> ({questions.length} Questions). The test will auto-submit when the official time expires.
+              </p>
             </div>
             <div className="flex items-start gap-3">
               <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500 shrink-0" />
-              <p className="break-words"><strong>Anti-Cheat Enabled:</strong> If you open a new tab, switch apps, or minimize the window, your exam will immediately Auto-Submit with 0 warning.</p>
+              <p className="break-words"><strong>Anti-Cheat Enabled:</strong> If you open a new tab, switch apps, or minimize the window, your exam will immediately Auto-Submit with 0 warnings.</p>
             </div>
             <div className="flex items-start gap-3">
               <CheckSquare className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 shrink-0" />
-              <p className="break-words"><strong>Navigation:</strong> You can skip questions and come back to them later using the Next/Back buttons or the Question Grid at the bottom.</p>
+              <p className="break-words"><strong>Navigation:</strong> You can skip questions and revisit them anytime before final submission using the Question Grid.</p>
             </div>
           </div>
 
@@ -390,7 +422,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
                   required
                   value={studentName}
                   onChange={(e) => setStudentName(e.target.value)}
-                  placeholder="Enter your full name to begin..."
+                  placeholder="Enter your full name as per CNIC / B-Form..."
                   className="w-full pl-9 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#B8212E] focus:border-[#B8212E]"
                 />
               </div>
@@ -401,7 +433,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
               disabled={!studentName.trim()}
               className="w-full py-3 sm:py-3.5 bg-[#B8212E] hover:bg-[#D62636] disabled:opacity-50 text-white font-black rounded-lg text-xs sm:text-sm shadow-md transition-all uppercase tracking-widest break-words cursor-pointer disabled:cursor-not-allowed"
             >
-              Start Secure Exam
+              Start Official Exam ({questions.length} MCQs | {limitMinutes} Mins)
             </button>
           </form>
         </div>
@@ -434,7 +466,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
 
           {/* Progress Indicators */}
           <div className="w-full flex justify-between items-center text-[10px] sm:text-xs font-semibold text-gray-500 dark:text-gray-400 px-1">
-            <span className="truncate pr-2 break-words">Subject: <strong className="text-gray-800 dark:text-gray-200">{quiz.title}</strong></span>
+            <span className="truncate pr-2 break-words">Test: <strong className="text-gray-800 dark:text-gray-200">{quiz.title}</strong></span>
             <span className="font-mono bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-2 py-0.5 font-bold shrink-0 whitespace-nowrap rounded">
               Question {currentIndex + 1} of {questions.length}
             </span>
@@ -498,7 +530,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
                 onClick={submitExam}
                 className="px-4 sm:px-6 py-2.5 sm:py-3 bg-[#B8212E] hover:bg-[#D62636] text-white font-black rounded-xl text-[10px] sm:text-sm shadow-md flex items-center gap-1 sm:gap-2 transition-all uppercase tracking-wider animate-pulse shrink-0 cursor-pointer"
               >
-                Submit
+                Submit Test
                 <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
               </button>
             )}
@@ -506,8 +538,8 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
 
           {/* Question Navigator Grid */}
           <div className="w-full pt-6 sm:pt-8 space-y-2 sm:space-y-3 overflow-hidden">
-            <h4 className="text-[9px] sm:text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Question Navigator</h4>
-            <div className="flex flex-wrap gap-1.5 sm:gap-2">
+            <h4 className="text-[9px] sm:text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Question Navigator ({questions.length} Items)</h4>
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 max-h-56 overflow-y-auto p-1">
               {questions.map((_, idx) => {
                 const isAnswered = answers[idx] !== undefined
                 const isCurrent = idx === currentIndex
@@ -525,14 +557,14 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
                   <button
                     key={idx}
                     onClick={() => setCurrentIndex(idx)}
-                    className={`w-8 h-8 sm:w-10 sm:h-10 border rounded-md sm:rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center shrink-0 cursor-pointer ${btnClass}`}
+                    className={`w-7 h-7 sm:w-9 sm:h-9 border rounded-md sm:rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center shrink-0 cursor-pointer ${btnClass}`}
                   >
                     {idx + 1}
                   </button>
                 )
               })}
             </div>
-            <p className="text-[9px] sm:text-[10px] text-gray-400 dark:text-gray-500 font-semibold italic break-words">Red = Answered, Base = Skipped</p>
+            <p className="text-[9px] sm:text-[10px] text-gray-400 dark:text-gray-500 font-semibold italic break-words">Red = Attempted, Gray = Unanswered</p>
           </div>
         </div>
       )}
@@ -558,7 +590,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
               {autoSubmittedDueToCheat && (
                 <div className="w-full p-3 sm:p-4 bg-rose-50 dark:bg-rose-900/20 border-l-4 border-rose-500 text-rose-700 dark:text-rose-400 text-xs sm:text-sm font-bold flex items-start gap-2 sm:gap-3 overflow-hidden">
                   <ShieldAlert className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 mt-0.5" />
-                  <p className="break-words"><strong>Exam Violation Detected:</strong> You switched tabs or minimized the browser during the exam. The system automatically submitted your quiz to prevent cheating.</p>
+                  <p className="break-words"><strong>Exam Violation Detected:</strong> You switched tabs or minimized the browser during the exam. The system automatically submitted your quiz as per Selection Center rules.</p>
                 </div>
               )}
 
@@ -566,7 +598,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
               {timeLeft <= 0 && !autoSubmittedDueToCheat && (
                 <div className="w-full p-3 sm:p-4 bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500 text-amber-700 dark:text-amber-400 text-xs sm:text-sm font-bold flex items-start gap-2 sm:gap-3 overflow-hidden">
                   <Clock className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 mt-0.5" />
-                  <p className="break-words"><strong>Time Expired:</strong> Your 15 minutes were up, so the exam was automatically submitted.</p>
+                  <p className="break-words"><strong>Time Expired:</strong> Your official {limitMinutes} minutes were completed, so the test was automatically submitted.</p>
                 </div>
               )}
 
@@ -581,7 +613,7 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
                 </div>
                 <div className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 sm:p-5 rounded-xl text-center space-y-1 overflow-hidden">
                   <span className="block text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-gray-400 dark:text-gray-500 break-words">Time Taken</span>
-                  <span className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">{formatTime((QUIZ_TIME_LIMIT_MINUTES * 60) - Math.max(0, timeLeft))}</span>
+                  <span className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">{formatTime((limitMinutes * 60) - Math.max(0, timeLeft))}</span>
                 </div>
               </div>
 
@@ -593,211 +625,20 @@ export default function QuizClient({ params }: { params: Promise<{ quizId: strin
                     className="px-6 py-3 bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white font-black rounded-xl text-xs sm:text-sm shadow-md cursor-pointer flex items-center justify-center gap-2 uppercase tracking-wider transition-all shrink-0 break-words"
                   >
                     {downloadingCert ? <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin shrink-0" /> : <Download className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />}
-                    Get Certificate
+                    Get Verified Certificate
                   </button>
                 )}
                 <button
                   onClick={handleRestart}
                   className="px-6 py-3 border-2 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 font-bold rounded-xl text-xs sm:text-sm cursor-pointer flex items-center justify-center gap-2 transition-all shrink-0 break-words"
                 >
-                  <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" /> Retake
+                  <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+                  Retake Test
                 </button>
-                <Link
-                  href="/prep"
-                  className="px-6 py-3 bg-[#B8212E] hover:bg-[#D62636] text-white font-black rounded-xl text-xs sm:text-sm shadow-md cursor-pointer flex items-center justify-center gap-2 uppercase tracking-wider transition-all shrink-0 break-words"
-                >
-                  Dashboard
-                </Link>
               </div>
             </div>
           </div>
         )
-      })()}
-
-      {/* AUTH GATE MODAL — shown when guest tries to start exam */}
-      {showAuthModal && (
-        <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-          style={{ backdropFilter: 'blur(8px)', background: 'rgba(0,0,0,0.55)' }}
-          onClick={(e) => { if (e.target === e.currentTarget) setShowAuthModal(false) }}
-        >
-          <div
-            className="relative w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden"
-            style={{ animation: 'auth-modal-in 0.25s cubic-bezier(0.34,1.56,0.64,1) both' }}
-          >
-            {/* Top gradient accent bar */}
-            <div className="h-1.5 w-full bg-gradient-to-r from-[#B8212E] via-rose-500 to-orange-400" />
-
-            {/* Close button */}
-            <button
-              onClick={() => setShowAuthModal(false)}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
-              aria-label="Close"
-            >
-              <X className="w-4 h-4 text-gray-500" />
-            </button>
-
-            <div className="px-8 pb-8 pt-6 flex flex-col items-center text-center">
-              {/* Lock icon */}
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#B8212E] to-rose-600 flex items-center justify-center shadow-lg mb-5">
-                <Lock className="w-8 h-8 text-white" />
-              </div>
-
-              <h2 className="text-xl font-extrabold text-gray-900 mb-1 tracking-tight">Sign in to start exam</h2>
-              <p className="text-sm text-gray-500 mb-6 leading-relaxed">
-                Create a free account or sign in to take exams and track your scores.
-              </p>
-
-              {/* Trust badge */}
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-semibold mb-6">
-                <Shield className="w-3 h-3" />
-                Free &amp; Secure — No spam, ever
-              </div>
-
-              {/* Action buttons */}
-              <div className="flex flex-col gap-3 w-full">
-                <button
-                  onClick={() => { setShowAuthModal(false); router.push('/signup') }}
-                  className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-[#B8212E] to-rose-600 text-white font-bold text-sm shadow-md hover:shadow-lg hover:from-[#a01c27] hover:to-rose-700 transition-all duration-200 active:scale-[0.98]"
-                >
-                  <UserPlus className="w-4 h-4" />
-                  Create Free Account
-                </button>
-                <button
-                  onClick={() => { setShowAuthModal(false); router.push('/login') }}
-                  className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl border-2 border-gray-200 text-gray-700 font-bold text-sm hover:border-[#B8212E] hover:text-[#B8212E] transition-all duration-200 active:scale-[0.98]"
-                >
-                  <LogIn className="w-4 h-4" />
-                  Sign In
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <style>{`
-            @keyframes auth-modal-in {
-              from { opacity: 0; transform: scale(0.88) translateY(16px); }
-              to   { opacity: 1; transform: scale(1) translateY(0); }
-            }
-          `}</style>
-        </div>
-      )}
-
-      {/* WhatsApp Group Join Popup Before Exam */}
-      {showWhatsAppModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-emerald-100 overflow-hidden text-center flex flex-col items-center gap-5">
-            {/* Top WhatsApp Accent Header */}
-            <div className="w-16 h-16 rounded-full bg-emerald-100 border-2 border-emerald-500/20 flex items-center justify-center text-emerald-600 shadow-inner">
-              <MessageCircle className="w-9 h-9 fill-current" />
-            </div>
-
-            <div className="space-y-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 font-extrabold text-[11px] uppercase tracking-wider border border-emerald-200">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Official Study Group
-              </span>
-              <h3 className="text-xl sm:text-2xl font-black text-gray-900 leading-tight">
-                Join Engineer Yasin Official WhatsApp Group!
-              </h3>
-              <p className="text-xs sm:text-sm text-gray-600 font-medium leading-relaxed pt-1">
-                Before starting your mock test, join our official community to get instant updates on <strong>Free Mock Tests, Study Material, Solved MCQs, and PDF Notes</strong> directly on WhatsApp!
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-3 w-full pt-2">
-              <a
-                href={WHATSAPP_GROUP_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-3.5 px-6 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-extrabold text-sm shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
-              >
-                <MessageCircle className="w-5 h-5 fill-current" /> Join WhatsApp Group Now
-              </a>
-
-              <button
-                onClick={launchExam}
-                className="w-full py-3 px-6 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-extrabold text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer uppercase tracking-wider mt-1 border border-gray-200"
-              >
-                Start Mock Test ➔
-              </button>
-            </div>
-            
-            <p className="text-[11px] font-semibold text-gray-400 italic">
-              *Your timed exam session will start immediately after clicking Start Mock Test.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Hidden Certificate Template for PDF Generation */}
-      {examState === 'completed' && (() => {
-        const percentage = questions.length > 0 ? (finalScore / questions.length) * 100 : 0;
-        const isPass = percentage >= 50;
-        const borderColor = isPass ? 'border-emerald-500' : 'border-rose-500';
-        return (
-        <div className="fixed top-[-10000px] left-[-10000px]">
-          <div 
-            ref={certificateRef}
-            className="w-[800px] h-[560px] bg-white relative overflow-hidden"
-            style={{ backgroundImage: 'radial-gradient(#F1F5F9 1px, transparent 1px)', backgroundSize: '20px 20px' }}
-          >
-            {/* Elegant Borders */}
-            <div className="absolute inset-4 border-[10px] border-[#0A192F] opacity-90 rounded-none pointer-events-none" />
-            <div className={`absolute inset-7 border-2 ${borderColor} rounded-none pointer-events-none`} />
-            
-            {/* Corner Accents */}
-            <div className={`absolute top-4 left-4 w-16 h-16 border-t-[10px] border-l-[10px] ${borderColor}`} />
-            <div className={`absolute top-4 right-4 w-16 h-16 border-t-[10px] border-r-[10px] ${borderColor}`} />
-            <div className={`absolute bottom-4 left-4 w-16 h-16 border-b-[10px] border-l-[10px] ${borderColor}`} />
-            <div className={`absolute bottom-4 right-4 w-16 h-16 border-b-[10px] border-r-[10px] ${borderColor}`} />
-
-            {/* Content */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-12 mt-4">
-              <div className="mb-4 opacity-10">
-                <Shield className="w-32 h-32 text-[#0A192F]" />
-              </div>
-              <h4 className={`font-black tracking-[0.3em] uppercase text-sm mb-3 ${isPass ? 'text-emerald-600' : 'text-rose-600'}`}>
-                {isPass ? 'Certificate of Excellence' : 'Certificate of Participation'}
-              </h4>
-              <h1 className="text-5xl font-black text-[#0A192F] mb-8 font-serif uppercase">
-                {isPass ? 'Mock Test Passed' : 'Mock Test Failed'}
-              </h1>
-              
-              <p className="text-gray-500 italic text-lg mb-4 font-serif">This certifies that</p>
-              <h2 className="text-4xl font-extrabold text-[#0A192F] border-b-2 border-gray-200 pb-2 mb-6 px-12 capitalize inline-block">
-                {studentName || 'Student Name'}
-              </h2>
-              
-              <p className="text-gray-600 text-lg max-w-lg mb-8 leading-relaxed">
-                has {isPass ? 'successfully passed' : 'attempted'} the <strong>{quiz.title}</strong> and achieved a score of <strong>{finalScore}/{questions.length}</strong> ({(questions.length > 0 ? (finalScore / questions.length) * 100 : 0).toFixed(1)}%).
-              </p>
-              
-              <div className="flex w-full justify-between px-20 mt-8 items-end">
-                <div className="text-center">
-                  <div className="w-40 border-b border-gray-400 mb-2"></div>
-                  <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Date Issued</p>
-                  <p className="text-sm font-semibold text-gray-800">{new Date().toLocaleDateString()}</p>
-                </div>
-                
-                {/* Official Stamp */}
-                <div className={`w-24 h-24 rounded-full border-4 ${isPass ? 'border-emerald-600 text-emerald-600' : 'border-rose-600 text-rose-600'} flex flex-col items-center justify-center rotate-12 opacity-80 mix-blend-multiply bg-white`}>
-                  <span className="text-[10px] font-black uppercase tracking-widest mb-1">{isPass ? 'Official' : 'Failed'}</span>
-                  {isPass ? <Award className="w-6 h-6" /> : <XCircle className="w-6 h-6" />}
-                  <span className="text-[10px] font-black uppercase mt-1">{isPass ? 'Verified' : 'Review'}</span>
-                </div>
-
-                <div className="text-center">
-                  <div className="w-40 border-b border-gray-400 mb-2 font-black text-xl italic text-[#0A192F] opacity-70">
-                    Engr. Yasin
-                  </div>
-                  <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Platform Director</p>
-                  <p className="text-[10px] text-gray-400">engineeryasin.xyz</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        );
       })()}
 
       </div>

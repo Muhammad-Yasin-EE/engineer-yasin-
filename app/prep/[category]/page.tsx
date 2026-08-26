@@ -25,6 +25,7 @@ export const categoryData: Record<string, any> = {
           { id: 'afns', name: 'AFNS Nursing', cardBgUrl: '/images/card-afns.jpg' },
           { id: 'soldier', name: 'Pak Army Soldier', cardBgUrl: '/images/card-soldier.jpg' },
           { id: 'dssc', name: 'Direct Short Service (DSSC)', cardBgUrl: '/images/card-dssc.jpg' },
+          { id: 'amc', name: 'Army Medical College (AMC)', cardBgUrl: '/images/card-amc.jpg' },
         ]
       },
       {
@@ -67,6 +68,7 @@ export const categoryData: Record<string, any> = {
           { id: 'afns', name: 'AFNS Nursing', cardBgUrl: '/images/card-afns.jpg' },
           { id: 'soldier', name: 'Pak Army Soldier', cardBgUrl: '/images/card-soldier.jpg' },
           { id: 'dssc', name: 'Direct Short Service (DSSC)', cardBgUrl: '/images/card-dssc.jpg' },
+          { id: 'amc', name: 'Army Medical College (AMC)', cardBgUrl: '/images/card-amc.jpg' },
         ]
       }
     ]
@@ -126,7 +128,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
       </Link>
       
       {/* Hero Banner */}
-      <div className="relative rounded-3xl overflow-hidden shadow-lg border border-gray-200 min-h-[220px] sm:min-h-[260px] flex items-center justify-center">
+      <div className="relative rounded-3xl overflow-hidden shadow-lg border border-gray-200 min-h-[220px] sm:min-h-[280px] flex items-center justify-center">
         <div className="absolute inset-0 bg-[#0A192F]/85 z-10"></div>
         {data.headerImageUrl && (
           <Image src={data.headerImageUrl} alt={data.title} fill priority className="absolute inset-0 object-cover object-top" />
@@ -144,7 +146,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         </div>
       </div>
 
-      {/* ── 3 CORE TESTING SECTIONS HIGHLIGHT HUB ───────────────────────────── */}
+      {/* ── 3 CORE TESTING MODULES HIGHLIGHT HUB ───────────────────────────── */}
       <div className="bg-slate-50 border-2 border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6">
         <div className="text-center max-w-2xl mx-auto space-y-1">
           <span className="text-[10px] font-black text-[#B8212E] uppercase tracking-widest bg-rose-50 px-3 py-0.5 rounded-full border border-rose-200">
@@ -202,7 +204,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         </div>
       </div>
 
-      {/* Subgroups & Course Cards */}
+      {/* Subgroups & Original Course Picture Cards */}
       <div className="space-y-12">
         {data.subgroups.map((subgroup: any) => (
           <div key={subgroup.name} className="space-y-6">
@@ -220,33 +222,59 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
               </div>
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-5">
-              {subgroup.exams.map((exam: any) => (
-                <Link 
-                  key={exam.id}
-                  href={`/prep/${category === 'armed-forces' ? 'army' : category}/${exam.id}`}
-                  className="group border-2 border-slate-200 hover:border-[#B8212E] rounded-3xl p-5 hover:shadow-xl transition-all duration-300 flex flex-col justify-between min-h-[170px] bg-white relative overflow-hidden"
-                >
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                        60+ Tests Active
-                      </span>
-                      <span className="text-[10px] font-black text-slate-400 uppercase">
-                        Verbal • Non-Verbal • Acad
+            {/* Cards Grid with Original Background Images Restored */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+              {subgroup.exams.map((exam: any) => {
+                const targetCategory = ['army', 'navy', 'paf'].includes(category) 
+                  ? category 
+                  : subgroup.name.toLowerCase().includes('paf') 
+                  ? 'paf' 
+                  : subgroup.name.toLowerCase().includes('navy') 
+                  ? 'navy' 
+                  : 'army'
+
+                return (
+                  <Link 
+                    key={exam.id}
+                    href={`/${targetCategory}/${exam.id}`}
+                    className="group border-2 border-slate-300 hover:border-[#B8212E] rounded-3xl hover:shadow-2xl transition-all duration-300 flex flex-col justify-between min-h-[220px] relative overflow-hidden group hover:-translate-y-1"
+                  >
+                    {/* Background Picture */}
+                    {exam.cardBgUrl ? (
+                      <>
+                        <Image 
+                          src={exam.cardBgUrl} 
+                          alt={exam.name} 
+                          fill 
+                          sizes="(max-width: 768px) 100vw, 300px" 
+                          className="object-cover absolute inset-0 z-0 group-hover:scale-110 transition-transform duration-700" 
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F] via-[#0A192F]/60 to-black/30 z-10 group-hover:via-[#0A192F]/40 transition-colors"></div>
+                      </>
+                    ) : (
+                      <div className="absolute inset-0 bg-[#0A192F] z-0"></div>
+                    )}
+
+                    {/* Top Active Tag */}
+                    <div className="relative z-20 p-5">
+                      <span className="text-[10px] font-black uppercase text-amber-300 bg-black/60 px-3 py-1 rounded-full border border-amber-400/40 inline-flex items-center gap-1 backdrop-blur-md shadow-xs">
+                        <Flame className="w-3 h-3 text-amber-400 fill-current" /> 60+ Tests Active
                       </span>
                     </div>
-                    <h3 className="font-extrabold text-base sm:text-lg text-slate-900 group-hover:text-[#B8212E] transition-colors leading-snug">
-                      {exam.name}
-                    </h3>
-                  </div>
 
-                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-black uppercase tracking-wider text-[#B8212E]">
-                    <span>Enter 60+ Tests ➔</span>
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </Link>
-              ))}
+                    {/* Bottom Course Name & Action */}
+                    <div className="relative z-20 p-5 space-y-2">
+                      <h3 className="font-black text-base sm:text-lg text-white drop-shadow-md leading-tight group-hover:text-amber-300 transition-colors">
+                        {exam.name}
+                      </h3>
+                      <div className="flex items-center justify-between text-xs font-black uppercase tracking-wider text-slate-200 group-hover:text-white pt-1">
+                        <span>Attempt Tests</span>
+                        <ArrowRight className="w-4 h-4 text-[#B8212E] group-hover:text-amber-300 group-hover:translate-x-1 transition-all" />
+                      </div>
+                    </div>
+                  </Link>
+                )
+              })}
             </div>
           </div>
         ))}

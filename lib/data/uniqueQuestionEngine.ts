@@ -59,13 +59,111 @@ export function getUniqueNonVerbalQuestions(
   for (let i = 0; i < count; i++) {
     const qIndex = seedBase + i + 1
     const qSeed = (courseSalt * 37) + (testNumber * 10000) + (i * 149) + 23
-    const conceptType = i % 16
+    const conceptType = i % 18 // Expanded to 18 modules
 
     switch (conceptType) {
-      // ───────────────────────────────────────────────────────────────────────
-      // 1. 3x3 MATRIX GRID (Shape & Dot Logic across Rows & Columns)
-      // ───────────────────────────────────────────────────────────────────────
       case 0: {
+        const rawOpts = [
+          { shapes: [{ type: 'pattern_wallpaper' as const, x: 50, y: 50, size: 50, val: 1 }] },
+          { shapes: [{ type: 'pattern_wallpaper' as const, x: 50, y: 50, size: 50, val: 2 }] },
+          { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 40 }] },
+          { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 40 }] }
+        ]
+        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+        questions.push({
+          id: qIndex,
+          question_text: `PATTERN COMPLETION: Select the precise missing patch from the options below to perfectly complete the continuous spatial grid.`,
+          diagram: {
+            type: 'pattern_completion',
+            problemFigures: [{ shapes: [{ type: 'pattern_wallpaper', x: 50, y: 25, size: 100, val: 0 }] }],
+            optionFigures: shuffled
+          },
+          correct_option_index: newCorrectIdx,
+          explanation: `By aligning the boundary intersections of the concentric arcs in the wallpaper lattice, Option ${String.fromCharCode(65 + newCorrectIdx)} seamlessly bridges the missing continuity.`
+        })
+        break
+      }
+
+      case 1: {
+        const left1 = (qSeed % 5) + 2
+        const right1 = (qSeed % 4) + 3
+        const bot1 = (qSeed % 3) + 1
+        const head1 = left1 + right1 - bot1
+
+        const left2 = left1 + 2
+        const right2 = right1 + 1
+        const bot2 = bot1 + 2
+        const head2 = left2 + right2 - bot2
+
+        const left3 = left1 + 3
+        const right3 = right1 + 4
+        const bot3 = bot1 + 1
+        const correctHead = left3 + right3 - bot3
+
+        const rawOpts = [
+          { shapes: [{ type: 'number_stickman' as const, x: 50, y: 50, size: 50, numTop: correctHead }] },
+          { shapes: [{ type: 'number_stickman' as const, x: 50, y: 50, size: 50, numTop: correctHead + 2 }] },
+          { shapes: [{ type: 'number_stickman' as const, x: 50, y: 50, size: 50, numTop: correctHead - 1 }] },
+          { shapes: [{ type: 'number_stickman' as const, x: 50, y: 50, size: 50, numTop: correctHead + 4 }] }
+        ]
+        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+        questions.push({
+          id: qIndex,
+          question_text: `ARITHMETIC FIGURE: Deduce the mathematical relationship between the limbs to find the missing head value:`,
+          diagram: {
+            type: 'series',
+            problemFigures: [
+              { shapes: [{ type: 'number_stickman', x: 50, y: 50, size: 50, numTop: head1, numLeft: left1, numRight: right1, numBottom: bot1 }] },
+              { shapes: [{ type: 'number_stickman', x: 50, y: 50, size: 50, numTop: head2, numLeft: left2, numRight: right2, numBottom: bot2 }] },
+              { shapes: [{ type: 'number_stickman', x: 50, y: 50, size: 50, numTop: -1, numLeft: left3, numRight: right3, numBottom: bot3 }] }
+            ],
+            optionFigures: shuffled
+          },
+          correct_option_index: newCorrectIdx,
+          explanation: `The logic is: (Left Arm + Right Arm) - Legs = Head. For figure 3: (${left3} + ${right3}) - ${bot3} = ${correctHead}. Option ${String.fromCharCode(65 + newCorrectIdx)} is correct.`
+        })
+        break
+      }
+
+      case 2: {
+        const left1 = (qSeed % 8) + 10
+        const right1 = (qSeed % 6) + 12
+        const bot1 = (qSeed % 5) + 5
+        const head1 = left1 + right1 - bot1
+
+        const left2 = left1 + 4
+        const right2 = right1 + 3
+        const bot2 = bot1 + 2
+        const correctHead = left2 + right2 - bot2
+
+        const rawOpts = [
+          { shapes: [{ type: 'number_house' as const, x: 50, y: 50, size: 50, numTop: correctHead }] },
+          { shapes: [{ type: 'number_house' as const, x: 50, y: 50, size: 50, numTop: correctHead + 3 }] },
+          { shapes: [{ type: 'number_house' as const, x: 50, y: 50, size: 50, numTop: correctHead - 2 }] },
+          { shapes: [{ type: 'number_house' as const, x: 50, y: 50, size: 50, numTop: correctHead + 6 }] }
+        ]
+        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
+
+        questions.push({
+          id: qIndex,
+          question_text: `ARITHMETIC MATRICES: Determine the structural math rule connecting the windows and doors to find the attic value:`,
+          diagram: {
+            type: 'series',
+            problemFigures: [
+              { shapes: [{ type: 'number_house', x: 50, y: 50, size: 50, numTop: head1, numLeft: left1, numRight: right1, numBottom: bot1 }] },
+              { shapes: [{ type: 'number_house', x: 50, y: 50, size: 50, numTop: -1, numLeft: left2, numRight: right2, numBottom: bot2 }] }
+            ],
+            optionFigures: shuffled
+          },
+          correct_option_index: newCorrectIdx,
+          explanation: `The logic is: (Left Window + Right Window) - Door = Attic Roof. For figure 2: (${left2} + ${right2}) - ${bot2} = ${correctHead}. Option ${String.fromCharCode(65 + newCorrectIdx)} is correct.`
+        })
+        break
+      }
+
+      case 3: {
         const shapeRow1: DiagramShape['type'] = (qSeed % 2 === 0) ? 'circle' : 'rect'
         const shapeRow2: DiagramShape['type'] = 'triangle'
         const shapeRow3: DiagramShape['type'] = 'diamond'
@@ -111,17 +209,14 @@ export function getUniqueNonVerbalQuestions(
         break
       }
 
-      // ───────────────────────────────────────────────────────────────────────
-      // 2. CLASSIFICATION / ODD ONE OUT (5-Card Selection)
-      // ───────────────────────────────────────────────────────────────────────
-      case 1: {
+      case 4: {
         const oddRule = (qSeed % 3)
         let raw5Opts: any[] = []
         let exp = ''
 
         if (oddRule === 0) {
           raw5Opts = [
-            { shapes: [{ type: 'semicircle' as const, x: 50, y: 50, size: 50 }], label: '(A)' }, // Odd (Open/Curved)
+            { shapes: [{ type: 'semicircle' as const, x: 50, y: 50, size: 50 }], label: '(A)' },
             { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 50 }], label: '(B)' },
             { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }], label: '(C)' },
             { shapes: [{ type: 'pentagon' as const, x: 50, y: 50, size: 50 }], label: '(D)' },
@@ -130,7 +225,7 @@ export function getUniqueNonVerbalQuestions(
           exp = `Figures B, C, D, E are all closed straight-line polygons. Option A is an open curved arc.`
         } else if (oddRule === 1) {
           raw5Opts = [
-            { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 50 }], label: '(A)' }, // Odd (3 sides)
+            { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 50 }], label: '(A)' },
             { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }], label: '(B)' },
             { shapes: [{ type: 'diamond' as const, x: 50, y: 50, size: 50 }], label: '(C)' },
             { shapes: [{ type: 'hexagon' as const, x: 50, y: 50, size: 50 }], label: '(D)' },
@@ -139,7 +234,7 @@ export function getUniqueNonVerbalQuestions(
           exp = `All other shapes have an even number of vertices (4, 4, 6, 4). Option A (Triangle) has an odd count of 3.`
         } else {
           raw5Opts = [
-            { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }], label: '(A)' }, // Odd (No dot)
+            { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }], label: '(A)' },
             { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 50 }, { type: 'dot' as const, x: 50, y: 50, size: 10 }], label: '(B)' },
             { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }, { type: 'dot' as const, x: 50, y: 50, size: 10 }], label: '(C)' },
             { shapes: [{ type: 'diamond' as const, x: 50, y: 50, size: 50 }, { type: 'dot' as const, x: 50, y: 50, size: 10 }], label: '(D)' },
@@ -163,16 +258,10 @@ export function getUniqueNonVerbalQuestions(
         break
       }
 
-      // ───────────────────────────────────────────────────────────────────────
-      // 3. CLOCK DIALS & ANGULAR TIME PROGRESSIONS
-      // ───────────────────────────────────────────────────────────────────────
-      case 2: {
+      case 5: {
         const startH = (qSeed % 5) + 1
         const hStep = 2
-        const h1 = startH
-        const h2 = (h1 + hStep)
-        const h3 = (h2 + hStep)
-        const correctH = (h3 + hStep)
+        const correctH = startH + hStep * 3
 
         const rawOpts = [
           { shapes: [{ type: 'clock_face' as const, x: 50, y: 50, size: 60, hours: correctH, minutes: 0 }] },
@@ -188,22 +277,19 @@ export function getUniqueNonVerbalQuestions(
           diagram: {
             type: 'series',
             problemFigures: [
-              { shapes: [{ type: 'clock_face', x: 50, y: 50, size: 60, hours: h1, minutes: 0 }], label: `(${h1}:00)` },
-              { shapes: [{ type: 'clock_face', x: 50, y: 50, size: 60, hours: h2, minutes: 0 }], label: `(${h2}:00)` },
-              { shapes: [{ type: 'clock_face', x: 50, y: 50, size: 60, hours: h3, minutes: 0 }], label: `(${h3}:00)` },
+              { shapes: [{ type: 'clock_face', x: 50, y: 50, size: 60, hours: startH, minutes: 0 }] },
+              { shapes: [{ type: 'clock_face', x: 50, y: 50, size: 60, hours: startH + hStep, minutes: 0 }] },
+              { shapes: [{ type: 'clock_face', x: 50, y: 50, size: 60, hours: startH + hStep * 2, minutes: 0 }] },
             ],
             optionFigures: shuffled
           },
           correct_option_index: newCorrectIdx,
-          explanation: `The hour hand advances by +${hStep} hours per stage (${h1}:00 → ${h2}:00 → ${h3}:00 → ${correctH}:00), identifying Option ${String.fromCharCode(65 + newCorrectIdx)}.`
+          explanation: `The hour hand advances by +${hStep} hours per stage. Option ${String.fromCharCode(65 + newCorrectIdx)} is correct.`
         })
         break
       }
 
-      // ───────────────────────────────────────────────────────────────────────
-      // 4. PAPER FOLDING & SYMMETRICAL HOLE PUNCHING
-      // ───────────────────────────────────────────────────────────────────────
-      case 3: {
+      case 6: {
         const rawOpts = [
           { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 55 }, { type: 'dot' as const, x: 35, y: 35, size: 8 }, { type: 'dot' as const, x: 65, y: 35, size: 8 }, { type: 'dot' as const, x: 35, y: 65, size: 8 }, { type: 'dot' as const, x: 65, y: 65, size: 8 }] },
           { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 55 }, { type: 'dot' as const, x: 50, y: 50, size: 8 }] },
@@ -230,10 +316,7 @@ export function getUniqueNonVerbalQuestions(
         break
       }
 
-      // ───────────────────────────────────────────────────────────────────────
-      // 5. DOT SITUATION LOGIC (Geometric Region Intersections)
-      // ───────────────────────────────────────────────────────────────────────
-      case 4: {
+      case 7: {
         const rawOpts = [
           { shapes: [{ type: 'overlapping_regions' as const, x: 50, y: 50, size: 50, x1: 45, y1: 50 }] },
           { shapes: [{ type: 'rect' as const, x: 50, y: 50, size: 50 }, { type: 'dot' as const, x: 50, y: 50, size: 10 }] },
@@ -258,10 +341,7 @@ export function getUniqueNonVerbalQuestions(
         break
       }
 
-      // ───────────────────────────────────────────────────────────────────────
-      // 6. LATERAL MIRROR IMAGE REFLECTION
-      // ───────────────────────────────────────────────────────────────────────
-      case 5: {
+      case 8: {
         const baseShape = (qSeed % 2 === 0) ? 'arrow' : 'pinwheel'
         const rawOpts = [
           { shapes: [{ type: baseShape as any, x: 50, y: 50, size: 50, rotation: 180 }] },
@@ -288,10 +368,7 @@ export function getUniqueNonVerbalQuestions(
         break
       }
 
-      // ───────────────────────────────────────────────────────────────────────
-      // 7. UNFOLDED 3D CUBE NET LOGIC
-      // ───────────────────────────────────────────────────────────────────────
-      case 6: {
+      case 9: {
         const rawOpts = [
           { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] },
           { shapes: [{ type: 'star' as const, x: 50, y: 50, size: 50 }] },
@@ -316,10 +393,7 @@ export function getUniqueNonVerbalQuestions(
         break
       }
 
-      // ───────────────────────────────────────────────────────────────────────
-      // 8. PROPORTIONAL GEOMETRIC ANALOGIES (A : B :: C : ?)
-      // ───────────────────────────────────────────────────────────────────────
-      case 7: {
+      case 10: {
         const rawOpts = [
           { shapes: [{ type: 'star' as const, x: 50, y: 50, size: 60 }, { type: 'triangle' as const, x: 50, y: 50, size: 30, fill: '#0A192F' }] },
           { shapes: [{ type: 'triangle' as const, x: 50, y: 50, size: 60 }, { type: 'star' as const, x: 50, y: 50, size: 30 }] },
@@ -346,16 +420,10 @@ export function getUniqueNonVerbalQuestions(
         break
       }
 
-      // ───────────────────────────────────────────────────────────────────────
-      // 9. PIE QUADRANT SHADING SWEEPS
-      // ───────────────────────────────────────────────────────────────────────
-      case 8: {
+      case 11: {
         const isClockwise = (qSeed % 2) === 0
         const step = isClockwise ? 1 : 3
-        const q1 = (qSeed) % 4
-        const q2 = (q1 + step) % 4
-        const q3 = (q2 + step) % 4
-        const correctQuad = (q3 + step) % 4
+        const correctQuad = (3 * step) % 4
 
         const rawOpts = [
           { shapes: [{ type: 'pie_quadrant' as const, x: 50, y: 50, size: 50, quadrant: correctQuad }] },
@@ -371,9 +439,9 @@ export function getUniqueNonVerbalQuestions(
           diagram: {
             type: 'series',
             problemFigures: [
-              { shapes: [{ type: 'pie_quadrant', x: 50, y: 50, size: 50, quadrant: q1 }] },
-              { shapes: [{ type: 'pie_quadrant', x: 50, y: 50, size: 50, quadrant: q2 }] },
-              { shapes: [{ type: 'pie_quadrant', x: 50, y: 50, size: 50, quadrant: q3 }] },
+              { shapes: [{ type: 'pie_quadrant', x: 50, y: 50, size: 50, quadrant: 0 }] },
+              { shapes: [{ type: 'pie_quadrant', x: 50, y: 50, size: 50, quadrant: step % 4 }] },
+              { shapes: [{ type: 'pie_quadrant', x: 50, y: 50, size: 50, quadrant: (2 * step) % 4 }] },
             ],
             optionFigures: shuffled
           },
@@ -383,15 +451,9 @@ export function getUniqueNonVerbalQuestions(
         break
       }
 
-      // ───────────────────────────────────────────────────────────────────────
-      // 10. CONCENTRIC TARGET RINGS LINEAR ADDITION
-      // ───────────────────────────────────────────────────────────────────────
-      case 9: {
+      case 12: {
         const startR = (qSeed % 2) + 1
-        const c1 = startR
-        const c2 = c1 + 1
-        const c3 = c2 + 1
-        const correctCount = c3 + 1
+        const correctCount = startR + 3
 
         const rawOpts = [
           { shapes: [{ type: 'target_rings' as const, x: 50, y: 50, size: 60, val: correctCount }] },
@@ -407,26 +469,20 @@ export function getUniqueNonVerbalQuestions(
           diagram: {
             type: 'series',
             problemFigures: [
-              { shapes: [{ type: 'target_rings', x: 50, y: 50, size: 60, val: c1 }] },
-              { shapes: [{ type: 'target_rings', x: 50, y: 50, size: 60, val: c2 }] },
-              { shapes: [{ type: 'target_rings', x: 50, y: 50, size: 60, val: c3 }] },
+              { shapes: [{ type: 'target_rings', x: 50, y: 50, size: 60, val: startR }] },
+              { shapes: [{ type: 'target_rings', x: 50, y: 50, size: 60, val: startR + 1 }] },
+              { shapes: [{ type: 'target_rings', x: 50, y: 50, size: 60, val: startR + 2 }] },
             ],
             optionFigures: shuffled
           },
           correct_option_index: newCorrectIdx,
-          explanation: `Each consecutive box adds exactly 1 outer boundary ring. The next figure must have ${correctCount} rings (Option ${String.fromCharCode(65 + newCorrectIdx)}).`
+          explanation: `Each consecutive box adds exactly 1 outer boundary ring. Option ${String.fromCharCode(65 + newCorrectIdx)} is correct.`
         })
         break
       }
 
-      // ───────────────────────────────────────────────────────────────────────
-      // 11. DICE / DOMINO POINT FACE MATHEMATICS
-      // ───────────────────────────────────────────────────────────────────────
-      case 10: {
-        const v1 = (qSeed % 3) + 1
-        const v2 = v1 + 1
-        const v3 = v2 + 1
-        const correctVal = v3 + 1
+      case 13: {
+        const correctVal = ((qSeed % 3) + 1) + 3
 
         const rawOpts = [
           { shapes: [{ type: 'dice_face' as const, x: 50, y: 50, size: 50, val: correctVal }] },
@@ -442,27 +498,20 @@ export function getUniqueNonVerbalQuestions(
           diagram: {
             type: 'series',
             problemFigures: [
-              { shapes: [{ type: 'dice_face', x: 50, y: 50, size: 50, val: v1 }] },
-              { shapes: [{ type: 'dice_face', x: 50, y: 50, size: 50, val: v2 }] },
-              { shapes: [{ type: 'dice_face', x: 50, y: 50, size: 50, val: v3 }] },
+              { shapes: [{ type: 'dice_face', x: 50, y: 50, size: 50, val: correctVal - 3 }] },
+              { shapes: [{ type: 'dice_face', x: 50, y: 50, size: 50, val: correctVal - 2 }] },
+              { shapes: [{ type: 'dice_face', x: 50, y: 50, size: 50, val: correctVal - 1 }] },
             ],
             optionFigures: shuffled
           },
           correct_option_index: newCorrectIdx,
-          explanation: `Point count increases by +1 each stage (${v1} → ${v2} → ${v3} → ${correctVal}). Option ${String.fromCharCode(65 + newCorrectIdx)} has ${correctVal} points.`
+          explanation: `Point count increases by +1 each stage. Option ${String.fromCharCode(65 + newCorrectIdx)} has ${correctVal} points.`
         })
         break
       }
 
-      // ───────────────────────────────────────────────────────────────────────
-      // 12. MILITARY CHEVRON RANK STRIPE PROGRESSION
-      // ───────────────────────────────────────────────────────────────────────
-      case 11: {
-        const startC = (qSeed % 2) + 1
-        const p1 = startC
-        const p2 = p1 + 1
-        const p3 = p2 + 1
-        const correctCount = p3 + 1
+      case 14: {
+        const correctCount = ((qSeed % 2) + 1) + 3
 
         const makeChevrons = (c: number) => {
           const list: DiagramShape[] = []
@@ -486,22 +535,19 @@ export function getUniqueNonVerbalQuestions(
           diagram: {
             type: 'series',
             problemFigures: [
-              { shapes: makeChevrons(p1) },
-              { shapes: makeChevrons(p2) },
-              { shapes: makeChevrons(p3) },
+              { shapes: makeChevrons(correctCount - 3) },
+              { shapes: makeChevrons(correctCount - 2) },
+              { shapes: makeChevrons(correctCount - 1) },
             ],
             optionFigures: shuffled
           },
           correct_option_index: newCorrectIdx,
-          explanation: `Each box increments by +1 chevron stripe. Figure 4 requires ${correctCount} chevrons (Option ${String.fromCharCode(65 + newCorrectIdx)}).`
+          explanation: `Each box increments by +1 chevron stripe. Option ${String.fromCharCode(65 + newCorrectIdx)} is correct.`
         })
         break
       }
 
-      // ───────────────────────────────────────────────────────────────────────
-      // 13. DIVIDED BOX STRIPE PARTITIONS
-      // ───────────────────────────────────────────────────────────────────────
-      case 12: {
+      case 15: {
         const rawOpts = [
           { shapes: [{ type: 'divided_box' as const, x: 50, y: 50, size: 55, stripes: 4 }] },
           { shapes: [{ type: 'divided_box' as const, x: 50, y: 50, size: 55, stripes: 1 }] },
@@ -528,10 +574,7 @@ export function getUniqueNonVerbalQuestions(
         break
       }
 
-      // ───────────────────────────────────────────────────────────────────────
-      // 14. POLYGON SIDE INCREMENTS (3 -> 4 -> 5 -> 6 sides)
-      // ───────────────────────────────────────────────────────────────────────
-      case 13: {
+      case 16: {
         const rawOpts = [
           { shapes: [{ type: 'hexagon' as const, x: 50, y: 50, size: 55 }] },
           { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] },
@@ -558,15 +601,8 @@ export function getUniqueNonVerbalQuestions(
         break
       }
 
-      // ───────────────────────────────────────────────────────────────────────
-      // 15. HOURGLASS FLIP & TILTS
-      // ───────────────────────────────────────────────────────────────────────
-      case 14: {
-        const h1 = 0
-        const h2 = 45
-        const h3 = 90
+      case 17: {
         const correctH = 135
-
         const rawOpts = [
           { shapes: [{ type: 'hourglass' as const, x: 50, y: 50, size: 50, rotation: correctH }] },
           { shapes: [{ type: 'hourglass' as const, x: 50, y: 50, size: 50, rotation: (correctH + 90) % 360 }] },
@@ -581,49 +617,14 @@ export function getUniqueNonVerbalQuestions(
           diagram: {
             type: 'series',
             problemFigures: [
-              { shapes: [{ type: 'hourglass', x: 50, y: 50, size: 50, rotation: h1 }] },
-              { shapes: [{ type: 'hourglass', x: 50, y: 50, size: 50, rotation: h2 }] },
-              { shapes: [{ type: 'hourglass', x: 50, y: 50, size: 50, rotation: h3 }] },
+              { shapes: [{ type: 'hourglass', x: 50, y: 50, size: 50, rotation: 0 }] },
+              { shapes: [{ type: 'hourglass', x: 50, y: 50, size: 50, rotation: 45 }] },
+              { shapes: [{ type: 'hourglass', x: 50, y: 50, size: 50, rotation: 90 }] },
             ],
             optionFigures: shuffled
           },
           correct_option_index: newCorrectIdx,
-          explanation: `The hourglass shape tilts clockwise by 45° in each step, leading directly to Option ${String.fromCharCode(65 + newCorrectIdx)}.`
-        })
-        break
-      }
-
-      // ───────────────────────────────────────────────────────────────────────
-      // 16. PINWHEEL / PROPELLER ROTATION
-      // ───────────────────────────────────────────────────────────────────────
-      default: {
-        const r1 = 0
-        const r2 = 45
-        const r3 = 90
-        const correctRot = 135
-
-        const rawOpts = [
-          { shapes: [{ type: 'pinwheel' as const, x: 50, y: 50, size: 50, rotation: correctRot }] },
-          { shapes: [{ type: 'pinwheel' as const, x: 50, y: 50, size: 50, rotation: (correctRot + 90) % 360 }] },
-          { shapes: [{ type: 'pinwheel' as const, x: 50, y: 50, size: 50, rotation: (correctRot + 180) % 360 }] },
-          { shapes: [{ type: 'circle' as const, x: 50, y: 50, size: 50 }] }
-        ]
-        const { shuffled, newCorrectIdx } = shuffleWithCorrectIndex(rawOpts, 0, qSeed)
-
-        questions.push({
-          id: qIndex,
-          question_text: `PINWHEEL ROTATION: Which propeller figure correctly completes the 45° rotation series?`,
-          diagram: {
-            type: 'series',
-            problemFigures: [
-              { shapes: [{ type: 'pinwheel', x: 50, y: 50, size: 50, rotation: r1 }] },
-              { shapes: [{ type: 'pinwheel', x: 50, y: 50, size: 50, rotation: r2 }] },
-              { shapes: [{ type: 'pinwheel', x: 50, y: 50, size: 50, rotation: r3 }] },
-            ],
-            optionFigures: shuffled
-          },
-          correct_option_index: newCorrectIdx,
-          explanation: `The vanes rotate clockwise by 45° per frame, leading to Option ${String.fromCharCode(65 + newCorrectIdx)}.`
+          explanation: `The hourglass tilts clockwise by 45° in each step, leading directly to Option ${String.fromCharCode(65 + newCorrectIdx)}.`
         })
         break
       }

@@ -8,6 +8,7 @@ export interface DiagramShape {
     | 'pentagon' | 'hexagon' | 'diamond' | 'semicircle' | 'hourglass' | 'pinwheel' 
     | 'pie_quadrant' | 'target_rings' | 'dice_face' | 'chevron' | 'plus' | 't_bar'
     | 'divided_box' | 'clock_face' | 'cube_net' | 'overlapping_regions' | 'folded_punch'
+    | 'pattern_wallpaper' | 'number_stickman' | 'number_house'
   x?: number
   y?: number
   size?: number
@@ -25,10 +26,14 @@ export interface DiagramShape {
   hours?: number
   minutes?: number
   text?: string
+  numTop?: number
+  numLeft?: number
+  numRight?: number
+  numBottom?: number
 }
 
 export interface DiagramConfig {
-  type: 'series' | 'analogy' | 'odd_one_out' | 'matrix' | 'mirror' | 'water' | 'dot_situation' | 'folding'
+  type: 'series' | 'analogy' | 'odd_one_out' | 'matrix' | 'mirror' | 'water' | 'dot_situation' | 'folding' | 'pattern_completion'
   problemFigures?: Array<{
     shapes: DiagramShape[]
     label?: string
@@ -62,7 +67,11 @@ function RenderShape({ shape }: { shape: DiagramShape }) {
     stripes = 1,
     hours = 12,
     minutes = 0,
-    text = ''
+    text = '',
+    numTop,
+    numLeft,
+    numRight,
+    numBottom
   } = shape
 
   const transform = rotation ? `rotate(${rotation} ${x} ${y})` : undefined
@@ -271,7 +280,6 @@ function RenderShape({ shape }: { shape: DiagramShape }) {
           <circle cx={x - 12} cy={y} r={22} fill="none" stroke={stroke} strokeWidth={strokeWidth} />
           <polygon points={`${x + 12},${y - 20} ${x - 8},${y + 18} ${x + 32},${y + 18}`} fill="none" stroke={stroke} strokeWidth={strokeWidth} />
           <rect x={x - 10} y={y - 10} width={25} height={25} fill="none" stroke={stroke} strokeWidth={strokeWidth} />
-          {/* Dot placed at specified coordinate or default overlap */}
           <circle cx={x1} cy={y1} r={4} fill="#B8212E" />
         </g>
       )
@@ -349,6 +357,111 @@ function RenderShape({ shape }: { shape: DiagramShape }) {
     case 'dot':
       return <circle cx={x} cy={y} r={size / 4 || 4} fill={fill === 'none' ? stroke : fill} />
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // NEW AUTHENTIC ARMED FORCES TYPES (FROM PDF)
+    // ─────────────────────────────────────────────────────────────────────────
+    
+    // Pattern Completion (Wallpaper cut-out)
+    case 'pattern_wallpaper': {
+      // Draws a grid/wallpaper pattern. If 'val' is 0, draws full grid with a hole. If 'val' is 1, draws just the missing piece.
+      const isMissingPiece = val === 1
+      const isIncorrectPiece = val === 2
+      const gridCells = isMissingPiece || isIncorrectPiece ? 1 : 5
+      const cellSize = size / gridCells
+      
+      return (
+        <g transform={transform}>
+          <rect x={x - size/2} y={y - size/2} width={size} height={size} fill="none" stroke={stroke} strokeWidth={1} />
+          
+          {/* Draw intersecting circles texture */}
+          {Array.from({ length: gridCells + 1 }).map((_, i) => 
+            Array.from({ length: gridCells + 1 }).map((_, j) => {
+              const cx = (x - size/2) + i * cellSize
+              const cy = (y - size/2) + j * cellSize
+              // If drawing full grid, skip the center 2x2 area to make a "hole"
+              const isHole = !isMissingPiece && !isIncorrectPiece && i >= 1 && i <= 3 && j >= 1 && j <= 3
+              
+              if (isHole) return null
+              
+              return (
+                <circle key={`${i}-${j}`} cx={cx} cy={cy} r={cellSize * (isIncorrectPiece ? 0.4 : 0.6)} fill="none" stroke={stroke} strokeWidth={strokeWidth} />
+              )
+            })
+          )}
+          
+          {/* If full grid, draw a clean white rectangle in the middle to emphasize the hole */}
+          {(!isMissingPiece && !isIncorrectPiece) && (
+            <rect 
+              x={x - size/2 + cellSize} 
+              y={y - size/2 + cellSize} 
+              width={cellSize * 3} 
+              height={cellSize * 3} 
+              fill="#FFFFFF" 
+              stroke="#B8212E" 
+              strokeWidth={2}
+              strokeDasharray="4,4"
+            />
+          )}
+        </g>
+      )
+    }
+
+    // Number Logic: Stickman
+    case 'number_stickman': {
+      return (
+        <g transform={transform}>
+          {/* Head */}
+          <circle cx={x} cy={y - 20} r={12} fill="none" stroke={stroke} strokeWidth={strokeWidth} />
+          {numTop !== undefined && <text x={x} y={y - 16} textAnchor="middle" fontSize="11" fontWeight="bold" fill={stroke}>{numTop === -1 ? '?' : numTop}</text>}
+          
+          {/* Body */}
+          <line x1={x} y1={y - 8} x2={x} y2={y + 15} stroke={stroke} strokeWidth={strokeWidth} />
+          
+          {/* Arms */}
+          <line x1={x} y1={y} x2={x - 20} y2={y - 5} stroke={stroke} strokeWidth={strokeWidth} />
+          <line x1={x} y1={y} x2={x + 20} y2={y - 5} stroke={stroke} strokeWidth={strokeWidth} />
+          {numLeft !== undefined && <text x={x - 25} y={y - 8} textAnchor="middle" fontSize="10" fontWeight="bold" fill={stroke}>{numLeft}</text>}
+          {numRight !== undefined && <text x={x + 25} y={y - 8} textAnchor="middle" fontSize="10" fontWeight="bold" fill={stroke}>{numRight}</text>}
+          
+          {/* Legs */}
+          <line x1={x} y1={y + 15} x2={x - 15} y2={y + 35} stroke={stroke} strokeWidth={strokeWidth} />
+          <line x1={x} y1={y + 15} x2={x + 15} y2={y + 35} stroke={stroke} strokeWidth={strokeWidth} />
+          {numBottom !== undefined && <text x={x - 20} y={y + 45} textAnchor="middle" fontSize="10" fontWeight="bold" fill={stroke}>{numBottom}</text>}
+          {/* In some variations we might have a second bottom number, but for simplicity let's use the single bottom calculation logic */}
+        </g>
+      )
+    }
+
+    // Number Logic: House
+    case 'number_house': {
+      return (
+        <g transform={transform}>
+          {/* Roof */}
+          <polygon points={`${x},${y - 25} ${x - 30},${y} ${x + 30},${y}`} fill="none" stroke={stroke} strokeWidth={strokeWidth} />
+          {numTop !== undefined && (
+            <g>
+              <circle cx={x} cy={y - 10} r={9} fill="none" stroke={stroke} strokeWidth={1} />
+              <text x={x} y={y - 6} textAnchor="middle" fontSize="11" fontWeight="bold" fill={stroke}>{numTop === -1 ? '?' : numTop}</text>
+            </g>
+          )}
+
+          {/* Base */}
+          <rect x={x - 30} y={y} width={60} height={35} fill="none" stroke={stroke} strokeWidth={strokeWidth} />
+          
+          {/* Windows (Left & Right nums) */}
+          <rect x={x - 25} y={y + 5} width={18} height={12} fill="none" stroke={stroke} strokeWidth={1} />
+          {numLeft !== undefined && <text x={x - 16} y={y + 14} textAnchor="middle" fontSize="10" fontWeight="bold" fill={stroke}>{numLeft}</text>}
+          
+          <rect x={x + 7} y={y + 5} width={18} height={12} fill="none" stroke={stroke} strokeWidth={1} />
+          {numRight !== undefined && <text x={x + 16} y={y + 14} textAnchor="middle" fontSize="10" fontWeight="bold" fill={stroke}>{numRight}</text>}
+
+          {/* Door (Bottom num) */}
+          <rect x={x - 8} y={y + 15} width={16} height={20} fill="none" stroke={stroke} strokeWidth={1} />
+          {numBottom !== undefined && <text x={x} y={y + 28} textAnchor="middle" fontSize="10" fontWeight="bold" fill={stroke}>{numBottom}</text>}
+        </g>
+      )
+    }
+
     default:
       return null
   }
@@ -399,8 +512,63 @@ export default function NonVerbalDiagram({
       case 'water': return 'Water Image Inversion'
       case 'dot_situation': return 'Dot Situation Logic (Matching Overlap)'
       case 'folding': return 'Paper Folding & Hole Punch'
-      default: return 'Pattern Series (Determine the Next Figure)'
+      case 'pattern_completion': return 'Spatial Pattern Completion (Missing Patch)'
+      default: return 'Pattern Series & Arithmetic Logic'
     }
+  }
+
+  // 5. Special Layout: Pattern Completion (Giant Box)
+  if (config.type === 'pattern_completion') {
+    return (
+      <div className="w-full space-y-6 bg-slate-900/90 p-4 sm:p-6 rounded-3xl border border-slate-700/80">
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] uppercase font-black tracking-widest text-[#D4AF37] bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20">
+            🧩 {getBadgeTitle()}
+          </span>
+        </div>
+
+        <div className="flex justify-center mb-6">
+          <div className="w-full max-w-md aspect-[2/1] bg-white rounded-xl border border-slate-300 shadow-md p-2">
+            <svg viewBox="0 0 100 50" className="w-full h-full">
+              {config.problemFigures && config.problemFigures[0].shapes.map((s, idx) => (
+                <RenderShape key={idx} shape={s} />
+              ))}
+            </svg>
+          </div>
+        </div>
+
+        {/* Options Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 pt-4 border-t border-slate-800">
+          {config.optionFigures.map((opt, idx) => {
+            const isSelected = selectedOption === idx
+            return (
+              <button
+                key={idx}
+                type="button"
+                disabled={!isInteractive}
+                onClick={() => onSelectOption && onSelectOption(idx)}
+                className={`p-3 rounded-2xl flex flex-col items-center gap-2 cursor-pointer transition-all duration-200 ${
+                  isSelected
+                    ? 'bg-[#B8212E]/20 border-2 border-[#B8212E] shadow-lg shadow-rose-950/40 ring-2 ring-[#B8212E]/40'
+                    : 'bg-slate-800/60 border-2 border-slate-700/80 hover:bg-slate-800 hover:border-slate-500'
+                }`}
+              >
+                <div className="w-20 h-16 bg-white rounded-xl flex items-center justify-center p-1 border border-slate-200">
+                  <svg viewBox="0 0 100 100" className="w-full h-full scale-150 origin-center">
+                    {opt.shapes.map((s, sIdx) => (
+                      <RenderShape key={sIdx} shape={s} />
+                    ))}
+                  </svg>
+                </div>
+                <span className={`text-xs font-black px-3 py-0.5 rounded-md ${isSelected ? 'bg-[#B8212E] text-white' : 'bg-slate-700 text-slate-300'}`}>
+                  Option {String.fromCharCode(65 + idx)}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -444,7 +612,7 @@ export default function NonVerbalDiagram({
       )}
 
       {/* 3. Standard Layout: Linear Problem Figures (Series, Analogy, Reflection) */}
-      {config.type !== 'matrix' && config.problemFigures && config.problemFigures.length > 0 && (
+      {config.type !== 'matrix' && config.type !== 'pattern_completion' && config.problemFigures && config.problemFigures.length > 0 && (
         <div className="flex items-center justify-center gap-2 sm:gap-4 overflow-x-auto py-4 bg-slate-800/90 rounded-2xl border border-slate-700/60 px-2 sm:px-4">
           {config.problemFigures.map((fig, idx) => (
             <React.Fragment key={idx}>
@@ -477,46 +645,48 @@ export default function NonVerbalDiagram({
       )}
 
       {/* 4. Multiple Choice Options Grid (A, B, C, D, E) */}
-      <div className="space-y-2 pt-2 border-t border-slate-800">
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-            {config.type === 'odd_one_out' 
-              ? 'Select the figure that does NOT fit the rule:' 
-              : 'Select the correct replacement figure from options below:'}
-          </span>
-          <span className="text-[10px] font-black text-[#D4AF37] uppercase">Click Option to Choose</span>
-        </div>
+      {config.type !== 'pattern_completion' && (
+        <div className="space-y-2 pt-2 border-t border-slate-800">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+              {config.type === 'odd_one_out' 
+                ? 'Select the figure that does NOT fit the rule:' 
+                : 'Select the correct replacement figure from options below:'}
+            </span>
+            <span className="text-[10px] font-black text-[#D4AF37] uppercase">Click Option to Choose</span>
+          </div>
 
-        <div className={`grid gap-3 sm:gap-4 ${config.optionFigures.length === 5 ? 'grid-cols-2 sm:grid-cols-5' : 'grid-cols-2 sm:grid-cols-4'}`}>
-          {config.optionFigures.map((opt, idx) => {
-            const isSelected = selectedOption === idx
-            return (
-              <button
-                key={idx}
-                type="button"
-                disabled={!isInteractive}
-                onClick={() => onSelectOption && onSelectOption(idx)}
-                className={`p-3 rounded-2xl flex flex-col items-center gap-2 cursor-pointer transition-all duration-200 ${
-                  isSelected
-                    ? 'bg-[#B8212E]/20 border-2 border-[#B8212E] shadow-lg shadow-rose-950/40 ring-2 ring-[#B8212E]/40'
-                    : 'bg-slate-800/60 border-2 border-slate-700/80 hover:bg-slate-800 hover:border-slate-500'
-                }`}
-              >
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-xl flex items-center justify-center p-1 border border-slate-200">
-                  <svg viewBox="0 0 100 100" className="w-full h-full">
-                    {opt.shapes.map((s, sIdx) => (
-                      <RenderShape key={sIdx} shape={s} />
-                    ))}
-                  </svg>
-                </div>
-                <span className={`text-xs font-black px-3 py-0.5 rounded-md ${isSelected ? 'bg-[#B8212E] text-white' : 'bg-slate-700 text-slate-300'}`}>
-                  Option {String.fromCharCode(65 + idx)}
-                </span>
-              </button>
-            )
-          })}
+          <div className={`grid gap-3 sm:gap-4 ${config.optionFigures.length === 5 ? 'grid-cols-2 sm:grid-cols-5' : 'grid-cols-2 sm:grid-cols-4'}`}>
+            {config.optionFigures.map((opt, idx) => {
+              const isSelected = selectedOption === idx
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  disabled={!isInteractive}
+                  onClick={() => onSelectOption && onSelectOption(idx)}
+                  className={`p-3 rounded-2xl flex flex-col items-center gap-2 cursor-pointer transition-all duration-200 ${
+                    isSelected
+                      ? 'bg-[#B8212E]/20 border-2 border-[#B8212E] shadow-lg shadow-rose-950/40 ring-2 ring-[#B8212E]/40'
+                      : 'bg-slate-800/60 border-2 border-slate-700/80 hover:bg-slate-800 hover:border-slate-500'
+                  }`}
+                >
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-xl flex items-center justify-center p-1 border border-slate-200">
+                    <svg viewBox="0 0 100 100" className="w-full h-full">
+                      {opt.shapes.map((s, sIdx) => (
+                        <RenderShape key={sIdx} shape={s} />
+                      ))}
+                    </svg>
+                  </div>
+                  <span className={`text-xs font-black px-3 py-0.5 rounded-md ${isSelected ? 'bg-[#B8212E] text-white' : 'bg-slate-700 text-slate-300'}`}>
+                    Option {String.fromCharCode(65 + idx)}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
     </div>
   )
